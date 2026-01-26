@@ -1,0 +1,4 @@
+.column {
+    -fx-border-color: transparent #555 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
