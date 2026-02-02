@@ -16,7 +16,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -91,12 +90,40 @@ public class App extends Application {
         return issues;
     }
 
+    private void saveProject(String projName,String bugtName,String despName,String sevName){
+
+        String sql = "INSERT INTO projects VALUES('"+projName+"','"+bugtName+"','"+despName+"','"+sevName+"');";
+        try {
+                Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate();
+                loadProjectsFromDB();
+                loadBugsFromDB(projName);
+            } catch (Exception e) {
+                e.printStackTrace();
+        }
+
+    }
+
+    private void removeBug(String selectedProject, String bugDescription, String bugSeverity){
+        String sql = "DELETE FROM projects WHERE project = '"+selectedProject+"' AND description='"+bugDescription+"';";
+        try {
+                Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate();
+                loadProjectsFromDB();
+                loadBugsFromDB(selectedProject);
+            } catch (Exception e) {
+                e.printStackTrace();
+        }
+    }
+
 
 
     @Override
     public void start(Stage stage) {
 
-        Label title = new Label("  Welcome To PatchFlow");
+        Label title = new Label("  PATCHFLOW");
         title.setLayoutX(30);
         loadProjectsFromDB();
 
@@ -105,37 +132,43 @@ public class App extends Application {
         // COLUMN 1: Project Explorer
         ListView<String> projectList = new ListView<>(projects);
         projectList.getItems().addAll(projectBugs.keySet());
-        Button btn = new Button("Add New Project");
+        Button btn = new Button("Add New Bug");
 
         btn.setOnAction(
         new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 final Stage dialog = new Stage();
-                dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.initOwner(stage);
-                VBox dialogVbox = new VBox(20);
-                TextField textField = new TextField();
+                VBox dialogVbox = new VBox(10);
+                Label projLabel = new Label("Type Your Project: ");
+                TextField projtextField = new TextField();
+                Label bugLabel = new Label("Type Your Issue: ");
+                TextField bugtextField = new TextField();
+                Label despLabel = new Label("Type Your Description: ");
+                TextField desptextField = new TextField();
+                Label sevLabel = new Label("Type Your Severity: ");
+                TextField sevtextField = new TextField();
 
-                Button projbtn = new Button("Add Project");
-                dialogVbox.getChildren().add(textField);
-                dialogVbox.getChildren().add(projbtn);
+                Button projbtn = new Button("Add New Bug");
+                dialogVbox.getChildren().addAll(projLabel,projtextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,sevtextField,projbtn);
 
                 projbtn.setOnAction(e -> {
-                    String projectName = textField.getText();
-                    //saveProject(projectName);
+                    String projName = projtextField.getText();
+                    String bugtName = bugtextField.getText();
+                    String despName = desptextField.getText();
+                    String sevName = sevtextField.getText();
+                    saveProject(projName,bugtName,despName,sevName);
                     dialog.close();
                 });
 
-                Scene dialogScene = new Scene(dialogVbox, 300, 90);
+                Scene dialogScene = new Scene(dialogVbox, 300, 290);
                 dialog.setScene(dialogScene);
                 dialog.show();
             }
          });
 
-        VBox projectColumn = new VBox(
-                new Label("Projects"),btn,projectList
-        );
+        VBox projectColumn = new VBox(new Label("Projects"),btn,projectList);
         projectColumn.setPadding(new Insets(10));
         projectColumn.setSpacing(10);
         projectColumn.setPrefWidth(300);
@@ -144,48 +177,37 @@ public class App extends Application {
 
         // COLUMN 2: Bug Explorer
         bugList = new ListView<>();
-        Button bugbtn = new Button("Add New Bug");
 
-        bugbtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final Stage dialog = new Stage();
-                dialog.initModality(Modality.APPLICATION_MODAL);
-                dialog.initOwner(stage);
-                VBox dialogVbox = new VBox(20);
-                TextField textField = new TextField();
-
-                Button bugsbtn = new Button("Add Bug");
-                dialogVbox.getChildren().add(textField);
-                dialogVbox.getChildren().add(bugsbtn);
-
-                Scene dialogScene = new Scene(dialogVbox, 300, 90);
-                dialog.setScene(dialogScene);
-                dialog.show();
-            }
-         });
-
-        VBox bugColumn = new VBox(
-                new Label("Bugs"),bugbtn,bugList
-        );
+        VBox bugColumn = new VBox(new Label("Bugs"),bugList);
         bugColumn.setPadding(new Insets(10));
-        bugColumn.setSpacing(10);
+        bugColumn.setSpacing(45);
         bugColumn.setPrefWidth(300);
 
 
 
         // COLUMN 3: Bug Details
+        Button bugremovebtn = new Button("Remove Bug");
+        
         Label bugDescription = new Label("Select a bug to see Description");
         bugDescription.setWrapText(true);
 
         Label bugSeverity = new Label("Select a bug to see Severity");
         bugSeverity.setWrapText(true);
 
+        bugremovebtn.setOnAction(e -> {
+            String selectedProject = projectList.getSelectionModel().getSelectedItem();
+            String descriptionText = bugDescription.getText();
+            descriptionText = descriptionText.replace("Bug Description: ", "");
+            String severityText = bugSeverity.getText();
+            severityText = severityText.replace("Bug Severity: ","");
+            removeBug(selectedProject, descriptionText, severityText);
+        });
+
         VBox detailsColumn = new VBox(
-                new Label("Bug Details"),
-                bugDescription,
-                bugSeverity
+            new Label("Bug Details"),
+            bugremovebtn,
+            bugDescription,
+            bugSeverity
         );
         detailsColumn.setPadding(new Insets(10));
         detailsColumn.setSpacing(10);
