@@ -9,6 +9,8 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
+<img height="300" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/69076784/544444820-dfe90046-3343-4284-8869-8528c7566983.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260203%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260203T162444Z&X-Amz-Expires=300&X-Amz-Signature=16e44bfdf96cb0bfa79daa2fd98eca6f9b7e44c7d8128a0a08020f7d00c4295a&X-Amz-SignedHeaders=host" />
+
 ## What's New?
 Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-speed with the growing tech solutions, services and algorithms. Hence this new commit includes:
 
@@ -19,9 +21,9 @@ PatchFlow Changelogs:-
 ANNOUNCEMENT:- 
 
 1. New Functionality additions:
-   Users can now Add and Delete Issues.
+   Users can now Edit Issues.
 
-2. Slight text changes.
+2. UI/UX changes.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -30,7 +32,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 02-February-2025 00:15 HRS (Singapore Standard Time)
+Last Updated: 03-February-2025 00:30 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.

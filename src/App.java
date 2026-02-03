@@ -28,9 +28,8 @@ public class App extends Application {
     private final Map<String, List<String>> projectBugs = new HashMap<>();
     private ListView<String> bugList = new ListView<>();
 
-
+    // Loads Projects form Database
     private void loadProjectsFromDB() {
-
         String sql = "SELECT DISTINCT project FROM projects";
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
@@ -48,8 +47,8 @@ public class App extends Application {
         }
     }
 
+    // Loads issues in choosen project from Database
     private void loadBugsFromDB(String project) {
-
         String sql = "SELECT issue FROM projects WHERE project = ?";
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
@@ -69,8 +68,8 @@ public class App extends Application {
         }
     }
 
+    // Loads issues's description and severity from Database
     private String[] loadBugDesp(String bugdesc) {
-
         String sql = "SELECT description, severity from projects WHERE issue = '"+bugdesc+"';";
         String[] issues = new String[2];
 
@@ -90,51 +89,72 @@ public class App extends Application {
         return issues;
     }
 
+    // Save new project into Database
     private void saveProject(String projName,String bugtName,String despName,String sevName){
-
         String sql = "INSERT INTO projects VALUES('"+projName+"','"+bugtName+"','"+despName+"','"+sevName+"');";
         try {
-                Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.executeUpdate();
-                loadProjectsFromDB();
-                loadBugsFromDB(projName);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.executeUpdate();
+            loadProjectsFromDB();
+            loadBugsFromDB(projName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
+    // Remove issue from Database
     private void removeBug(String selectedProject, String bugDescription, String bugSeverity){
         String sql = "DELETE FROM projects WHERE project = '"+selectedProject+"' AND description='"+bugDescription+"';";
         try {
-                Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.executeUpdate();
-                loadProjectsFromDB();
-                loadBugsFromDB(selectedProject);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.executeUpdate();
+            loadProjectsFromDB();
+            loadBugsFromDB(selectedProject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Edit issue in Database
+    public void editProject(String despName, String sevName, String selectedBug){
+        String sql = "UPDATE projects SET description='"+despName+"', severity='"+sevName+"' WHERE issue = '"+selectedBug+"';";
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.executeUpdate();
+            loadBugDesp(selectedBug);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
 
+    // Main Logic Code starts here
     @Override
     public void start(Stage stage) {
 
+        // Top title
         Label title = new Label("  PATCHFLOW");
         title.setLayoutX(30);
         loadProjectsFromDB();
 
+        // Sidebar
+        VBox sidebar = new VBox(10);
+        sidebar.setPadding(new Insets(10));
+        sidebar.setPrefWidth(190);
+        sidebar.setStyle("-fx-background-color: #2c2f33;");
 
+        Label sidetitle = new Label("PatchFlow");
+        sidetitle.setStyle("-fx-text-fill: white; -fx-font-size: 18;");
 
-        // COLUMN 1: Project Explorer
-        ListView<String> projectList = new ListView<>(projects);
-        projectList.getItems().addAll(projectBugs.keySet());
-        Button btn = new Button("Add New Bug");
+        Button analyticsBtn = new Button("Your Analytics");
+        Button bugBtn = new Button("Add New Bug");
 
-        btn.setOnAction(
+        bugBtn.setOnAction(
         new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -150,7 +170,7 @@ public class App extends Application {
                 Label sevLabel = new Label("Type Your Severity: ");
                 TextField sevtextField = new TextField();
 
-                Button projbtn = new Button("Add New Bug");
+                Button projbtn = new Button("Add New Issue");
                 dialogVbox.getChildren().addAll(projLabel,projtextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,sevtextField,projbtn);
 
                 projbtn.setOnAction(e -> {
@@ -168,46 +188,106 @@ public class App extends Application {
             }
          });
 
-        VBox projectColumn = new VBox(new Label("Projects"),btn,projectList);
+        // COLUMN 1 Project Explorer elements
+        ListView<String> projectList = new ListView<>(projects);
+        projectList.getItems().addAll(projectBugs.keySet());   
+        
+        // COLUMN 3 Bug Details elements
+        Label bugDescription = new Label("Select a Issue to see Description");
+        bugDescription.setWrapText(true);
+        Label bugSeverity = new Label("Select a Issue to see Severity");
+        bugSeverity.setWrapText(true);
+
+        sidebar.getChildren().addAll(sidetitle, analyticsBtn, bugBtn);
+
+
+
+
+        // COLUMN 1: Project Explorer
+        VBox projectColumn = new VBox(new Label("Projects"),projectList);
         projectColumn.setPadding(new Insets(10));
-        projectColumn.setSpacing(10);
+        projectColumn.setSpacing(15);
         projectColumn.setPrefWidth(300);
 
 
 
         // COLUMN 2: Bug Explorer
         bugList = new ListView<>();
-
-        VBox bugColumn = new VBox(new Label("Bugs"),bugList);
+        VBox bugColumn = new VBox(new Label("Issues"),bugList);
         bugColumn.setPadding(new Insets(10));
-        bugColumn.setSpacing(45);
+        bugColumn.setSpacing(15);
         bugColumn.setPrefWidth(300);
 
 
 
-        // COLUMN 3: Bug Details
-        Button bugremovebtn = new Button("Remove Bug");
-        
-        Label bugDescription = new Label("Select a bug to see Description");
-        bugDescription.setWrapText(true);
+        // COLUMN 3: Bug Details 
+        Button remissue = new Button("Remove Issue");
+        Button ediissue = new Button("Edit Description");
 
-        Label bugSeverity = new Label("Select a bug to see Severity");
-        bugSeverity.setWrapText(true);
-
-        bugremovebtn.setOnAction(e -> {
-            String selectedProject = projectList.getSelectionModel().getSelectedItem();
-            String descriptionText = bugDescription.getText();
-            descriptionText = descriptionText.replace("Bug Description: ", "");
-            String severityText = bugSeverity.getText();
-            severityText = severityText.replace("Bug Severity: ","");
-            removeBug(selectedProject, descriptionText, severityText);
+        remissue.setOnAction(e -> {
+           String selectedProject = projectList.getSelectionModel().getSelectedItem();
+           String descriptionText = bugDescription.getText();
+           descriptionText = descriptionText.replace("Issue Description: ", "");
+           String severityText = bugSeverity.getText();
+           severityText = severityText.replace("Issue Severity: ","");
+           removeBug(selectedProject, descriptionText, severityText);
         });
 
+        // Hides remove issue button when issue not selected
+        remissue.visibleProperty().bind(
+        bugSeverity.textProperty()
+                .isEqualTo("Select a Issue to see Severity")
+                .not()
+        );
+
+        // Hides edit issue button when issue not selected
+        ediissue.visibleProperty().bind(
+        bugDescription.textProperty()
+                .isEqualTo("Select a Issue to see Description")
+                .not()
+        );
+
+        ediissue.setOnAction(
+        new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                final Stage dialog = new Stage();
+                dialog.initOwner(stage);
+                VBox dialogVbox = new VBox(10);
+                String selectedBug = bugList.getSelectionModel().getSelectedItem();
+
+                Label despLabel = new Label(" Edit Your Description: ");
+                TextField desptextField = new TextField();
+                String editDesvar = bugDescription.getText().replace("Issue Description: ", "");
+                desptextField.setText(editDesvar);
+
+                Label sevLabel = new Label(" Edit Your Severity: ");
+                TextField sevtextField = new TextField();
+                String editSevVar = bugSeverity.getText().replace("Issue Severity: ", "");
+                sevtextField.setText(editSevVar);
+
+                Button projbtn = new Button("Edit Issue");
+                dialogVbox.getChildren().addAll(despLabel,desptextField,sevLabel,sevtextField,projbtn);
+
+                projbtn.setOnAction(e -> {
+                    String despName = desptextField.getText();
+                    String sevName = sevtextField.getText();
+                    editProject(despName,sevName,selectedBug);
+                    dialog.close();
+                });
+
+                Scene dialogScene = new Scene(dialogVbox, 300, 160);
+                dialog.setScene(dialogScene);
+                dialog.show();
+            }
+         });
+
         VBox detailsColumn = new VBox(
-            new Label("Bug Details"),
-            bugremovebtn,
+            new Label("Issue Details: "),
             bugDescription,
-            bugSeverity
+            bugSeverity,
+            remissue,
+            ediissue
         );
         detailsColumn.setPadding(new Insets(10));
         detailsColumn.setSpacing(10);
@@ -215,7 +295,7 @@ public class App extends Application {
 
 
 
-        // INTERACTIONS
+        // Fetching selected items for interactions
         projectList.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldProject, newProject) -> {
                 if (newProject != null) {
@@ -228,27 +308,27 @@ public class App extends Application {
             (obs, oldVal, newVal) -> {
                 if (newVal != null) {
                     String[] bug = loadBugDesp(newVal);
-                    bugDescription.setText("Bug Description: "+ bug[0]);
-                    bugSeverity.setText("Bug Severity: "+ bug[1]);
+                    bugDescription.setText("Issue Description: "+ bug[0]);
+                    bugSeverity.setText("Issue Severity: "+ bug[1]);
             }
         });
 
 
 
-        // MAIN LAYOUT
+        // Main Scene Layout
         projectColumn.getStyleClass().add("column");
         bugColumn.getStyleClass().add("column");
 
-        HBox rootmo = new HBox(projectColumn, bugColumn, detailsColumn);
+        HBox rootmo = new HBox(sidebar,projectColumn, bugColumn, detailsColumn);
         VBox root = new VBox(title,rootmo);
         root.setSpacing(15);
-
 
         Scene scene = new Scene(root, 1000, 520);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         stage.setTitle("PatchFlow");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
