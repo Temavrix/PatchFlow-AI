@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -162,27 +163,35 @@ public class App extends Application {
                 dialog.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
                 Label projLabel = new Label("Type Your Project: ");
+                projLabel.setStyle("-fx-text-fill: white;");
                 TextField projtextField = new TextField();
                 Label bugLabel = new Label("Type Your Issue: ");
+                bugLabel.setStyle("-fx-text-fill: white;");
                 TextField bugtextField = new TextField();
                 Label despLabel = new Label("Type Your Description: ");
+                despLabel.setStyle("-fx-text-fill: white;");
                 TextField desptextField = new TextField();
-                Label sevLabel = new Label("Type Your Severity: ");
-                TextField sevtextField = new TextField();
+                Label sevLabel = new Label("Choose Your Severity: ");
+                sevLabel.setStyle("-fx-text-fill: white;");
+
+                String bugscategory[] = { "Low", "Medium", "High", "Critical"};
+                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
 
                 Button projbtn = new Button("Add New Issue");
-                dialogVbox.getChildren().addAll(projLabel,projtextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,sevtextField,projbtn);
+                dialogVbox.getChildren().addAll(projLabel,projtextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,combo_box,projbtn);
 
                 projbtn.setOnAction(e -> {
                     String projName = projtextField.getText();
                     String bugtName = bugtextField.getText();
                     String despName = desptextField.getText();
-                    String sevName = sevtextField.getText();
+                    String sevName = combo_box.getValue();
                     saveProject(projName,bugtName,despName,sevName);
                     dialog.close();
                 });
 
-                Scene dialogScene = new Scene(dialogVbox, 300, 290);
+                Scene dialogScene = new Scene(dialogVbox, 300, 300);
+                dialogVbox.setPadding(new Insets(10));
+                dialogVbox.setStyle("-fx-background-color: #454648;");
                 dialog.setScene(dialogScene);
                 dialog.show();
             }
@@ -194,8 +203,10 @@ public class App extends Application {
         
         // COLUMN 3 Bug Details elements
         Label bugDescription = new Label("Select a Issue to see Description");
+        bugDescription.setStyle("-fx-text-fill: white;");
         bugDescription.setWrapText(true);
         Label bugSeverity = new Label("Select a Issue to see Severity");
+        bugSeverity.setStyle("-fx-text-fill: white;");
         bugSeverity.setWrapText(true);
 
         sidebar.getChildren().addAll(sidetitle, analyticsBtn, bugBtn);
@@ -204,7 +215,9 @@ public class App extends Application {
 
 
         // COLUMN 1: Project Explorer
-        VBox projectColumn = new VBox(new Label("Projects"),projectList);
+        Label projlabel = new Label("Projects");
+        projlabel.setStyle("-fx-text-fill: white;");
+        VBox projectColumn = new VBox(projlabel,projectList);
         projectColumn.setPadding(new Insets(10));
         projectColumn.setSpacing(15);
         projectColumn.setPrefWidth(300);
@@ -213,7 +226,9 @@ public class App extends Application {
 
         // COLUMN 2: Bug Explorer
         bugList = new ListView<>();
-        VBox bugColumn = new VBox(new Label("Issues"),bugList);
+        Label issulabel = new Label("Issues");
+        issulabel.setStyle("-fx-text-fill: white;");
+        VBox bugColumn = new VBox(issulabel,bugList);
         bugColumn.setPadding(new Insets(10));
         bugColumn.setSpacing(15);
         bugColumn.setPrefWidth(300);
@@ -257,33 +272,41 @@ public class App extends Application {
                 String selectedBug = bugList.getSelectionModel().getSelectedItem();
 
                 Label despLabel = new Label(" Edit Your Description: ");
+                despLabel.setStyle("-fx-text-fill: white;");
+
                 TextField desptextField = new TextField();
                 String editDesvar = bugDescription.getText().replace("Issue Description: ", "");
                 desptextField.setText(editDesvar);
 
                 Label sevLabel = new Label(" Edit Your Severity: ");
-                TextField sevtextField = new TextField();
-                String editSevVar = bugSeverity.getText().replace("Issue Severity: ", "");
-                sevtextField.setText(editSevVar);
+                sevLabel.setStyle("-fx-text-fill: white;");
+
+                String bugscategory[] = { "Low", "Medium", "High", "Critical"};
+                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
 
                 Button projbtn = new Button("Edit Issue");
-                dialogVbox.getChildren().addAll(despLabel,desptextField,sevLabel,sevtextField,projbtn);
+                dialogVbox.getChildren().addAll(despLabel,desptextField,sevLabel,combo_box,projbtn);
 
                 projbtn.setOnAction(e -> {
                     String despName = desptextField.getText();
-                    String sevName = sevtextField.getText();
+                    String sevName = combo_box.getValue();
                     editProject(despName,sevName,selectedBug);
                     dialog.close();
                 });
 
-                Scene dialogScene = new Scene(dialogVbox, 300, 160);
+                Scene dialogScene = new Scene(dialogVbox, 300, 180);
+                dialogVbox.setPadding(new Insets(10));
+                dialogVbox.setStyle("-fx-background-color: #454648;");
                 dialog.setScene(dialogScene);
                 dialog.show();
             }
          });
 
+        Label issudetlabel = new Label("Issue Details: ");
+        issudetlabel.setStyle("-fx-text-fill: white;");
+
         VBox detailsColumn = new VBox(
-            new Label("Issue Details: "),
+            issudetlabel,
             bugDescription,
             bugSeverity,
             remissue,
@@ -303,6 +326,12 @@ public class App extends Application {
                 }
             }
         );
+        projectList.setFixedCellSize(40);
+        projectList.setStyle(
+            "-fx-control-inner-background: #454648;" +
+            "-fx-cell-hover-color: #5a5b5d;" +
+            "-fx-text-fill: white;"
+        );
 
         bugList.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> {
@@ -312,6 +341,12 @@ public class App extends Application {
                     bugSeverity.setText("Issue Severity: "+ bug[1]);
             }
         });
+        bugList.setFixedCellSize(40);
+        bugList.setStyle(
+            "-fx-control-inner-background: #454648;" +
+            "-fx-cell-hover-color: #5a5b5d;" +
+            "-fx-text-fill: white;"
+        );
 
 
 
@@ -319,7 +354,9 @@ public class App extends Application {
         projectColumn.getStyleClass().add("column");
         bugColumn.getStyleClass().add("column");
 
-        HBox rootmo = new HBox(sidebar,projectColumn, bugColumn, detailsColumn);
+        
+        HBox rootmo = new HBox(sidebar, projectColumn, bugColumn, detailsColumn);
+        rootmo.setStyle("-fx-background-color: #454648;");
         VBox root = new VBox(title,rootmo);
         root.setSpacing(15);
 

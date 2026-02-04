@@ -20,10 +20,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. New Functionality additions:
-   Users can now Edit Issues.
-
-2. UI/UX changes.
+1. UI/UX improvements.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -32,7 +29,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 03-February-2025 00:30 HRS (Singapore Standard Time)
+Last Updated: 04-February-2025 00:30 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
