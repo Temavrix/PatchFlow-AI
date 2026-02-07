@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javafx.application.Application;
@@ -13,21 +14,68 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.event.EventHandler;
 
+class Issue {
+    private final String title;
+    private final String priority;
+
+    public Issue(String title, String priority) {
+        this.title = title;
+        this.priority = priority;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+}
+
 public class App extends Application {
     private final ObservableList<String> projects = FXCollections.observableArrayList();
     private final Map<String, List<String>> projectBugs = new HashMap<>();
-    private ListView<String> bugList = new ListView<>();
+
+    // Loads issues of respective projects from Database
+    private ObservableList<Issue> loadIssuesFromDatabase(String project) {
+       ObservableList<Issue> issues = FXCollections.observableArrayList();
+
+       String sql = "SELECT issue, severity FROM projects WHERE project = ?";
+
+       try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+               ps.setString(1, project);
+               ResultSet rs = ps.executeQuery();
+
+           while (rs.next()) {
+               String title = rs.getString("issue");
+               String priority = rs.getString("severity");
+
+               issues.add(new Issue(title, priority));
+           }
+
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+
+       return issues;
+    }
 
     // Loads Projects form Database
     private void loadProjectsFromDB() {
@@ -41,27 +89,6 @@ public class App extends Application {
 
             while (rs.next()) {
                 projects.add(rs.getString("project"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Loads issues in choosen project from Database
-    private void loadBugsFromDB(String project) {
-        String sql = "SELECT issue FROM projects WHERE project = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, project);
-            ResultSet rs = ps.executeQuery();
-
-            bugList.getItems().clear();
-
-            while (rs.next()) {
-                bugList.getItems().add(rs.getString("issue"));
             }
 
         } catch (Exception e) {
@@ -98,7 +125,7 @@ public class App extends Application {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.executeUpdate();
             loadProjectsFromDB();
-            loadBugsFromDB(projName);
+            loadIssuesFromDatabase(projName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,7 +139,7 @@ public class App extends Application {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.executeUpdate();
             loadProjectsFromDB();
-            loadBugsFromDB(selectedProject);
+            loadIssuesFromDatabase(selectedProject);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,15 +225,16 @@ public class App extends Application {
          });
 
         // COLUMN 1 Project Explorer elements
-        ListView<String> projectList = new ListView<>(projects);
-        projectList.getItems().addAll(projectBugs.keySet());   
+          
         
         // COLUMN 3 Bug Details elements
         Label bugDescription = new Label("Select a Issue to see Description");
         bugDescription.setStyle("-fx-text-fill: white;");
+        bugDescription.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
         bugDescription.setWrapText(true);
         Label bugSeverity = new Label("Select a Issue to see Severity");
         bugSeverity.setStyle("-fx-text-fill: white;");
+        bugSeverity.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
         bugSeverity.setWrapText(true);
 
         sidebar.getChildren().addAll(sidetitle, analyticsBtn, bugBtn);
@@ -215,8 +243,37 @@ public class App extends Application {
 
 
         // COLUMN 1: Project Explorer
+        ListView<String> projectList = new ListView<>(projects);
+        projectList.getItems().addAll(projectBugs.keySet());
+        projectList.setPrefWidth(350);
+        projectList.setFixedCellSize(60);
+
+        projectList.setCellFactory(listview -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Label title = new Label(item);
+                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+
+                VBox text = new VBox(4, title);
+                HBox row = new HBox(10, text);
+                setGraphic(row);
+                setStyle("-fx-background-color: #2e2f31;");
+            }
+        });
+
         Label projlabel = new Label("Projects");
         projlabel.setStyle("-fx-text-fill: white;");
+        projlabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
+        projectList.setStyle(
+            "-fx-background-color: #2e2f31;" +
+            "-fx-control-inner-background: #2e2f31;"
+        );
         VBox projectColumn = new VBox(projlabel,projectList);
         projectColumn.setPadding(new Insets(10));
         projectColumn.setSpacing(15);
@@ -225,10 +282,68 @@ public class App extends Application {
 
 
         // COLUMN 2: Bug Explorer
-        bugList = new ListView<>();
+
+        ListView<Issue> issueListView = new ListView<>();
+        String selectedProjectq = projectList.getSelectionModel().getSelectedItem();
+        issueListView.setItems(loadIssuesFromDatabase(selectedProjectq));
+        issueListView.setPrefWidth(350);
+        issueListView.setFixedCellSize(75);
+
+        // Custom cell rendering
+        issueListView.setCellFactory(listView -> new ListCell<Issue>() {
+            @Override
+            protected void updateItem(Issue issue, boolean empty) {
+                super.updateItem(issue, empty);
+
+                if (empty || issue == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Rectangle dot = new Rectangle(8, 8);
+                dot.setArcWidth(8);
+                dot.setArcHeight(8);
+
+                switch (issue.getPriority()) {
+                    case "High" -> dot.setFill(Color.ORANGERED);
+                    case "Medium" -> dot.setFill(Color.GOLD);
+                    case "Low" -> dot.setFill(Color.LIMEGREEN);
+                    default -> dot.setFill(Color.GRAY);
+                }
+
+                Label title = new Label(issue.getTitle());
+                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+
+                Label priority = new Label(issue.getPriority());
+                priority.setStyle("-fx-text-fill: #cfcfcf; -fx-font-size: 11px;");
+
+                VBox text = new VBox(4, title, priority);
+                HBox row = new HBox(10, dot, text);
+                row.setPadding(new Insets(10));
+                row.setAlignment(Pos.CENTER_LEFT);
+
+                setGraphic(row);
+                setStyle("-fx-background-color: #2e2f31;");
+            }
+        });
+
+        Label emptyLabel = new Label("No issues found");
+        emptyLabel.setStyle(
+            "-fx-text-fill: #cfcfcf;" +
+            "-fx-font-size: 14;"
+        );
+
+        issueListView.setPlaceholder(emptyLabel);
+
         Label issulabel = new Label("Issues");
         issulabel.setStyle("-fx-text-fill: white;");
-        VBox bugColumn = new VBox(issulabel,bugList);
+        issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
+        issueListView.setStyle(
+            "-fx-background-color: #2e2f31;" +
+            "-fx-control-inner-background: #2e2f31;"
+        );
+
+        VBox bugColumn = new VBox(issulabel,issueListView);
         bugColumn.setPadding(new Insets(10));
         bugColumn.setSpacing(15);
         bugColumn.setPrefWidth(300);
@@ -269,7 +384,8 @@ public class App extends Application {
                 final Stage dialog = new Stage();
                 dialog.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
-                String selectedBug = bugList.getSelectionModel().getSelectedItem();
+                Issue selectedIssue = issueListView.getSelectionModel().getSelectedItem();
+                String selectedBug = selectedIssue.getTitle();
 
                 Label despLabel = new Label(" Edit Your Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
@@ -304,13 +420,15 @@ public class App extends Application {
 
         Label issudetlabel = new Label("Issue Details: ");
         issudetlabel.setStyle("-fx-text-fill: white;");
+        issudetlabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
 
         VBox detailsColumn = new VBox(
             issudetlabel,
             bugDescription,
             bugSeverity,
-            remissue,
-            ediissue
+            ediissue,
+            remissue
+            
         );
         detailsColumn.setPadding(new Insets(10));
         detailsColumn.setSpacing(10);
@@ -322,30 +440,19 @@ public class App extends Application {
         projectList.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldProject, newProject) -> {
                 if (newProject != null) {
-                    loadBugsFromDB(newProject);
+                    issueListView.setItems(loadIssuesFromDatabase(newProject));
                 }
             }
         );
-        projectList.setFixedCellSize(40);
-        projectList.setStyle(
-            "-fx-control-inner-background: #454648;" +
-            "-fx-cell-hover-color: #5a5b5d;" +
-            "-fx-text-fill: white;"
-        );
 
-        bugList.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    String[] bug = loadBugDesp(newVal);
-                    bugDescription.setText("Issue Description: "+ bug[0]);
-                    bugSeverity.setText("Issue Severity: "+ bug[1]);
-            }
-        });
-        bugList.setFixedCellSize(40);
-        bugList.setStyle(
-            "-fx-control-inner-background: #454648;" +
-            "-fx-cell-hover-color: #5a5b5d;" +
-            "-fx-text-fill: white;"
+        issueListView.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldIssue, newIssue) -> {
+                    if (newIssue != null) {
+                        String[] bug = loadBugDesp(newIssue.getTitle());
+                        bugDescription.setText("Issue Description: "+ bug[0]);
+                        bugSeverity.setText("Issue Severity: "+ bug[1]);
+                    }
+                }
         );
 
 
@@ -356,11 +463,11 @@ public class App extends Application {
 
         
         HBox rootmo = new HBox(sidebar, projectColumn, bugColumn, detailsColumn);
-        rootmo.setStyle("-fx-background-color: #454648;");
+        rootmo.setStyle("-fx-background-color: #2e2f31;");
         VBox root = new VBox(title,rootmo);
         root.setSpacing(15);
 
-        Scene scene = new Scene(root, 1000, 520);
+        Scene scene = new Scene(root, 1000, 498);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         stage.setTitle("PatchFlow");

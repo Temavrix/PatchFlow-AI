@@ -6,20 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "StringInputExample",
-            "request": "launch",
-            "mainClass": "StringInputExample",
-            "projectName": "PatchFlow_15d6f463"
-        },
-        {
-            "type": "java",
-            "name": "Data",
-            "request": "launch",
-            "mainClass": "Data",
-            "projectName": "PatchFlow_15d6f463"
-        },
-        {
-            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
