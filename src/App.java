@@ -29,31 +29,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.event.EventHandler;
 
-class Issue {
-    private final String title;
-    private final String priority;
-
-    public Issue(String title, String priority) {
-        this.title = title;
-        this.priority = priority;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-}
 
 public class App extends Application {
+    //Declaring All the Lists and Hashmaps used
     private final ObservableList<String> projects = FXCollections.observableArrayList();
+    private final Map<String, Integer> projectissues = new HashMap<>();
     private final Map<String, List<String>> projectBugs = new HashMap<>();
+    ListView<String> projectList = new ListView<>(projects);
+    ListView<Map<String, String>> issueListView = new ListView<>();
 
     // Loads issues of respective projects from Database
-    private ObservableList<Issue> loadIssuesFromDatabase(String project) {
-       ObservableList<Issue> issues = FXCollections.observableArrayList();
+    private ObservableList<Map<String, String>> loadIssuesFromDatabase(String project) {
+       ObservableList<Map<String, String>> issues = FXCollections.observableArrayList();
 
        String sql = "SELECT issue, severity FROM projects WHERE project = ?";
 
@@ -64,10 +51,11 @@ public class App extends Application {
                ResultSet rs = ps.executeQuery();
 
            while (rs.next()) {
-               String title = rs.getString("issue");
-               String priority = rs.getString("severity");
+                Map<String, String> issue = new HashMap<>();
+                issue.put("title", rs.getString("issue"));
+                issue.put("priority", rs.getString("severity"));
 
-               issues.add(new Issue(title, priority));
+                issues.add(issue);
            }
 
        } catch (SQLException e) {
@@ -79,16 +67,21 @@ public class App extends Application {
 
     // Loads Projects form Database
     private void loadProjectsFromDB() {
-        String sql = "SELECT DISTINCT project FROM projects";
+        String sql = "SELECT project, COUNT(*) AS issue_count FROM projects GROUP BY project ";
+
+        projects.clear();
+        projectissues.clear();
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            projects.clear(); // important: avoid duplicates
-
             while (rs.next()) {
-                projects.add(rs.getString("project"));
+                String project = rs.getString("project");
+                int count = rs.getInt("issue_count");
+
+                projects.add(project);
+                projectissues.put(project, count);
             }
 
         } catch (Exception e) {
@@ -98,8 +91,8 @@ public class App extends Application {
 
     // Loads issues's description and severity from Database
     private String[] loadBugDesp(String bugdesc) {
-        String sql = "SELECT description, severity from projects WHERE issue = '"+bugdesc+"';";
-        String[] issues = new String[2];
+        String sql = "SELECT project, description, severity from projects WHERE issue = '"+bugdesc+"';";
+        String[] issues = new String[3];
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
              Statement stmt = conn.createStatement();) {
@@ -107,8 +100,9 @@ public class App extends Application {
             java.sql.ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                issues[0] = rs.getString("description");
-                issues[1] = rs.getString("severity");
+                issues[0] = rs.getString("project");
+                issues[1] = rs.getString("description");
+                issues[2] = rs.getString("severity");
             }
 
         } catch (Exception e) {
@@ -119,13 +113,16 @@ public class App extends Application {
 
     // Save new project into Database
     private void saveProject(String projName,String bugtName,String despName,String sevName){
-        String sql = "INSERT INTO projects VALUES('"+projName+"','"+bugtName+"','"+despName+"','"+sevName+"');";
+        String sql = "INSERT INTO projects VALUES (?, ?, ?, ?)";
         try {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, projName);
+            stmt.setString(2, bugtName);
+            stmt.setString(3, despName);
+            stmt.setString(4, sevName);
             stmt.executeUpdate();
             loadProjectsFromDB();
-            loadIssuesFromDatabase(projName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,7 +136,7 @@ public class App extends Application {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.executeUpdate();
             loadProjectsFromDB();
-            loadIssuesFromDatabase(selectedProject);
+            refreshIssues();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,6 +156,17 @@ public class App extends Application {
         }
     }
 
+    // A function to refresh Issues if one is deleted
+    private void refreshIssues() {
+
+        String selectedProject = projectList.getSelectionModel().getSelectedItem();
+        if (selectedProject != null) {
+            issueListView.setItems(loadIssuesFromDatabase(selectedProject));
+        } else {
+            issueListView.getItems().clear();
+        }
+    }
+
 
 
     // Main Logic Code starts here
@@ -173,14 +181,16 @@ public class App extends Application {
         // Sidebar
         VBox sidebar = new VBox(10);
         sidebar.setPadding(new Insets(10));
-        sidebar.setPrefWidth(190);
+        sidebar.setPrefWidth(150);
         sidebar.setStyle("-fx-background-color: #2c2f33;");
 
         Label sidetitle = new Label("PatchFlow");
         sidetitle.setStyle("-fx-text-fill: white; -fx-font-size: 18;");
 
         Button analyticsBtn = new Button("Your Analytics");
+        analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         Button bugBtn = new Button("Add New Bug");
+        bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         bugBtn.setOnAction(
         new EventHandler<ActionEvent>() {
@@ -205,6 +215,7 @@ public class App extends Application {
                 ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
 
                 Button projbtn = new Button("Add New Issue");
+                projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
                 dialogVbox.getChildren().addAll(projLabel,projtextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,combo_box,projbtn);
 
                 projbtn.setOnAction(e -> {
@@ -213,6 +224,8 @@ public class App extends Application {
                     String despName = desptextField.getText();
                     String sevName = combo_box.getValue();
                     saveProject(projName,bugtName,despName,sevName);
+                    projectList.getSelectionModel().select(projName);
+                    refreshIssues();
                     dialog.close();
                 });
 
@@ -222,20 +235,7 @@ public class App extends Application {
                 dialog.setScene(dialogScene);
                 dialog.show();
             }
-         });
-
-        // COLUMN 1 Project Explorer elements
-          
-        
-        // COLUMN 3 Bug Details elements
-        Label bugDescription = new Label("Select a Issue to see Description");
-        bugDescription.setStyle("-fx-text-fill: white;");
-        bugDescription.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-        bugDescription.setWrapText(true);
-        Label bugSeverity = new Label("Select a Issue to see Severity");
-        bugSeverity.setStyle("-fx-text-fill: white;");
-        bugSeverity.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-        bugSeverity.setWrapText(true);
+        });
 
         sidebar.getChildren().addAll(sidetitle, analyticsBtn, bugBtn);
 
@@ -243,24 +243,29 @@ public class App extends Application {
 
 
         // COLUMN 1: Project Explorer
-        ListView<String> projectList = new ListView<>(projects);
+
         projectList.getItems().addAll(projectBugs.keySet());
         projectList.setPrefWidth(350);
         projectList.setFixedCellSize(60);
 
         projectList.setCellFactory(listview -> new ListCell<String>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
+            protected void updateItem(String project, boolean empty) {
+                super.updateItem(project, empty);
+                if (empty || project == null) {
                     setGraphic(null);
                     return;
                 }
 
-                Label title = new Label(item);
-                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                int count = projectissues.getOrDefault(project, 0);
 
-                VBox text = new VBox(4, title);
+                Label title = new Label(project);
+                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15;");
+
+                Label badge = new Label(String.valueOf(count) + " Issues Pending");
+                badge.setStyle("-fx-text-fill: #cfcfcf; -fx-font-size: 13px;");
+
+                VBox text = new VBox(4, title, badge);
                 HBox row = new HBox(10, text);
                 setGraphic(row);
                 setStyle("-fx-background-color: #2e2f31;");
@@ -277,22 +282,20 @@ public class App extends Application {
         VBox projectColumn = new VBox(projlabel,projectList);
         projectColumn.setPadding(new Insets(10));
         projectColumn.setSpacing(15);
-        projectColumn.setPrefWidth(300);
+        projectColumn.setPrefWidth(250);
 
 
 
         // COLUMN 2: Bug Explorer
 
-        ListView<Issue> issueListView = new ListView<>();
-        String selectedProjectq = projectList.getSelectionModel().getSelectedItem();
-        issueListView.setItems(loadIssuesFromDatabase(selectedProjectq));
+        
         issueListView.setPrefWidth(350);
         issueListView.setFixedCellSize(75);
 
         // Custom cell rendering
-        issueListView.setCellFactory(listView -> new ListCell<Issue>() {
+        issueListView.setCellFactory(listView -> new ListCell<>() {
             @Override
-            protected void updateItem(Issue issue, boolean empty) {
+            protected void updateItem(Map<String, String> issue, boolean empty) {
                 super.updateItem(issue, empty);
 
                 if (empty || issue == null) {
@@ -300,22 +303,26 @@ public class App extends Application {
                     return;
                 }
 
+                String titleText = issue.get("title");
+                String priorityText = issue.get("priority");
+
                 Rectangle dot = new Rectangle(8, 8);
                 dot.setArcWidth(8);
                 dot.setArcHeight(8);
 
-                switch (issue.getPriority()) {
+                switch (priorityText) {
+                    case "Critical" -> dot.setFill(Color.RED);
                     case "High" -> dot.setFill(Color.ORANGERED);
                     case "Medium" -> dot.setFill(Color.GOLD);
                     case "Low" -> dot.setFill(Color.LIMEGREEN);
                     default -> dot.setFill(Color.GRAY);
                 }
 
-                Label title = new Label(issue.getTitle());
-                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                Label title = new Label(titleText);
+                title.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15;");
 
-                Label priority = new Label(issue.getPriority());
-                priority.setStyle("-fx-text-fill: #cfcfcf; -fx-font-size: 11px;");
+                Label priority = new Label(priorityText);
+                priority.setStyle("-fx-text-fill: #cfcfcf; -fx-font-size: 13px;");
 
                 VBox text = new VBox(4, title, priority);
                 HBox row = new HBox(10, dot, text);
@@ -337,7 +344,7 @@ public class App extends Application {
 
         Label issulabel = new Label("Issues");
         issulabel.setStyle("-fx-text-fill: white;");
-        issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
+        issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
         issueListView.setStyle(
             "-fx-background-color: #2e2f31;" +
             "-fx-control-inner-background: #2e2f31;"
@@ -345,26 +352,62 @@ public class App extends Application {
 
         VBox bugColumn = new VBox(issulabel,issueListView);
         bugColumn.setPadding(new Insets(10));
-        bugColumn.setSpacing(15);
+        bugColumn.setSpacing(7);
         bugColumn.setPrefWidth(300);
 
 
 
         // COLUMN 3: Bug Details 
+
+        // Bug Details elements
+        Label Projectdeslabel = new Label("Select a Project");
+        Projectdeslabel.setStyle("-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;");
+        Label bugDescription = new Label("Select a Issue to see Description");
+        bugDescription.setStyle("-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;");
+        bugDescription.setWrapText(true);
+
+        Label bugSeverity = new Label("Select a Issue to see Severity");
+        bugSeverity.setStyle("-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;");
+        bugSeverity.setWrapText(true);
+
+        Button ediissue = new Button("Edit Issue");
+        ediissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         Button remissue = new Button("Remove Issue");
-        Button ediissue = new Button("Edit Description");
+        remissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        Rectangle dottwo = new Rectangle(8, 8);
+        dottwo.setArcWidth(8);
+        dottwo.setArcHeight(8);
 
         remissue.setOnAction(e -> {
-           String selectedProject = projectList.getSelectionModel().getSelectedItem();
-           String descriptionText = bugDescription.getText();
-           descriptionText = descriptionText.replace("Issue Description: ", "");
-           String severityText = bugSeverity.getText();
-           severityText = severityText.replace("Issue Severity: ","");
-           removeBug(selectedProject, descriptionText, severityText);
+            String selectedProject = projectList.getSelectionModel().getSelectedItem();
+            if (selectedProject == null) return;
+
+            String descriptionText = bugDescription.getText();
+            descriptionText = descriptionText.replace("Issue Description: ", "");
+
+            String severityText = bugSeverity.getText();
+            severityText = severityText.replace("Issue Severity: ","");
+
+            removeBug(selectedProject, descriptionText, severityText);
+
+            projectList.getSelectionModel().select(selectedProject);
+            refreshIssues();
+            
+            Projectdeslabel.setText("Select a Project");
+            bugDescription.setText("Select a Issue to see Description");
+            bugSeverity.setText("Select a Issue to see Severity");
         });
+
+        
 
         // Hides remove issue button when issue not selected
         remissue.visibleProperty().bind(
+        bugSeverity.textProperty()
+                .isEqualTo("Select a Issue to see Severity")
+                .not()
+        );
+
+        dottwo.visibleProperty().bind(
         bugSeverity.textProperty()
                 .isEqualTo("Select a Issue to see Severity")
                 .not()
@@ -384,8 +427,8 @@ public class App extends Application {
                 final Stage dialog = new Stage();
                 dialog.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
-                Issue selectedIssue = issueListView.getSelectionModel().getSelectedItem();
-                String selectedBug = selectedIssue.getTitle();
+                Map<String, String> selectedIssue = issueListView.getSelectionModel().getSelectedItem();
+                String selectedBug = selectedIssue.get("title");
 
                 Label despLabel = new Label(" Edit Your Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
@@ -401,6 +444,7 @@ public class App extends Application {
                 ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
 
                 Button projbtn = new Button("Edit Issue");
+                projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
                 dialogVbox.getChildren().addAll(despLabel,desptextField,sevLabel,combo_box,projbtn);
 
                 projbtn.setOnAction(e -> {
@@ -420,18 +464,16 @@ public class App extends Application {
 
         Label issudetlabel = new Label("Issue Details: ");
         issudetlabel.setStyle("-fx-text-fill: white;");
-        issudetlabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
+        issudetlabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
+        
+        HBox ledlight = new HBox(8,bugSeverity,dottwo);
+        ledlight.setAlignment(Pos.CENTER_LEFT);
 
-        VBox detailsColumn = new VBox(
-            issudetlabel,
-            bugDescription,
-            bugSeverity,
-            ediissue,
-            remissue
-            
-        );
+        HBox options = new HBox(8,ediissue,remissue);
+
+        VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,bugDescription,ledlight,options);
         detailsColumn.setPadding(new Insets(10));
-        detailsColumn.setSpacing(10);
+        detailsColumn.setSpacing(19);
         detailsColumn.setPrefWidth(400);
 
 
@@ -448,9 +490,19 @@ public class App extends Application {
         issueListView.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldIssue, newIssue) -> {
                     if (newIssue != null) {
-                        String[] bug = loadBugDesp(newIssue.getTitle());
-                        bugDescription.setText("Issue Description: "+ bug[0]);
-                        bugSeverity.setText("Issue Severity: "+ bug[1]);
+                        String[] bug = loadBugDesp(newIssue.get("title"));
+                        Projectdeslabel.setText("Project: "+bug[0]);
+                        bugDescription.setText("Issue Description: "+ bug[1]);
+                        bugSeverity.setText("Issue Severity: "+ bug[2]);
+
+                        String editDesvarone = bugSeverity.getText().replace("Issue Severity: ", "");
+                        switch (editDesvarone) {
+                            case "Critical" -> dottwo.setFill(Color.RED);
+                            case "High" -> dottwo.setFill(Color.ORANGERED);
+                            case "Medium" -> dottwo.setFill(Color.GOLD);
+                            case "Low" -> dottwo.setFill(Color.LIMEGREEN);
+                            default -> dottwo.setFill(Color.GRAY);
+                        }
                     }
                 }
         );
@@ -467,7 +519,7 @@ public class App extends Application {
         VBox root = new VBox(title,rootmo);
         root.setSpacing(15);
 
-        Scene scene = new Scene(root, 1000, 498);
+        Scene scene = new Scene(root, 1010, 498);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         stage.setTitle("PatchFlow");

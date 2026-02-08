@@ -9,7 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="300" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/69076784/546493195-a5ca3a15-e809-4c28-ac89-79b095ecd1ef.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260207%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260207T035707Z&X-Amz-Expires=300&X-Amz-Signature=a46e98eaee710756f83493fc35d3135487e4b5e1f700057c28ca74a00f3bdbb4&X-Amz-SignedHeaders=host" />
+<img height="200" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/69076784/546702808-e4ab2220-65b1-4a47-ae55-541d12744fef.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260208%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260208T050919Z&X-Amz-Expires=300&X-Amz-Signature=3a83de26db309f85f3a2d07196080a9f52f80569478613bbd5328ed5f0fb8d44&X-Amz-SignedHeaders=host" />
 
 ## What's New?
 Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-speed with the growing tech solutions, services and algorithms. Hence this new commit includes:
@@ -20,7 +20,8 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. UI/UX improvements.
+1. UI/UX and Responsive improvements.
+2. Refactor issue handling and database interactions for improved functionality.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -29,7 +30,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 07-February-2025 12:00 HRS (Singapore Standard Time)
+Last Updated: 08-February-2025 13:10 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
