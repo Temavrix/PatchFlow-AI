@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.event.EventHandler;
 
 
@@ -233,6 +234,7 @@ public class App extends Application {
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 dialog.setScene(dialogScene);
+                dialog.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 dialog.show();
             }
         });
@@ -458,6 +460,7 @@ public class App extends Application {
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 dialog.setScene(dialogScene);
+                dialog.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 dialog.show();
             }
          });
@@ -524,6 +527,7 @@ public class App extends Application {
 
         stage.setTitle("PatchFlow");
         stage.setScene(scene);
+        stage.getIcons().add(new Image("/icons/patchflowtrim.png"));
         stage.setResizable(false);
         stage.show();
     }

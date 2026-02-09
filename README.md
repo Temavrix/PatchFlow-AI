@@ -1,4 +1,4 @@
-# PatchFlow
+# PatchFlow <img height="20" alt="Image" src="https://private-user-images.githubusercontent.com/69076784/546710126-9e23a75d-a603-4360-a327-749ea0d28b4d.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA1MzQwMDYsIm5iZiI6MTc3MDUzMzcwNiwicGF0aCI6Ii82OTA3Njc4NC81NDY3MTAxMjYtOWUyM2E3NWQtYTYwMy00MzYwLWEzMjctNzQ5ZWEwZDI4YjRkLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjA4VDA2NTUwNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWFkNmY3MjA0NTVmN2NjNTk4YjNiYjgxNTA2MGFmMTg3MDRhMzdiZDcyZTZmODFjMWYxZTFjNDllYWVjZWRmODkmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.N9kFvyb9rv4LOHQsgXL_GbcnmupO_Jkb3w4FKYIUCtU" />
 
 ###### An Issue and Bug tracker made easy for solo developers  
 
@@ -9,7 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="200" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/69076784/546702808-e4ab2220-65b1-4a47-ae55-541d12744fef.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260208%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260208T050919Z&X-Amz-Expires=300&X-Amz-Signature=3a83de26db309f85f3a2d07196080a9f52f80569478613bbd5328ed5f0fb8d44&X-Amz-SignedHeaders=host" />
+<img height="200" alt="Image" src="https://private-user-images.githubusercontent.com/69076784/547149044-9e586dfa-b299-4c40-a61b-6964bd1e4d34.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA2NDY2ODksIm5iZiI6MTc3MDY0NjM4OSwicGF0aCI6Ii82OTA3Njc4NC81NDcxNDkwNDQtOWU1ODZkZmEtYjI5OS00YzQwLWE2MWItNjk2NGJkMWU0ZDM0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjA5VDE0MTMwOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThkY2NmODBlNzA1OWI0YzAxZDE2MzRlYmU0N2RhYTM0N2U4ODhkM2I3M2Y1YjYzODA4ZGNjOWI4ODE5ZTc0NmMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.Of6xIF3PVmDed6tHMyUVfJvD_1dNKkjjXjHVt9hIYGg" />
 
 ## What's New?
 Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-speed with the growing tech solutions, services and algorithms. Hence this new commit includes:
@@ -20,8 +20,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. UI/UX and Responsive improvements.
-2. Refactor issue handling and database interactions for improved functionality.
+1. A New Logo for our project !!!
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -41,4 +40,4 @@ As this project is still in constant development, if you run into any issues whi
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.4 (Beta)
+Version 0.4.1 (Beta)
