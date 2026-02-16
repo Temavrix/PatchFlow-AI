@@ -20,7 +20,8 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. A New Logo for our project !!!
+1. Added new features such as storing code snippets
+2. Improved UI/UX and optimised database integration !!!
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -29,7 +30,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 08-February-2025 13:10 HRS (Singapore Standard Time)
+Last Updated: 16-February-2025 21:15 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
