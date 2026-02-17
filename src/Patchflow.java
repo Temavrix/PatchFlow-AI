@@ -201,14 +201,14 @@ public class Patchflow extends Application {
         Button analyticsBtn = new Button("Your Analytics");
         analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
-        //analyticsBtn.setOnAction(e -> {
-        //    Analytics analyticsWindow = new Analytics();
-        //    try {
-        //        analyticsWindow.start(new Stage());
-        //    } catch (Exception ex) {
-        //        ex.printStackTrace();
-        //    }
-        //});
+        analyticsBtn.setOnAction(e -> {
+            Analytics analyticsWindow = new Analytics();
+            try {
+                analyticsWindow.start(new Stage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
         Button bugBtn = new Button("Add New Bug");
         bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
@@ -544,7 +544,7 @@ public class Patchflow extends Application {
                 dialog.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 dialog.show();
             }
-         });
+        });
 
         Label issudetlabel = new Label("Issue Details: ");
         issudetlabel.setStyle("-fx-text-fill: white;");

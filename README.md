@@ -20,8 +20,9 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Added new features such as storing code snippets
-2. Improved UI/UX and optimised database integration !!!
+1. Implemented analytics dashboard and refactor related components.
+    1.1 You can view number of issues pending based on priority.
+    1.2 A stacked bar-chart to view proportions of issues pending.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -30,7 +31,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 16-February-2025 21:15 HRS (Singapore Standard Time)
+Last Updated: 17-February-2025 09:45 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -41,4 +42,4 @@ As this project is still in constant development, if you run into any issues whi
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.4.1 (Beta)
+Version 0.6.0 (Beta)
