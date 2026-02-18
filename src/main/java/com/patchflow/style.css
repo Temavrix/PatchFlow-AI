@@ -1,0 +1,77 @@
+.column {
+    -fx-border-color: transparent #555 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.dark-text-area {
+    -fx-control-inner-background: #2e2f31;
+    -fx-background-color: #2e2f31;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: #2e2f31;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.dark-text-area .scroll-bar {
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+
+.dark-text-area .scroll-pane {
+    -fx-background-color: #2e2f31;
+}
+
+.dark-text-area .viewport {
+    -fx-background-color: #2e2f31;
+}
+
+.dark-text-area .content {
+    -fx-background-color: #2e2f31;
+}
+
+
+.dark-text-area-one {
+    -fx-control-inner-background: #2e2f31;
+    -fx-background-color: #2e2f31;
+    -fx-text-fill: white;
+    -fx-font-family: "Consolas", "Courier New", "Monaco", "Menlo", monospace;
+    -fx-font-size: 14px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: #2e2f31;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-font-weight: normal;
+    -fx-highlight-fill: #3e4451;
+    -fx-highlight-text-fill: white;
+}
+
+.dark-text-area-one .scroll-bar {
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+
+.dark-text-area-one .corner {
+    -fx-background-color: #2e2f31;
+}
+
+.dark-text-area-one .scroll-pane {
+    -fx-background-color: #2e2f31;
+    -fx-background: #2e2f31;
+}
+
+.dark-text-area-one .viewport {
+    -fx-background-color: #2e2f31;
+}
+
+.dark-text-area-one .content {
+    -fx-background-color: #2e2f31;
+}

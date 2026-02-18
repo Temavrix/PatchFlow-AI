@@ -1,3 +1,5 @@
+package com.patchflow;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,7 +212,7 @@ public class Patchflow extends Application {
             }
         });
 
-        Button bugBtn = new Button("Add New Bug");
+        Button bugBtn = new Button("Add Issue");
         bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         bugBtn.setOnAction(
@@ -422,8 +424,8 @@ public class Patchflow extends Application {
         dottwo.setArcWidth(8);
         dottwo.setArcHeight(8);
 
-        //Button mcpButton = new Button("✦ AI (Beta)");
-        //mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        Button mcpButton = new Button("Patcher AI ✦ (Beta)");
+        mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         remissue.setOnAction(e -> {
             String selectedProject = projectList.getSelectionModel().getSelectedItem();
@@ -489,11 +491,11 @@ public class Patchflow extends Application {
                 .not()
         );
 
-        //mcpButton.visibleProperty().bind(
-        //Projectdeslabel.textProperty()
-        //        .isEqualTo("Select a Project")
-        //        .not()
-        //);
+        mcpButton.visibleProperty().bind(
+        Projectdeslabel.textProperty()
+                .isEqualTo("Select a Project")
+                .not()
+        );
 
         ediissue.setOnAction(
         new EventHandler<ActionEvent>() {
@@ -546,6 +548,15 @@ public class Patchflow extends Application {
             }
         });
 
+        mcpButton.setOnAction(e -> {
+            Mcpserver mcp = new Mcpserver(descriptextArea.getText(), codsnippettextArea.getText());
+            try {
+                mcp.start(new Stage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         Label issudetlabel = new Label("Issue Details: ");
         issudetlabel.setStyle("-fx-text-fill: white;");
         issudetlabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
@@ -553,7 +564,7 @@ public class Patchflow extends Application {
         HBox ledlight = new HBox(8,bugSeverity,dottwo);
         ledlight.setAlignment(Pos.CENTER_LEFT);
 
-        HBox options = new HBox(8,ediissue,remissue);//,mcpButton);
+        HBox options = new HBox(8,ediissue,remissue,mcpButton);
 
         VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,descriptextArea,codsnippettextArea,ledlight,options);
         detailsColumn.setPadding(new Insets(10));
@@ -613,7 +624,7 @@ public class Patchflow extends Application {
         root.setStyle("-fx-background-color: #2e2f31;");
 
         Scene scene = new Scene(root, 1010, 505);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         stage.setTitle("PatchFlow");
         stage.setScene(scene);

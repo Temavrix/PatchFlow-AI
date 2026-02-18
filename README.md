@@ -11,6 +11,14 @@ Please consider donating some money to our organization to help fund this projec
 
 <img height="200" alt="Image" src="https://private-user-images.githubusercontent.com/69076784/547149044-9e586dfa-b299-4c40-a61b-6964bd1e4d34.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA2NDY2ODksIm5iZiI6MTc3MDY0NjM4OSwicGF0aCI6Ii82OTA3Njc4NC81NDcxNDkwNDQtOWU1ODZkZmEtYjI5OS00YzQwLWE2MWItNjk2NGJkMWU0ZDM0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjA5VDE0MTMwOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThkY2NmODBlNzA1OWI0YzAxZDE2MzRlYmU0N2RhYTM0N2U4ODhkM2I3M2Y1YjYzODA4ZGNjOWI4ODE5ZTc0NmMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.Of6xIF3PVmDed6tHMyUVfJvD_1dNKkjjXjHVt9hIYGg" />
 
+
+## Table Of Contents
+- [What's New?](#whats-new)
+- [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
+- [Issues](#issues)
+- [License](#license)
+
+
 ## What's New?
 Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-speed with the growing tech solutions, services and algorithms. Hence this new commit includes:
 
@@ -20,9 +28,16 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Implemented analytics dashboard and refactor related components.
-    1.1 You can view number of issues pending based on priority.
-    1.2 A stacked bar-chart to view proportions of issues pending.
+1. Reconfigured Patchflow into now a Maven Project.
+    1.1 Steps to set-up project added in README.md
+
+2. Added Patcher AI ✦
+    2.1 Patcher allows users to ask suggestions on issues
+        and suggests code improvements based on code 
+        snippet provided.
+    2.2 More Agent sources coming soon
+
+3. UI/UX Improvements
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -31,15 +46,63 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 17-February-2025 09:45 HRS (Singapore Standard Time)
+Last Updated: 18-February-2026 23:30 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
 
+## Running PatchFlow On Your Computer
+
+#### Installing Maven and Java
+First check if Java and Maven is installed on your system.
+
+##### Install Maven using Chocolatey:  
+Open PowerShell as Administrator.
+```
+choco install maven -y
+```
+##### Check if Maven and Java is installed:  
+```
+java --version
+
+mvn -version
+```
+If both commands work then you're ready.
+
+#### Setting-up Maven Project
+Inside project root (where pom.xml is located):
+```
+mvn clean install
+```
+Then run Patchflow:
+```
+mvn javafx:run (OR) mvn clean javafx:run
+```
+
+#### Issues when setting up Maven
+Check required version in pom.xml:
+```
+<maven.compiler.source>17</maven.compiler.source>
+```
+If it says 21 and you’re on 17 then it won’t work and you
+must fix by installing correct JDK.
+
+
 ## Issues
 As this project is still in constant development, if you run into any issues while operating or have any suggestions or features, please feel free to drop by our [issues](https://github.com/Temavrix/PatchFlow/issues) section and open a issue and we'll respond within 2-4 working days, Thank you for your understanding.
+
+
+## License
+IMPORTANT NOTE: Any User who are willing to Share or Re-Distribute NexaView are kindly advised to:
+
+1. A link to this repository from the user's 'Modified program' README file. 
+
+This will be helpful for us as users will know it's original source and about our startup.
+Please also refer to LICENSE file for clarifications.  
+Thank you for your kind co-operation :-)
+
 
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.6.0 (Beta)
+Version 0.7.0 (Beta)

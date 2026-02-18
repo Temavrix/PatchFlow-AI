@@ -6,6 +6,35 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Patchflow",
+            "request": "launch",
+            "mainClass": "com.patchflow.Patchflow",
+            "projectName": "PatchFlow"
+        },
+        {
+            "type": "java",
+            "name": "GeminiJavaExample",
+            "request": "launch",
+            "mainClass": "GeminiJavaExample",
+            "projectName": "PatchFlow_15d6f463"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "PatchFlow_15d6f463"
+        },
+        {
+            "type": "java",
+            "name": "Mcpserver",
+            "request": "launch",
+            "mainClass": "Mcpserver",
+            "projectName": "PatchFlow_15d6f463",
+            "vmArgs": "--module-path \"C:/javafx/javafx-sdk-17.0.17/lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
             "name": "Analytics",
             "request": "launch",
             "mainClass": "Analytics",
