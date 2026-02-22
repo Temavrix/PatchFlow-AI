@@ -75,3 +75,18 @@
 .dark-text-area-one .content {
     -fx-background-color: #2e2f31;
 }
+
+.combo-box {
+    -fx-background-color: #2e2f31;
+    -fx-border-color: #2e2f31;
+    -fx-text-fill: white;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #2e2f31;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #2e2f31;
+}

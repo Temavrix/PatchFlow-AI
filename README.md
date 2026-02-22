@@ -31,11 +31,9 @@ ANNOUNCEMENT:-
 1. Reconfigured Patchflow into now a Maven Project.
     1.1 Steps to set-up project added in README.md
 
-2. Added Patcher AI ✦
-    2.1 Patcher allows users to ask suggestions on issues
-        and suggests code improvements based on code 
-        snippet provided.
-    2.2 More Agent sources coming soon
+2. Improved AI Capabilities ✦
+    2.1 Added multiple AI Models from Gemini and GPT.
+    2.2 More Models coming soon
 
 3. UI/UX Improvements
 
@@ -46,7 +44,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 18-February-2026 23:30 HRS (Singapore Standard Time)
+Last Updated: 22-February-2026 21:20 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -82,9 +80,9 @@ mvn javafx:run (OR) mvn clean javafx:run
 #### Issues when setting up Maven
 Check required version in pom.xml:
 ```
-<maven.compiler.source>17</maven.compiler.source>
+<maven.compiler.source>23</maven.compiler.source>
 ```
-If it says 21 and you’re on 17 then it won’t work and you
+If it says 23 and you’re on 17 then it won’t work and you
 must fix by installing correct JDK.
 
 
@@ -105,4 +103,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.7.0 (Beta)
+Version 0.7.1 (Beta)

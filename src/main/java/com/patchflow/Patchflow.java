@@ -424,7 +424,7 @@ public class Patchflow extends Application {
         dottwo.setArcWidth(8);
         dottwo.setArcHeight(8);
 
-        Button mcpButton = new Button("Patcher AI ✦ (Beta)");
+        Button mcpButton = new Button("✦ AI (Beta)");
         mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         remissue.setOnAction(e -> {

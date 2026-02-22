@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Mcpserver",
+            "request": "launch",
+            "mainClass": "com.patchflow.Mcpserver",
+            "projectName": "PatchFlow"
+        },
+        {
+            "type": "java",
             "name": "Patchflow",
             "request": "launch",
             "mainClass": "com.patchflow.Patchflow",
