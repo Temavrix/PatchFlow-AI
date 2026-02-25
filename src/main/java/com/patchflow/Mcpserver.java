@@ -18,12 +18,12 @@ import javafx.stage.Stage;
 
 public class Mcpserver extends Application {
 
+    public static String bugtitle;
     public static String bugdesc;
-    public static String snippet;
 
-    public Mcpserver(String bugdesc, String snippet) {
+    public Mcpserver(String bugtitle, String bugdesc) {
+        this.bugtitle = bugtitle;
         this.bugdesc = bugdesc;
-        this.snippet = snippet;
     }
 
     public static String buildPrompt() {
@@ -32,19 +32,16 @@ public class Mcpserver extends Application {
         As a senior software engineer,
         The user has the following issue:
 
+        ISSUE TITLE AND LANGUAGE USED:
+        %s
+
         ISSUE DESCRIPTION:
         %s
 
         Provide:
-        1. Root cause analysis
-        2. Step-by-step solution
-        3. Suggested code improvement
-        4. Best practices to avoid this in future
-
-        CODE SNIPPET:
-        %s
-
-        """.formatted(bugdesc,snippet);
+        1. Step-by-step solution
+        2. Suggested simple code to start from
+        """.formatted(bugtitle,bugdesc);
     }
 
 
@@ -165,7 +162,7 @@ public class Mcpserver extends Application {
                     new Thread(() -> {
                         try {
                             String prompt = buildPrompt();
-                            String response = GeminiService.sendPromptTwoFlash(prompt);
+                            String response = AIService.sendPromptTwoFlash(prompt);
                         
                             // Update UI safely
                             javafx.application.Platform.runLater(() ->
@@ -184,7 +181,7 @@ public class Mcpserver extends Application {
                     new Thread(() -> {
                         try {
                             String prompt = buildPrompt();
-                            String response = GeminiService.sendPromptThreeFlash(prompt);
+                            String response = AIService.sendPromptThreeFlash(prompt);
                         
                             // Update UI safely
                             javafx.application.Platform.runLater(() ->
@@ -240,6 +237,5 @@ public class Mcpserver extends Application {
     public static void main(String[] args){
         launch(args);
     }
-
     
 }

@@ -14,7 +14,6 @@ import java.sql.Statement;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,11 +32,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.event.EventHandler;
 
 
 public class Patchflow extends Application {
     //Declaring All the Lists and Hashmaps used
+    private Stage analyticsStage;
+    private Stage addIssue;
+    private Stage updateIssue;
+    private Stage mcpwindow;
+    private Stage removeIssue;
     private final ObservableList<String> projects = FXCollections.observableArrayList();
     private final Map<String, Integer> projectissues = new HashMap<>();
     private final Map<String, List<String>> projectBugs = new HashMap<>();
@@ -204,32 +207,36 @@ public class Patchflow extends Application {
         analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         analyticsBtn.setOnAction(e -> {
-            Analytics analyticsWindow = new Analytics();
-            try {
-                analyticsWindow.start(new Stage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (analyticsStage == null || !analyticsStage.isShowing()) {
+                analyticsStage = new Stage();
+                Analytics analyticsWindow = new Analytics();
+
+                try {
+                    analyticsWindow.start(analyticsStage);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                analyticsStage.toFront();
             }
         });
 
         Button bugBtn = new Button("Add Issue");
         bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
-        bugBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final Stage dialog = new Stage();
-                dialog.initOwner(stage);
+        bugBtn.setOnAction(e -> {
+            if (addIssue == null || !addIssue.isShowing()){
+                addIssue = new Stage();
+                addIssue.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
                 Label projLabel = new Label("Type Your Project: ");
                 projLabel.setStyle("-fx-text-fill: white;");
                 TextField projtextField = new TextField();
-
+            
                 Label lanLabel = new Label("Type Project's Language: ");
                 lanLabel.setStyle("-fx-text-fill: white;");
                 TextField lantextField = new TextField();
-
+            
                 Label bugLabel = new Label("Type Your Issue: ");
                 bugLabel.setStyle("-fx-text-fill: white;");
                 TextField bugtextField = new TextField();
@@ -245,15 +252,15 @@ public class Patchflow extends Application {
                 sniptextArea.setPromptText("Enter your code snippet here...");
                 sniptextArea.setWrapText(true); 
                 sniptextArea.setPrefRowCount(9);
-
+            
                 String bugscategory[] = { "Low", "Medium", "High", "Critical"};
                 ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
-
+            
                 Button projbtn = new Button("Add New Issue");
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
                 dialogVbox.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,combo_box,sniplabel,sniptextArea,projbtn);
-
-                projbtn.setOnAction(e -> {
+            
+                projbtn.setOnAction(ev -> {
                     String projName = projtextField.getText();
                     String langName = lantextField.getText();
                     String bugtName = bugtextField.getText();
@@ -263,15 +270,17 @@ public class Patchflow extends Application {
                     saveProject(projName,langName,bugtName,despName,sevName,codsnip);
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
-                    dialog.close();
+                    addIssue.close();
                 });
-
+            
                 Scene dialogScene = new Scene(dialogVbox, 300, 500);
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
-                dialog.setScene(dialogScene);
-                dialog.getIcons().add(new Image("/icons/patchflowtrim.png"));
-                dialog.show();
+                addIssue.setScene(dialogScene);
+                addIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
+                addIssue.show();
+            } else {
+                addIssue.toFront();
             }
         });
 
@@ -497,12 +506,10 @@ public class Patchflow extends Application {
                 .not()
         );
 
-        ediissue.setOnAction(
-        new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final Stage dialog = new Stage();
-                dialog.initOwner(stage);
+        ediissue.setOnAction(e -> {
+            if (updateIssue == null || !updateIssue.isShowing()){
+                updateIssue = new Stage();
+                updateIssue.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
                 Map<String, String> selectedIssue = issueListView.getSelectionModel().getSelectedItem();
                 String selectedBug = selectedIssue.get("title");
@@ -531,29 +538,38 @@ public class Patchflow extends Application {
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
                 dialogVbox.getChildren().addAll(despLabel,desptextField,codelabel,codetextfield,sevLabel,combo_box,projbtn);
 
-                projbtn.setOnAction(e -> {
+                projbtn.setOnAction(ev -> {
                     String despName = desptextField.getText();
                     String codeName = codetextfield.getText();
                     String sevName = combo_box.getValue();
                     editProject(despName,sevName,codeName,selectedBug);
-                    dialog.close();
+                    updateIssue.close();
                 });
 
                 Scene dialogScene = new Scene(dialogVbox, 300, 300);
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
-                dialog.setScene(dialogScene);
-                dialog.getIcons().add(new Image("/icons/patchflowtrim.png"));
-                dialog.show();
+                updateIssue.setScene(dialogScene);
+                updateIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
+                updateIssue.show();
+            } else {
+                updateIssue.toFront();
             }
         });
 
         mcpButton.setOnAction(e -> {
-            Mcpserver mcp = new Mcpserver(descriptextArea.getText(), codsnippettextArea.getText());
-            try {
-                mcp.start(new Stage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (mcpwindow == null || !mcpwindow.isShowing()){
+                mcpwindow = new Stage();
+                mcpwindow.initOwner(stage);
+                try {
+                    Mcpserver mcp = new Mcpserver(Projectdeslabel.getText(), descriptextArea.getText());
+                    mcp.start(mcpwindow);
+                    mcpwindow.setOnCloseRequest(ev -> mcpwindow = null);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                mcpwindow.toFront();
             }
         });
 

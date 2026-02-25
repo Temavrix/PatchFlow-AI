@@ -12,8 +12,107 @@ import com.google.gson.JsonParser;
 
 public class AIService {
 
-    private static final String API_KEY = "OPENROUTER_API_KEY";
+    private static final String OPEN_API_KEY = "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";
+    private static final String API_KEY = "AIzaSyADvwEGy4GeE0mBYq3ONsfcTXLbHmoO4EI";
+    
+    private static final String MODEL = "gemini-2.5-flash";
+    private static final String MODELNEW = "gemini-3.5-flash";
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+    private static final String ENDPOINTTWO = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODEL + ":generateContent?key=" + API_KEY;
+    private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + API_KEY;
+
+
+
+    public static String sendPromptTwoFlash(String prompt) throws Exception {
+
+        JsonObject textPart = new JsonObject();
+        textPart.addProperty("text", prompt);
+
+        JsonArray parts = new JsonArray();
+        parts.add(textPart);
+
+        JsonObject content = new JsonObject();
+        content.add("parts", parts);
+
+        JsonArray contents = new JsonArray();
+        contents.add(content);
+
+        JsonObject body = new JsonObject();
+        body.add("contents", contents);
+
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(ENDPOINTTWO))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+
+        if (!jsonResponse.has("candidates")) {
+            return "API Error: " + jsonResponse;
+        }
+
+        JsonArray candidates = jsonResponse.getAsJsonArray("candidates");
+
+        return candidates.get(0).getAsJsonObject()
+                .getAsJsonObject("content")
+                .getAsJsonArray("parts")
+                .get(0).getAsJsonObject()
+                .get("text").getAsString();
+    }
+
+    
+
+    public static String sendPromptThreeFlash(String prompt) throws Exception {
+
+        JsonObject textPart = new JsonObject();
+        textPart.addProperty("text", prompt);
+
+        JsonArray parts = new JsonArray();
+        parts.add(textPart);
+
+        JsonObject content = new JsonObject();
+        content.add("parts", parts);
+
+        JsonArray contents = new JsonArray();
+        contents.add(content);
+
+        JsonObject body = new JsonObject();
+        body.add("contents", contents);
+
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(ENDPOINTTHREE))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+
+        if (!jsonResponse.has("candidates")) {
+            return "API Error: " + jsonResponse;
+        }
+
+        JsonArray candidates = jsonResponse.getAsJsonArray("candidates");
+
+        return candidates.get(0).getAsJsonObject()
+                .getAsJsonObject("content")
+                .getAsJsonArray("parts")
+                .get(0).getAsJsonObject()
+                .get("text").getAsString();
+    }
+
 
 
     public static String sendPromptGemmaB(String prompt) throws Exception {
@@ -42,7 +141,7 @@ public class AIService {
         
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(ENDPOINT))
-                    .header("Authorization", "Bearer " + API_KEY)
+                    .header("Authorization", "Bearer " + OPEN_API_KEY)
                     .header("Content-Type", "application/json")
                     .header("HTTP-Referer", "http://localhost") // Optional
                     .header("X-Title", "MyJavaApp") // Optional
@@ -101,7 +200,7 @@ public class AIService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(ENDPOINT))
-                .header("Authorization", "Bearer " + API_KEY)
+                .header("Authorization", "Bearer " + OPEN_API_KEY)
                 .header("Content-Type", "application/json")
                 .header("HTTP-Referer", "http://localhost") // Optional
                 .header("X-Title", "MyJavaApp") // Optional
@@ -160,7 +259,7 @@ public class AIService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(ENDPOINT))
-                .header("Authorization", "Bearer " + API_KEY)
+                .header("Authorization", "Bearer " + OPEN_API_KEY)
                 .header("Content-Type", "application/json")
                 .header("HTTP-Referer", "http://localhost") // Optional
                 .header("X-Title", "MyJavaApp") // Optional

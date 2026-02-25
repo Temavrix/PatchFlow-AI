@@ -9,7 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="200" alt="Image" src="https://private-user-images.githubusercontent.com/69076784/547149044-9e586dfa-b299-4c40-a61b-6964bd1e4d34.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA2NDY2ODksIm5iZiI6MTc3MDY0NjM4OSwicGF0aCI6Ii82OTA3Njc4NC81NDcxNDkwNDQtOWU1ODZkZmEtYjI5OS00YzQwLWE2MWItNjk2NGJkMWU0ZDM0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjA5VDE0MTMwOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThkY2NmODBlNzA1OWI0YzAxZDE2MzRlYmU0N2RhYTM0N2U4ODhkM2I3M2Y1YjYzODA4ZGNjOWI4ODE5ZTc0NmMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.Of6xIF3PVmDed6tHMyUVfJvD_1dNKkjjXjHVt9hIYGg" />
+<img height="200" alt="Image" src="https://github.com/user-attachments/assets/ae016d94-b2b8-4201-889b-9642a436032f" />
 
 
 ## Table Of Contents
@@ -28,14 +28,10 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Reconfigured Patchflow into now a Maven Project.
-    1.1 Steps to set-up project added in README.md
+1. Removed the ability to open multiple windows by 
+   clicking buttons multiple times.
 
-2. Improved AI Capabilities ✦
-    2.1 Added multiple AI Models from Gemini and GPT.
-    2.2 More Models coming soon
-
-3. UI/UX Improvements
+2. UI/UX Improvements
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -44,7 +40,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 22-February-2026 21:20 HRS (Singapore Standard Time)
+Last Updated: 25-February-2026 23:00 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -103,4 +99,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.7.1 (Beta)
+Version 0.7.2 (Beta)
