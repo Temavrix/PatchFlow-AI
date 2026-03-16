@@ -40,7 +40,8 @@ public class Patchflow extends Application {
     private Stage addIssue;
     private Stage updateIssue;
     private Stage mcpwindow;
-    private Stage removeIssue;
+    private Stage githubStage;
+    private Stage settingStage;
     private final ObservableList<String> projects = FXCollections.observableArrayList();
     private final Map<String, Integer> projectissues = new HashMap<>();
     private final Map<String, List<String>> projectBugs = new HashMap<>();
@@ -48,7 +49,7 @@ public class Patchflow extends Application {
     ListView<Map<String, String>> issueListView = new ListView<>();
 
     // Loads issues of respective projects from Database
-    private ObservableList<Map<String, String>> loadIssuesFromDatabase(String project) {
+    public ObservableList<Map<String, String>> loadIssuesFromDatabase(String project) {
        ObservableList<Map<String, String>> issues = FXCollections.observableArrayList();
 
        String sql = "SELECT issue, severity FROM projects WHERE project = ?";
@@ -75,7 +76,7 @@ public class Patchflow extends Application {
     }
 
     // Loads Projects form Database
-    private void loadProjectsFromDB() {
+    public void loadProjectsFromDB() {
         String sql = "SELECT project, COUNT(*) AS issue_count FROM projects GROUP BY project ";
 
         projects.clear();
@@ -100,13 +101,15 @@ public class Patchflow extends Application {
 
     // Loads issues's description and severity from Database
     private String[] loadBugDesp(String bugdesc) {
-        String sql = "SELECT project, language, description, severity, snippet from projects WHERE issue = '"+bugdesc+"';";
+        String sql = "SELECT project, language, description, severity, snippet from projects WHERE issue = ?";
         String[] issues = new String[5];
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-             Statement stmt = conn.createStatement();) {
+             ) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, bugdesc);
 
-            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 issues[0] = rs.getString("project");
@@ -175,13 +178,63 @@ public class Patchflow extends Application {
     }
 
     // A function to refresh Issues if one is deleted
-    private void refreshIssues() {
+    public void refreshIssues() {
 
         String selectedProject = projectList.getSelectionModel().getSelectedItem();
         if (selectedProject != null) {
             issueListView.setItems(loadIssuesFromDatabase(selectedProject));
         } else {
             issueListView.getItems().clear();
+        }
+    }
+
+    // Save settings
+    public void saveSettingd(String gemName, String openrouteName, String githtName){
+        String sql = "UPDATE apikeys SET apikey = ? WHERE apiname = 'gemini'";
+        String sqlone = "UPDATE apikeys SET apikey = ? WHERE apiname = 'github'";
+        String sqltwo = "UPDATE apikeys SET apikey = ? WHERE apiname = 'openrouter'";
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmtone = conn.prepareStatement(sqlone);
+            PreparedStatement stmttwo = conn.prepareStatement(sqltwo);
+
+            stmt.setString(1, gemName);
+            stmtone.setString(1, githtName);
+            stmttwo.setString(1, openrouteName);
+
+            stmt.executeUpdate();
+            stmtone.executeUpdate();
+            stmttwo.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //load apikeys to show in settings ui
+    private void loadApiKeys(TextField geminitextField, TextField openrotextField, TextField githubtextField){
+        String sql = "SELECT apiname, apikey FROM apikeys";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String name = rs.getString("apiname");
+                String key = rs.getString("apikey");
+
+                switch (name) {
+                    case "gemini" -> geminitextField.setText(key);
+                    case "openrouter" -> openrotextField.setText(key);
+                    case "github" -> githubtextField.setText(key);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -206,6 +259,12 @@ public class Patchflow extends Application {
         Button analyticsBtn = new Button("Your Analytics");
         analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
+        Button githubtton = new Button("Github Issues");
+        githubtton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+
+        Button settingsButton = new Button("Your Settings");
+        settingsButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+
         analyticsBtn.setOnAction(e -> {
             if (analyticsStage == null || !analyticsStage.isShowing()) {
                 analyticsStage = new Stage();
@@ -218,6 +277,72 @@ public class Patchflow extends Application {
                 }
             } else {
                 analyticsStage.toFront();
+            }
+        });
+
+        settingsButton.setOnAction(e -> {
+            if(settingStage == null || !settingStage.isShowing()){
+                settingStage = new Stage();
+
+                Label geminiLabel = new Label("Gemini API: ");
+                geminiLabel.setStyle("-fx-text-fill: white;");
+                TextField geminitextField = new TextField();
+
+                Label openrouterLabel = new Label("OpenRouter API: ");
+                openrouterLabel.setStyle("-fx-text-fill: white;");
+                TextField openrotextField = new TextField();
+
+                Label githubLabel = new Label("Github Token: ");
+                githubLabel.setStyle("-fx-text-fill: white;");
+                TextField githubtextField = new TextField();
+                loadApiKeys(geminitextField, openrotextField, githubtextField);
+
+                Button savebtn = new Button("Save");
+
+                VBox settingLabel = new VBox(10);
+                settingLabel.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,savebtn);
+                settingLabel.setStyle("-fx-background-color: #454648;");
+
+                savebtn.setOnAction(ev -> {
+                    String gemName = geminitextField.getText();
+                    String openrouteName = openrotextField.getText();
+                    String githtName = githubtextField.getText();
+                    saveSettingd(gemName, openrouteName, githtName);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText(null);
+                    alert.setContentText("API keys saved successfully!");             
+
+                    alert.showAndWait();
+                });
+
+                Scene settingScene = new Scene(settingLabel, 400, 250);
+                settingStage.setScene(settingScene);
+                settingStage.setTitle("Settings");
+                settingStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
+                settingStage.show();
+            } else {
+                settingStage.toFront();
+            }
+        });
+
+        githubtton.setOnAction(e -> {
+            if (githubStage == null || !githubStage.isShowing()){
+                githubStage = new Stage();
+                Githubpanel githubWindow = new Githubpanel();
+
+                try {
+                    githubWindow.start(githubStage);
+                    githubStage.setOnHidden(ev -> {
+                        loadProjectsFromDB();
+                        refreshIssues();
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                githubStage.toFront();
             }
         });
 
@@ -284,7 +409,7 @@ public class Patchflow extends Application {
             }
         });
 
-        sidebar.getChildren().addAll(sidetitle, analyticsBtn, bugBtn);
+        sidebar.getChildren().addAll(sidetitle, analyticsBtn,githubtton,settingsButton, bugBtn);
 
 
 
@@ -294,6 +419,7 @@ public class Patchflow extends Application {
 
         projectList.getItems().addAll(projectBugs.keySet());
         projectList.setPrefWidth(350);
+        issueListView.setPrefHeight(500);
         projectList.setFixedCellSize(60);
 
         projectList.setCellFactory(listview -> new ListCell<String>() {
@@ -325,7 +451,9 @@ public class Patchflow extends Application {
         projlabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
         projectList.setStyle(
             "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;"
+            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-insets: 0;" +
+            "-fx-padding: 0;"
         );
         VBox projectColumn = new VBox(projlabel,projectList);
         projectColumn.setPadding(new Insets(10));
@@ -337,7 +465,8 @@ public class Patchflow extends Application {
         // COLUMN 2: Bug Explorer Column
         // Consists of Map that contains all the issues and it's priority
 
-        issueListView.setPrefWidth(350);
+        issueListView.setPrefWidth(300);
+        issueListView.setPrefHeight(500);
         issueListView.setFixedCellSize(75);
         issueListView.setCellFactory(listView -> new ListCell<>() {
             @Override
@@ -393,7 +522,9 @@ public class Patchflow extends Application {
         issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
         issueListView.setStyle(
             "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;"
+            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-insets: 0;" +
+            "-fx-padding: 0;"
         );
 
         VBox bugColumn = new VBox(issulabel,issueListView);
@@ -516,9 +647,11 @@ public class Patchflow extends Application {
 
                 Label despLabel = new Label(" Edit Your Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
-                TextField desptextField = new TextField();
+                TextArea desptextField = new TextArea();
                 String editDesvar = descriptextArea.getText().replace("Issue Description: \n", "");
                 desptextField.setText(editDesvar);
+                desptextField.setWrapText(true);
+                desptextField.setPrefRowCount(5);
 
                 Label sevLabel = new Label(" Edit Your Severity: ");
                 sevLabel.setStyle("-fx-text-fill: white;");
@@ -542,11 +675,21 @@ public class Patchflow extends Application {
                     String despName = desptextField.getText();
                     String codeName = codetextfield.getText();
                     String sevName = combo_box.getValue();
+
+                    if(despName.isEmpty() || sevName == null){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Missing Severity");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please select an issue severity.");
+                        alert.showAndWait();
+                        return;
+                    }
+
                     editProject(despName,sevName,codeName,selectedBug);
                     updateIssue.close();
                 });
 
-                Scene dialogScene = new Scene(dialogVbox, 300, 300);
+                Scene dialogScene = new Scene(dialogVbox, 300, 350);
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 updateIssue.setScene(dialogScene);

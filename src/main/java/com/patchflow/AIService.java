@@ -4,6 +4,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.Duration;
 
 import com.google.gson.JsonArray;
@@ -12,14 +16,44 @@ import com.google.gson.JsonParser;
 
 public class AIService {
 
-    private static final String OPEN_API_KEY = "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";
-    private static final String API_KEY = "AIzaSyADvwEGy4GeE0mBYq3ONsfcTXLbHmoO4EI";
+    private static String OPEN_API_KEY;
+    private static String GEMINI_API_KEY;
+
+    static {
+        loadApiKeys();
+    }
+
+    private static void loadApiKeys() {
+
+        String sql = "SELECT apiname, apikey FROM apikeys";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+                String name = rs.getString("apiname");
+                String key = rs.getString("apikey");
+
+                if ("openrouter".equals(name)) {
+                    OPEN_API_KEY = key;
+                } 
+                else if ("gemini".equals(name)) {
+                    GEMINI_API_KEY = key;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     private static final String MODEL = "gemini-2.5-flash";
     private static final String MODELNEW = "gemini-3.5-flash";
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-    private static final String ENDPOINTTWO = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODEL + ":generateContent?key=" + API_KEY;
-    private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + API_KEY;
+    private static final String ENDPOINTTWO = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODEL + ":generateContent?key=" + GEMINI_API_KEY;
+    private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + GEMINI_API_KEY;
 
 
 

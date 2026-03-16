@@ -90,3 +90,13 @@
 .combo-box-popup .list-view {
     -fx-background-color: #2e2f31;
 }
+
+.list-view .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+
+.list-view .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}

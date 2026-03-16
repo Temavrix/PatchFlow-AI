@@ -6,6 +6,28 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Githubpanel",
+            "request": "launch",
+            "mainClass": "com.patchflow.Githubpanel",
+            "projectName": "PatchFlow",
+            "vmArgs": "--module-path \"C:/javafx/javafx-sdk-17.0.17/lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "GitHubIssuesExample",
+            "request": "launch",
+            "mainClass": "com.patchflow.GitHubIssuesExample",
+            "projectName": "PatchFlow"
+        },
+        {
+            "type": "java",
+            "name": "GitHubIssues",
+            "request": "launch",
+            "mainClass": "com.patchflow.GitHubIssues",
+            "projectName": "PatchFlow"
+        },
+        {
+            "type": "java",
             "name": "Mcpserver",
             "request": "launch",
             "mainClass": "com.patchflow.Mcpserver",
