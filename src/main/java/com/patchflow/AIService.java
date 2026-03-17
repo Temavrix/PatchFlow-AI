@@ -14,6 +14,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javafx.scene.control.Alert;
+
 public class AIService {
 
     private static String OPEN_API_KEY;
@@ -45,7 +47,12 @@ public class AIService {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please ensure validity of API Keys in settings!");             
+
+            alert.showAndWait();
         }
     }
     

@@ -761,6 +761,7 @@ public class Patchflow extends Application {
 
                         if (bug[4] == null || bug[4].trim().isEmpty()){
                             codsnippettextArea.setText("");
+                            codsnippettextArea.setEditable(false);
                         } else{
                             codsnippettextArea.setText("Code Snippet: \n\n" + bug[4]);
                             codsnippettextArea.setEditable(false);

@@ -66,7 +66,12 @@ public class Githubpanel extends Application{
                 githubissues.put(title, issueData);
             }
         } catch(Exception e){
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please ensure validity of API Keys in settings!");             
+
+            alert.showAndWait();
         }
     }
 
@@ -102,7 +107,12 @@ public class Githubpanel extends Application{
                 Gitmenu.getItems().add(repo.getFullName());
             }
         } catch (Exception e){
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please ensure validity of API Keys in settings!");             
+
+            alert.showAndWait();
         }
 
         Button searchBtn = new Button("Search");

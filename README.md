@@ -28,9 +28,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Added ways to add Github issues.
-2. Settings page to add and edit API keys.
-3. UI/UX Improvements
+1. Minor UI/UX Improvements
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -39,7 +37,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 16-March-2026 23:40 HRS (Singapore Standard Time)
+Last Updated: 17-March-2026 21:00 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
