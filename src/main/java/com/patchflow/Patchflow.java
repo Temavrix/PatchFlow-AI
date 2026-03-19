@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +36,8 @@ import javafx.scene.image.Image;
 
 
 public class Patchflow extends Application {
-    //Declaring All the Lists and Hashmaps used
+    // Declaring all required stages, variables and listmaps
+    String SelectedIssue;
     private Stage analyticsStage;
     private Stage addIssue;
     private Stage updateIssue;
@@ -47,6 +49,46 @@ public class Patchflow extends Application {
     private final Map<String, List<String>> projectBugs = new HashMap<>();
     ListView<String> projectList = new ListView<>(projects);
     ListView<Map<String, String>> issueListView = new ListView<>();
+
+    // Routine checks when starting the application
+    public void routineChecks(String tableName){
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        Statement stmt = conn.createStatement();){
+            DatabaseMetaData databaseMetaData = conn.getMetaData();
+            ResultSet rs = databaseMetaData.getTables(null, null, tableName, null);
+            if(!rs.next()) {
+                String sql = """
+                    CREATE TABLE IF NOT EXISTS projects (
+                        project TEXT NOT NULL,
+                        language TEXT NOT NULL,
+                        issue TEXT NOT NULL,
+                        description TEXT NOT NULL,
+                        severity TEXT NOT NULL,
+                        snippet TEXT);""";
+
+                String sqlsec = """
+                    CREATE TABLE IF NOT EXISTS apikeys ( 
+                    apiname TEXT,
+                    apikey TEXT);""";
+
+                try {
+                    stmt.execute(sql);
+                    stmt.execute(sqlsec);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                loadProjectsFromDB();
+            }
+        } catch (SQLException e){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 001");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 001: Routine checks failed!!!");             
+            alert.showAndWait();
+        }
+    }
+
 
     // Loads issues of respective projects from Database
     public ObservableList<Map<String, String>> loadIssuesFromDatabase(String project) {
@@ -64,21 +106,22 @@ public class Patchflow extends Application {
                 Map<String, String> issue = new HashMap<>();
                 issue.put("title", rs.getString("issue"));
                 issue.put("priority", rs.getString("severity"));
-
                 issues.add(issue);
            }
 
        } catch (SQLException e) {
-           e.printStackTrace();
+           Alert alert = new Alert(Alert.AlertType.INFORMATION);
+           alert.setTitle("Error 002");
+           alert.setHeaderText(null);
+           alert.setContentText("Error 002: Issues loading failed!!!");             
+           alert.showAndWait();
        }
-
        return issues;
     }
 
     // Loads Projects form Database
     public void loadProjectsFromDB() {
         String sql = "SELECT project, COUNT(*) AS issue_count FROM projects GROUP BY project ";
-
         projects.clear();
         projectissues.clear();
 
@@ -89,23 +132,25 @@ public class Patchflow extends Application {
             while (rs.next()) {
                 String project = rs.getString("project");
                 int count = rs.getInt("issue_count");
-
                 projects.add(project);
                 projectissues.put(project, count);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 003");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 003: Projects loading failed!!!");             
+            alert.showAndWait();
         }
     }
 
-    // Loads issues's description and severity from Database
+    // Loads issues's details from Database
     private String[] loadBugDesp(String bugdesc) {
         String sql = "SELECT project, language, description, severity, snippet from projects WHERE issue = ?";
         String[] issues = new String[5];
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-             ) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, bugdesc);
 
@@ -120,12 +165,16 @@ public class Patchflow extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 004");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 004: Issues details loading failed!!!");             
+            alert.showAndWait();
         }
         return issues;
     }
 
-    // Save new project into Database
+    // Save new issue into Database
     private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String codsnip){
         String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)";
         try {
@@ -140,21 +189,35 @@ public class Patchflow extends Application {
             stmt.executeUpdate();
             loadProjectsFromDB();
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 005");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 005: Saving of Issue failed!!!");             
+            alert.showAndWait();
         }
     }
 
     // Remove issue from Database
-    private void removeBug(String selectedProject, String bugDescription, String bugSeverity){
-        String sql = "DELETE FROM projects WHERE project = '"+selectedProject+"' AND description='"+bugDescription+"';";
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-            PreparedStatement stmt = conn.prepareStatement(sql);
+    private void removeBug(String selectedProject, String SelectedIssue, String bugDescription, String bugSeverity){
+        String sql = "DELETE FROM projects WHERE project = ? AND issue = ? AND description = ? AND severity = ?";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, selectedProject);
+            stmt.setString(2, SelectedIssue);
+            stmt.setString(3, bugDescription);
+            stmt.setString(4, bugSeverity);
+
             stmt.executeUpdate();
             loadProjectsFromDB();
             refreshIssues();
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 006");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 006: Removal of Issue failed!!!");             
+            alert.showAndWait();
         }
     }
 
@@ -173,7 +236,11 @@ public class Patchflow extends Application {
             loadBugDesp(selectedBug);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 004");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 007: Updation of Issue failed!!!");             
+            alert.showAndWait();
         }
     }
 
@@ -188,7 +255,7 @@ public class Patchflow extends Application {
         }
     }
 
-    // Save settings
+    // Save information from settings UI in database
     public void saveSettingd(String gemName, String openrouteName, String githtName){
         String sql = "UPDATE apikeys SET apikey = ? WHERE apiname = 'gemini'";
         String sqlone = "UPDATE apikeys SET apikey = ? WHERE apiname = 'github'";
@@ -209,12 +276,16 @@ public class Patchflow extends Application {
             stmttwo.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 008");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 008: Saving of API failed!!!");             
+            alert.showAndWait();
         }
 
     }
 
-    //load apikeys to show in settings ui
+    //load apikeys from database to show in settings UI
     private void loadApiKeys(TextField geminitextField, TextField openrotextField, TextField githubtextField){
         String sql = "SELECT apiname, apikey FROM apikeys";
 
@@ -234,7 +305,11 @@ public class Patchflow extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 009");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 009: API loading failed!!!");             
+            alert.showAndWait();
         }
     }
 
@@ -244,10 +319,11 @@ public class Patchflow extends Application {
     @Override
     public void start(Stage stage) {
 
-        // Top title
-        loadProjectsFromDB();
+        routineChecks("projects");
 
-        // Sidebar
+        // Call to load projects from database
+
+        // Sidebar code
         VBox sidebar = new VBox(10);
         sidebar.setPadding(new Insets(10));
         sidebar.setPrefWidth(150);
@@ -265,6 +341,7 @@ public class Patchflow extends Application {
         Button settingsButton = new Button("Your Settings");
         settingsButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
+        // Button to open analytics window
         analyticsBtn.setOnAction(e -> {
             if (analyticsStage == null || !analyticsStage.isShowing()) {
                 analyticsStage = new Stage();
@@ -273,13 +350,18 @@ public class Patchflow extends Application {
                 try {
                     analyticsWindow.start(analyticsStage);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error 010");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Error 010: Error opening Analytics window!!!");             
+                    alert.showAndWait();
                 }
             } else {
                 analyticsStage.toFront();
             }
         });
 
+        // Button to open settings window
         settingsButton.setOnAction(e -> {
             if(settingStage == null || !settingStage.isShowing()){
                 settingStage = new Stage();
@@ -298,7 +380,6 @@ public class Patchflow extends Application {
                 loadApiKeys(geminitextField, openrotextField, githubtextField);
 
                 Button savebtn = new Button("Save");
-
                 VBox settingLabel = new VBox(10);
                 settingLabel.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,savebtn);
                 settingLabel.setStyle("-fx-background-color: #454648;");
@@ -313,7 +394,6 @@ public class Patchflow extends Application {
                     alert.setTitle("Success");
                     alert.setHeaderText(null);
                     alert.setContentText("API keys saved successfully!");             
-
                     alert.showAndWait();
                 });
 
@@ -327,6 +407,7 @@ public class Patchflow extends Application {
             }
         });
 
+        // Button to open github window
         githubtton.setOnAction(e -> {
             if (githubStage == null || !githubStage.isShowing()){
                 githubStage = new Stage();
@@ -342,13 +423,18 @@ public class Patchflow extends Application {
                     ex.printStackTrace();
                 }
             } else {
-                githubStage.toFront();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error 012");
+                alert.setHeaderText(null);
+                alert.setContentText("Error 012: Error opening Github window!!!");             
+                alert.showAndWait();
             }
         });
 
         Button bugBtn = new Button("Add Issue");
         bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
+        // Button to add new issue
         bugBtn.setOnAction(e -> {
             if (addIssue == null || !addIssue.isShowing()){
                 addIssue = new Stage();
@@ -392,6 +478,16 @@ public class Patchflow extends Application {
                     String despName = desptextField.getText();
                     String sevName = combo_box.getValue();
                     String codsnip = sniptextArea.getText();
+
+                    if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Missing Severity");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please select an issue severity.");
+                        alert.showAndWait();
+                        return;
+                    }
+
                     saveProject(projName,langName,bugtName,despName,sevName,codsnip);
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
@@ -480,7 +576,6 @@ public class Patchflow extends Application {
 
                 String titleText = issue.get("title");
                 String priorityText = issue.get("priority");
-
                 Rectangle dot = new Rectangle(8, 8);
                 dot.setArcWidth(8);
                 dot.setArcHeight(8);
@@ -567,6 +662,7 @@ public class Patchflow extends Application {
         Button mcpButton = new Button("✦ AI (Beta)");
         mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
+        // Remove Button to remove an issue
         remissue.setOnAction(e -> {
             String selectedProject = projectList.getSelectionModel().getSelectedItem();
             if (selectedProject == null) return;
@@ -584,9 +680,7 @@ public class Patchflow extends Application {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-            
-                removeBug(selectedProject, descriptionText, severityText);
-            
+                removeBug(selectedProject, SelectedIssue, descriptionText, severityText);
                 projectList.getSelectionModel().select(selectedProject);
                 refreshIssues();
             }
@@ -594,49 +688,56 @@ public class Patchflow extends Application {
         });
 
         
-        // Hides remove issue button when issue not selected
+        // Hides description when issue not selected
         descriptextArea.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides code snippet when issue not selected
         codsnippettextArea.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides bug serverity when issue not selected
         bugSeverity.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides remove issue when issue not selected
         remissue.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides severity dot when issue not selected
         dottwo.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides edit button when issue not selected
         ediissue.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Hides AI button when issue not selected
         mcpButton.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
+        // Edit button to edit an issue
         ediissue.setOnAction(e -> {
             if (updateIssue == null || !updateIssue.isShowing()){
                 updateIssue = new Stage();
@@ -700,6 +801,7 @@ public class Patchflow extends Application {
             }
         });
 
+        // Button to pass values and open MCP (AI) Window
         mcpButton.setOnAction(e -> {
             if (mcpwindow == null || !mcpwindow.isShowing()){
                 mcpwindow = new Stage();
@@ -709,7 +811,11 @@ public class Patchflow extends Application {
                     mcp.start(mcpwindow);
                     mcpwindow.setOnCloseRequest(ev -> mcpwindow = null);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error 013");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Error 013: Error opening MCP window!!!");             
+                    alert.showAndWait();
                 }
             } else {
                 mcpwindow.toFront();
@@ -722,7 +828,6 @@ public class Patchflow extends Application {
         
         HBox ledlight = new HBox(8,bugSeverity,dottwo);
         ledlight.setAlignment(Pos.CENTER_LEFT);
-
         HBox options = new HBox(8,ediissue,remissue,mcpButton);
 
         VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,descriptextArea,codsnippettextArea,ledlight,options);
@@ -731,7 +836,7 @@ public class Patchflow extends Application {
         detailsColumn.setPrefWidth(400);
         detailsColumn.setPrefHeight(500);
 
-        // Fetching selected items for interactions
+        // Fetching selected project and loading project's issues
         projectList.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldProject, newProject) -> {
                 if (newProject != null) {
@@ -740,9 +845,11 @@ public class Patchflow extends Application {
             }
         );
 
+        // Loads issue details and displays it in UI
         issueListView.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldIssue, newIssue) -> {
                     if (newIssue != null) {
+                        SelectedIssue = newIssue.get("title");
                         String[] bug = loadBugDesp(newIssue.get("title"));
                         Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
                         Projectdeslabel.setEditable(false);
@@ -775,17 +882,14 @@ public class Patchflow extends Application {
         // Main Scene Layout
         projectColumn.getStyleClass().add("column");
         bugColumn.getStyleClass().add("column");
-
         
         HBox rootmo = new HBox(sidebar, projectColumn, bugColumn, detailsColumn);
-        
         VBox root = new VBox(rootmo);
         root.setSpacing(15);
         root.setStyle("-fx-background-color: #2e2f31;");
 
         Scene scene = new Scene(root, 1010, 505);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-
         stage.setTitle("PatchFlow");
         stage.setScene(scene);
         stage.getIcons().add(new Image("/icons/patchflowtrim.png"));

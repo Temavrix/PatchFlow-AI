@@ -13,6 +13,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -57,7 +58,11 @@ public class Analytics extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 015");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 015: Critical priority error!");             
+            alert.showAndWait();
         }
     }
 
@@ -74,7 +79,11 @@ public class Analytics extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0151");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 016: High priority error!");             
+            alert.showAndWait();
         }
     }
 
@@ -91,7 +100,11 @@ public class Analytics extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0152");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 014: Medium priority error!");             
+            alert.showAndWait();
         }
     }
 
@@ -108,7 +121,11 @@ public class Analytics extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0153");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 0153: Low priority error!");             
+            alert.showAndWait();
         }
     }
 

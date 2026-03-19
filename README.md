@@ -1,4 +1,4 @@
-# PatchFlow <img height="20" alt="Image" src="https://private-user-images.githubusercontent.com/69076784/546710126-9e23a75d-a603-4360-a327-749ea0d28b4d.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA1MzQwMDYsIm5iZiI6MTc3MDUzMzcwNiwicGF0aCI6Ii82OTA3Njc4NC81NDY3MTAxMjYtOWUyM2E3NWQtYTYwMy00MzYwLWEzMjctNzQ5ZWEwZDI4YjRkLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjA4VDA2NTUwNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWFkNmY3MjA0NTVmN2NjNTk4YjNiYjgxNTA2MGFmMTg3MDRhMzdiZDcyZTZmODFjMWYxZTFjNDllYWVjZWRmODkmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.N9kFvyb9rv4LOHQsgXL_GbcnmupO_Jkb3w4FKYIUCtU" />
+# PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56" />
 
 ###### An Issue and Bug tracker made easy for solo developers  
 
@@ -14,6 +14,7 @@ Please consider donating some money to our organization to help fund this projec
 
 ## Table Of Contents
 - [What's New?](#whats-new)
+- [Introducing PatchFlow](#introducing-patchflow)
 - [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
 - [Issues](#issues)
 - [License](#license)
@@ -28,7 +29,11 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Minor UI/UX Improvements
+Major Quality Of Life and Usability Upgrades
+
+1. Major UI/UX Improvements
+2. Setting up the application has been made easier
+3. New Error codes classifications
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -37,10 +42,15 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 17-March-2026 21:00 HRS (Singapore Standard Time)
+Last Updated: 19-March-2026 17:50 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
+
+## Introducing PatchFlow
+PatchFlow is a desktop-based issue tracking and developer productivity tool built using JavaFX and SQLite, designed to help developers manage bugs, track issues, and improve workflow efficiency.
+
+It's Simplicity, Speed, Clean UI and Developer-first features make this suitable and lightweight for solo-developers.
 
 ## Running PatchFlow On Your Computer
 
@@ -96,4 +106,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.8.0 (Beta)
+Version 0.8.5 (Beta)

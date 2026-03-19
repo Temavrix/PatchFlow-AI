@@ -67,10 +67,9 @@ public class Githubpanel extends Application{
             }
         } catch(Exception e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
+            alert.setTitle("Error 016");
             alert.setHeaderText(null);
-            alert.setContentText("Please ensure validity of API Keys in settings!");             
-
+            alert.setContentText("Error 016: Please ensure validity of API Keys in settings!");             
             alert.showAndWait();
         }
     }
@@ -88,7 +87,11 @@ public class Githubpanel extends Application{
             stmt.setString(6, codsnip);
             stmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0161");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 0161: Adding of Issue failed!");             
+            alert.showAndWait();
         }
     }
 
@@ -108,10 +111,9 @@ public class Githubpanel extends Application{
             }
         } catch (Exception e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
+            alert.setTitle("Error 0160");
             alert.setHeaderText(null);
-            alert.setContentText("Please ensure validity of API Keys in settings!");             
-
+            alert.setContentText("Error 0160: Please ensure API Keys is entered in settings!");             
             alert.showAndWait();
         }
 
@@ -166,7 +168,6 @@ public class Githubpanel extends Application{
         projectList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 Map<String,String> issue = githubissues.get(newVal);
-
                 if(issue == null){
                     return;
                 }
@@ -283,7 +284,6 @@ public class Githubpanel extends Application{
             "-fx-background-color: #2e2f31;" +
             "-fx-control-inner-background: #2e2f31;"
         );
-
 
         HBox searcharea = new HBox(Gitmenu, searchBtn);
         HBox issuearae = new HBox(projectList, issueArea);

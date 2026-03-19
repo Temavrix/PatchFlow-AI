@@ -7,7 +7,7 @@
 
     <groupId>com.patchflow</groupId>
     <artifactId>PatchFlow</artifactId>
-    <version>0.8.0-BETA</version>
+    <version>0.8.5-BETA</version>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
