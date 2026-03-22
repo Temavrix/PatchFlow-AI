@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -11,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.awt.Desktop;
+import java.net.URI;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -332,14 +335,17 @@ public class Patchflow extends Application {
         Label sidetitle = new Label("PatchFlow");
         sidetitle.setStyle("-fx-text-fill: white; -fx-font-size: 18;");
 
-        Button analyticsBtn = new Button("Your Analytics");
+        Button analyticsBtn = new Button("Analytics");
         analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        analyticsBtn.setPrefWidth(80);
 
-        Button githubtton = new Button("Github Issues");
+        Button githubtton = new Button("Github");
         githubtton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        githubtton.setPrefWidth(80);
 
-        Button settingsButton = new Button("Your Settings");
+        Button settingsButton = new Button("Settings");
         settingsButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        settingsButton.setPrefWidth(80);
 
         // Button to open analytics window
         analyticsBtn.setOnAction(e -> {
@@ -433,6 +439,7 @@ public class Patchflow extends Application {
 
         Button bugBtn = new Button("Add Issue");
         bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        bugBtn.setPrefWidth(80);
 
         // Button to add new issue
         bugBtn.setOnAction(e -> {
@@ -505,7 +512,24 @@ public class Patchflow extends Application {
             }
         });
 
-        sidebar.getChildren().addAll(sidetitle, analyticsBtn,githubtton,settingsButton, bugBtn);
+        Button supportBtn = new Button("Support Us");
+        supportBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        supportBtn.setPrefWidth(80);
+
+        // Button for supporting us
+        supportBtn.setOnAction(e -> {
+            try {
+                Desktop.getDesktop().browse(new URI("https://buymeacoffee.com/mahadhevha"));
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error 400");
+                alert.setHeaderText(null);
+                alert.setContentText("Error 400: Error opening Support page!!!");             
+                alert.showAndWait();
+            }
+        });
+
+        sidebar.getChildren().addAll(sidetitle, analyticsBtn,githubtton,settingsButton, bugBtn, supportBtn);
 
 
 

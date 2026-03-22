@@ -9,13 +9,16 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="200" alt="Image" src="https://github.com/user-attachments/assets/ae016d94-b2b8-4201-889b-9642a436032f" />
+<img height="200" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />
 
 
 ## Table Of Contents
 - [What's New?](#whats-new)
 - [Introducing PatchFlow](#introducing-patchflow)
 - [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
+- [Features Of PatchFlow](#features)
+  * [Github Issues](#github-issues)
+  * [AI](#ai)
 - [Issues](#issues)
 - [License](#license)
 
@@ -31,9 +34,8 @@ ANNOUNCEMENT:-
 
 Major Quality Of Life and Usability Upgrades
 
-1. Major UI/UX Improvements
-2. Setting up the application has been made easier
-3. New Error codes classifications
+1. Minor UI/UX Improvements
+2. New Support us button
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -42,15 +44,17 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 19-March-2026 17:50 HRS (Singapore Standard Time)
+Last Updated: 22-March-2026 17:10 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
+
 
 ## Introducing PatchFlow
 PatchFlow is a desktop-based issue tracking and developer productivity tool built using JavaFX and SQLite, designed to help developers manage bugs, track issues, and improve workflow efficiency.
 
 It's Simplicity, Speed, Clean UI and Developer-first features make this suitable and lightweight for solo-developers.
+
 
 ## Running PatchFlow On Your Computer
 
@@ -89,6 +93,31 @@ If it says 23 and you’re on 17 then it won’t work and you
 must fix by installing correct JDK.
 
 
+## Features
+
+#### Github Issues
+With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/e61d41df-c4a9-48a0-94d6-e5fbeb88e11c" />
+
+By serching for your requested repository you can view the list of issues and select them to add in your local database.
+
+You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
+
+#### AI
+Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
+
+You can choose the model that you want to chat with: 
+
+<img height="100" alt="Image" src="https://github.com/user-attachments/assets/bdcb6571-85db-43d3-b991-3ea6deed8bdf" />
+
+Select the model and you can get assistance to your questions: 
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/6a2ee934-4a13-4580-8d20-a022b85f09de" />
+
+You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and a OpenRouter token [here](https://openrouter.ai/workspaces/default/keys) then paste it in settings under `Gemini API` and `OpenRouter API` repectively to access the models.
+
+
 ## Issues
 As this project is still in constant development, if you run into any issues while operating or have any suggestions or features, please feel free to drop by our [issues](https://github.com/Temavrix/PatchFlow/issues) section and open a issue and we'll respond within 2-4 working days, Thank you for your understanding.
 
@@ -106,4 +135,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.8.5 (Beta)
+Version 0.8.7 (Beta)

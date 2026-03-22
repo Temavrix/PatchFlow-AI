@@ -289,6 +289,7 @@ public class Githubpanel extends Application{
         HBox issuearae = new HBox(projectList, issueArea);
         VBox root = new VBox(searcharea, issuearae);
         root.setSpacing(15);
+        root.setPadding(new Insets(15));
         root.setStyle("-fx-background-color: #2e2f31;");
 
         Scene scene = new Scene(root, 700, 400);
