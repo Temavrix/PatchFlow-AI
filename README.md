@@ -11,6 +11,8 @@ Please consider donating some money to our organization to help fund this projec
 
 <img height="200" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />
 
+NOTE: DOn't want to use Apache Kafka? Remove lines 86 to 98 in Patchflow.java.
+
 
 ## Table Of Contents
 - [What's New?](#whats-new)
@@ -18,6 +20,7 @@ Please consider donating some money to our organization to help fund this projec
 - [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
 - [Features Of PatchFlow](#features)
   * [Github Issues](#github-issues)
+  * [Apache Kafka](#apache-kafka)
   * [AI](#ai)
 - [Issues](#issues)
 - [License](#license)
@@ -34,8 +37,9 @@ ANNOUNCEMENT:-
 
 Major Quality Of Life and Usability Upgrades
 
-1. Minor UI/UX Improvements
-2. New Support us button
+1. Introducing Apache Kafka
+  1.1 Upon creating a new issue it will display here and store the issue in a JSON file
+  1.2 If any issue is 'Critical' then it will send an email to your email address.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -44,7 +48,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 22-March-2026 17:10 HRS (Singapore Standard Time)
+Last Updated: 22-March-2026 22:00 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -104,6 +108,30 @@ By serching for your requested repository you can view the list of issues and se
 
 You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
 
+#### Apache Kafka
+Kafka assists users in collecting details of issues that have been created and is stored in a JSON 
+(Subject to further review) file and for sending emails to user's email if it's severity is `Critical`.
+
+First Users will have to open current `patchflow` and `patcher` folder in a another window which will 
+act as the backend (consumer). 
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/fa8a439a-a051-4859-a783-c8aca8bbb020" />
+
+Upon running `patchflow`, 2 terminal screens will pop-up and start running. You can minimize it and 
+continue working.  
+These terminals screens are for the `zookeeper` and `kafka server` to run in the background.
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/9173cf37-7e9a-42f4-ab69-98d5b0fd9247" />
+
+Once `patchflow` and the 2 terminal screens are running, you can start the consumer in the `patcher` 
+folder.  
+Upon creating a new issue it will display here and store the issue in a JSON file and if any issue 
+is 'Critical' then it will send an email to your email address.
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/fa6287d6-0050-46aa-904e-349bf803177c" />
+
+NOTE: To send an email, you will need to register in your [Google Account](https://myaccount.google.com/apppasswords) and paste your app password in line 35 of IssueConsumer.java.
+
 #### AI
 Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
 
@@ -135,4 +163,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.8.7 (Beta)
+Version 0.9.0 (Beta)

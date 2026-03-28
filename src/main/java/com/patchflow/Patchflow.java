@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.Desktop;
-import java.net.URI;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -83,6 +82,21 @@ public class Patchflow extends Application {
             } else {
                 loadProjectsFromDB();
             }
+
+            new Thread(() -> {
+                try {
+                    new ProcessBuilder(
+                        "wscript", "runKafka.vbs"
+                ).start();
+
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Error 0");
+                    alert.setContentText("Error 0: Kafka startup scripts not found!");
+                    alert.show();
+                }
+            }).start();
+
         } catch (SQLException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 001");
@@ -496,6 +510,12 @@ public class Patchflow extends Application {
                     }
 
                     saveProject(projName,langName,bugtName,despName,sevName,codsnip);
+                    String issueJson = String.format(
+                        "{\"project\":\"%s\",\"language\":\"%s\",\"issue\":\"%s\",\"severity\":\"%s\"}",
+                        projName, langName, bugtName, sevName
+                    );
+
+                    IssueProducer.sendIssue(issueJson);
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
                     addIssue.close();
@@ -529,7 +549,7 @@ public class Patchflow extends Application {
             }
         });
 
-        sidebar.getChildren().addAll(sidetitle, analyticsBtn,githubtton,settingsButton, bugBtn, supportBtn);
+        sidebar.getChildren().addAll(sidetitle,bugBtn,githubtton,analyticsBtn,settingsButton,supportBtn);
 
 
 

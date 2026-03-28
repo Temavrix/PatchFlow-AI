@@ -7,7 +7,7 @@
 
     <groupId>com.patchflow</groupId>
     <artifactId>PatchFlow</artifactId>
-    <version>0.8.7-BETA</version>
+    <version>0.9.0-BETA</version>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
@@ -56,7 +56,11 @@
           <version>1.318</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>

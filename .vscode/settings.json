@@ -13,5 +13,6 @@
         "c:\\javafx\\javafx-sdk-17.0.17\\lib\\javafx-swt.jar"
     ],
     "java.debug.settings.onBuildFailureProceed": true,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
