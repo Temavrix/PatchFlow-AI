@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,16 +47,14 @@ public class Patchflow extends Application {
     private Stage settingStage;
     private final ObservableList<String> projects = FXCollections.observableArrayList();
     private final Map<String, Integer> projectissues = new HashMap<>();
-    private final Map<String, List<String>> projectBugs = new HashMap<>();
     ListView<String> projectList = new ListView<>(projects);
     ListView<Map<String, String>> issueListView = new ListView<>();
 
     // Routine checks when starting the application
     public void routineChecks(String tableName){
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-        Statement stmt = conn.createStatement();){
-            DatabaseMetaData databaseMetaData = conn.getMetaData();
-            ResultSet rs = databaseMetaData.getTables(null, null, tableName, null);
+        Statement stmt = conn.createStatement();
+        ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null);){
             if(!rs.next()) {
                 String sql = """
                     CREATE TABLE IF NOT EXISTS projects (
@@ -167,18 +164,18 @@ public class Patchflow extends Application {
         String sql = "SELECT project, language, description, severity, snippet from projects WHERE issue = ?";
         String[] issues = new String[5];
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, bugdesc);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                issues[0] = rs.getString("project");
-                issues[1] = rs.getString("language");
-                issues[2] = rs.getString("description");
-                issues[3] = rs.getString("severity");
-                issues[4] = rs.getString("snippet");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    issues[0] = rs.getString("project");
+                    issues[1] = rs.getString("language");
+                    issues[2] = rs.getString("description");
+                    issues[3] = rs.getString("severity");
+                    issues[4] = rs.getString("snippet");
+                }
             }
 
         } catch (Exception e) {
@@ -194,9 +191,9 @@ public class Patchflow extends Application {
     // Save new issue into Database
     private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String codsnip){
         String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)";
-        try {
+        try (
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, projName);
             stmt.setString(2, langName);
             stmt.setString(3, bugtName);
@@ -241,9 +238,9 @@ public class Patchflow extends Application {
     // Edit issue in Database
     public void editProject(String despName, String sevName, String codeName, String selectedBug){
         String sql = "UPDATE projects SET description = ?, severity = ?, snippet = ? WHERE issue = ?";
-        try {
+        try (
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, despName);
             stmt.setString(2, sevName);
             stmt.setString(3, codeName);
@@ -254,7 +251,7 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 004");
+            alert.setTitle("Error 007");
             alert.setHeaderText(null);
             alert.setContentText("Error 007: Updation of Issue failed!!!");             
             alert.showAndWait();
@@ -278,11 +275,11 @@ public class Patchflow extends Application {
         String sqlone = "UPDATE apikeys SET apikey = ? WHERE apiname = 'github'";
         String sqltwo = "UPDATE apikeys SET apikey = ? WHERE apiname = 'openrouter'";
 
-        try {
+        try (
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
             PreparedStatement stmt = conn.prepareStatement(sql);
             PreparedStatement stmtone = conn.prepareStatement(sqlone);
-            PreparedStatement stmttwo = conn.prepareStatement(sqltwo);
+            PreparedStatement stmttwo = conn.prepareStatement(sqltwo);) {
 
             stmt.setString(1, gemName);
             stmtone.setString(1, githtName);
@@ -557,7 +554,7 @@ public class Patchflow extends Application {
         // COLUMN 1: Project Explorer Column
         // Consists of map that contains all projects currently opened
 
-        projectList.getItems().addAll(projectBugs.keySet());
+        projectList.setItems(projects);
         projectList.setPrefWidth(350);
         issueListView.setPrefHeight(500);
         projectList.setFixedCellSize(60);

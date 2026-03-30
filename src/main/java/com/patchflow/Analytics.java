@@ -82,7 +82,7 @@ public class Analytics extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 0151");
             alert.setHeaderText(null);
-            alert.setContentText("Error 016: High priority error!");             
+            alert.setContentText("Error 0151: High priority error!");             
             alert.showAndWait();
         }
     }
@@ -103,7 +103,7 @@ public class Analytics extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 0152");
             alert.setHeaderText(null);
-            alert.setContentText("Error 014: Medium priority error!");             
+            alert.setContentText("Error 0152: Medium priority error!");             
             alert.showAndWait();
         }
     }
@@ -128,6 +128,14 @@ public class Analytics extends Application {
             alert.showAndWait();
         }
     }
+
+    private int safeParseInt(String value) {
+    try {
+        return Integer.parseInt(value);
+    } catch (NumberFormatException | NullPointerException e) {
+        return 0; // fallback default
+    }
+}
 
 
     @Override
@@ -157,10 +165,11 @@ public class Analytics extends Application {
         chart.setCategoryGap(0);
 
         // Example counts (replace with DB values)
-        int critical = Integer.parseInt(t.critical_count);
-        int high = Integer.parseInt(t.high_count);
-        int medium = Integer.parseInt(t.medium_count);
-        int low = Integer.parseInt(t.low_count);
+        int critical = safeParseInt(t.critical_count);
+        int high = safeParseInt(t.high_count);
+        int medium = safeParseInt(t.medium_count);
+        int low = safeParseInt(t.low_count);
+
         int total = critical + high + medium + low;
 
         xAxis.setAutoRanging(false);

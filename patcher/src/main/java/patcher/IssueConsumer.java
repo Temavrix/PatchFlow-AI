@@ -43,6 +43,7 @@ public class IssueConsumer {
 
         Session session = Session.getInstance(props,
             new Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(fromEmail, password);
                 }

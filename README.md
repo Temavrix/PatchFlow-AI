@@ -11,7 +11,7 @@ Please consider donating some money to our organization to help fund this projec
 
 <img height="200" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />
 
-NOTE: DOn't want to use Apache Kafka? Remove lines 86 to 98 in Patchflow.java.
+NOTE: Don't want to use Apache Kafka? Remove lines 86 to 98 and line 515 in Patchflow.java.
 
 
 ## Table Of Contents
@@ -35,11 +35,14 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-Major Quality Of Life and Usability Upgrades
+Addressed many issues and vulnerabilities: 
+1. Vulnerabilities Patched: 
+  1.1 Common Weakness Enumeration: CWE-404
+  1.2 Common Weakness Enumeration: CWE-772
+  1.3 Common Weakness Enumeration: CWE-248
+  1.4 Common Weakness Enumeration: CWE-561
 
-1. Introducing Apache Kafka
-  1.1 Upon creating a new issue it will display here and store the issue in a JSON file
-  1.2 If any issue is 'Critical' then it will send an email to your email address.
+2. Potential database resource leak patched
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -48,7 +51,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 22-March-2026 22:00 HRS (Singapore Standard Time)
+Last Updated: 30-March-2026 00:15 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.

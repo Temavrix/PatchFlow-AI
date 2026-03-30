@@ -76,9 +76,9 @@ public class Githubpanel extends Application{
 
     private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String codsnip){
         String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)";
-        try {
+        try (
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, projName);
             stmt.setString(2, langName);
             stmt.setString(3, bugtName);
@@ -95,6 +95,7 @@ public class Githubpanel extends Application{
         }
     }
 
+    @Override
     public void start(Stage stage) {
         String sql = "SELECT apikey FROM apikeys WHERE apiname='github'";
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
