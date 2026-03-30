@@ -15,6 +15,7 @@ public class IssueConsumer {
 
     static ObjectMapper mapper = new ObjectMapper();
     static File file = new File("issues.json");
+    private static volatile boolean running = true;
 
     // Save issues to JSON file
     private static void saveToJson(Map<String, Object> issue) throws Exception {
@@ -75,30 +76,47 @@ public class IssueConsumer {
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            running = false;
+            try {
+                consumer.wakeup();
+            } catch (Exception ignored) {
+            }
+        }));
+
         consumer.subscribe(Arrays.asList("issues-log"));
 
-        while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        try {
+            while (running) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 
-            for (ConsumerRecord<String, String> record : records) {
-                String json = record.value();
-                System.out.println("New Issue: " + json);
+                for (ConsumerRecord<String, String> record : records) {
+                    String json = record.value();
+                    System.out.println("New Issue: " + json);
 
-                try {
-                    // Convert JSON string → Map
-                    Map<String, Object> issue = mapper.readValue(json, new TypeReference<>() {});
-                    saveToJson(issue);
+                    try {
+                        // Convert JSON string → Map
+                        Map<String, Object> issue = mapper.readValue(json, new TypeReference<>() {});
+                        saveToJson(issue);
 
-                    // Check severity
-                    String severity = issue.get("severity").toString();
-                    if (severity.equalsIgnoreCase("Critical")) {
-                        sendEmailAlert(json);
-                    }
+                        // Check severity
+                        String severity = issue.get("severity").toString();
+                        if (severity.equalsIgnoreCase("Critical")) {
+                            sendEmailAlert(json);
+                        }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } 
                 }
             }
+        } catch (WakeupException e) {
+            if (running) {
+                throw e;
+            }
+        } finally {
+            consumer.close();
+            System.out.println("Kafka Consumer closed.");
         }
     }
 }

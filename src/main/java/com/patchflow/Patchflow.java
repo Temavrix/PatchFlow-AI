@@ -1,7 +1,6 @@
 package com.patchflow;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.net.URI;
@@ -14,6 +13,7 @@ import java.sql.Statement;
 import java.awt.Desktop;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -38,7 +38,8 @@ import javafx.scene.image.Image;
 
 public class Patchflow extends Application {
     // Declaring all required stages, variables and listmaps
-    String SelectedIssue;
+    private static final String DB_URL = "jdbc:sqlite:Patchflow.db";
+    String selectedIssues;
     private Stage analyticsStage;
     private Stage addIssue;
     private Stage updateIssue;
@@ -52,7 +53,7 @@ public class Patchflow extends Application {
 
     // Routine checks when starting the application
     public void routineChecks(String tableName){
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        try(Connection conn = DriverManager.getConnection(DB_URL);
         Statement stmt = conn.createStatement();
         ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null);){
             if(!rs.next()) {
@@ -87,10 +88,12 @@ public class Patchflow extends Application {
                 ).start();
 
                 } catch (Exception e) {
+                    Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Error 0");
                     alert.setContentText("Error 0: Kafka startup scripts not found!");
                     alert.show();
+                    });
                 }
             }).start();
 
@@ -110,7 +113,7 @@ public class Patchflow extends Application {
 
        String sql = "SELECT issue, severity FROM projects WHERE project = ?";
 
-       try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+       try (Connection conn = DriverManager.getConnection(DB_URL);
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
                ps.setString(1, project);
@@ -139,7 +142,7 @@ public class Patchflow extends Application {
         projects.clear();
         projectissues.clear();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -164,7 +167,7 @@ public class Patchflow extends Application {
         String sql = "SELECT project, language, description, severity, snippet from projects WHERE issue = ?";
         String[] issues = new String[5];
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        try (Connection conn = DriverManager.getConnection(DB_URL);
             PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, bugdesc);
 
@@ -192,7 +195,7 @@ public class Patchflow extends Application {
     private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String codsnip){
         String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)";
         try (
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            Connection conn = DriverManager.getConnection(DB_URL);
             PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, projName);
             stmt.setString(2, langName);
@@ -215,7 +218,7 @@ public class Patchflow extends Application {
     private void removeBug(String selectedProject, String SelectedIssue, String bugDescription, String bugSeverity){
         String sql = "DELETE FROM projects WHERE project = ? AND issue = ? AND description = ? AND severity = ?";
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        try (Connection conn = DriverManager.getConnection(DB_URL);
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, selectedProject);
@@ -239,7 +242,7 @@ public class Patchflow extends Application {
     public void editProject(String despName, String sevName, String codeName, String selectedBug){
         String sql = "UPDATE projects SET description = ?, severity = ?, snippet = ? WHERE issue = ?";
         try (
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            Connection conn = DriverManager.getConnection(DB_URL);
             PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, despName);
             stmt.setString(2, sevName);
@@ -270,13 +273,13 @@ public class Patchflow extends Application {
     }
 
     // Save information from settings UI in database
-    public void saveSettingd(String gemName, String openrouteName, String githtName){
+    public void saveSettingsNow(String gemName, String openrouteName, String githtName){
         String sql = "UPDATE apikeys SET apikey = ? WHERE apiname = 'gemini'";
         String sqlone = "UPDATE apikeys SET apikey = ? WHERE apiname = 'github'";
         String sqltwo = "UPDATE apikeys SET apikey = ? WHERE apiname = 'openrouter'";
 
         try (
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+            Connection conn = DriverManager.getConnection(DB_URL);
             PreparedStatement stmt = conn.prepareStatement(sql);
             PreparedStatement stmtone = conn.prepareStatement(sqlone);
             PreparedStatement stmttwo = conn.prepareStatement(sqltwo);) {
@@ -405,7 +408,7 @@ public class Patchflow extends Application {
                     String gemName = geminitextField.getText();
                     String openrouteName = openrotextField.getText();
                     String githtName = githubtextField.getText();
-                    saveSettingd(gemName, openrouteName, githtName);
+                    saveSettingsNow(gemName, openrouteName, githtName);
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
@@ -482,8 +485,8 @@ public class Patchflow extends Application {
                 sniptextArea.setWrapText(true); 
                 sniptextArea.setPrefRowCount(9);
             
-                String bugscategory[] = { "Low", "Medium", "High", "Critical"};
-                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
+                String bugCategories [] = { "Low", "Medium", "High", "Critical"};
+                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugCategories));
             
                 Button projbtn = new Button("Add New Issue");
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
@@ -721,7 +724,7 @@ public class Patchflow extends Application {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                removeBug(selectedProject, SelectedIssue, descriptionText, severityText);
+                removeBug(selectedProject, selectedIssues, descriptionText, severityText);
                 projectList.getSelectionModel().select(selectedProject);
                 refreshIssues();
             }
@@ -890,7 +893,7 @@ public class Patchflow extends Application {
         issueListView.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldIssue, newIssue) -> {
                     if (newIssue != null) {
-                        SelectedIssue = newIssue.get("title");
+                        selectedIssues = newIssue.get("title");
                         String[] bug = loadBugDesp(newIssue.get("title"));
                         Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
                         Projectdeslabel.setEditable(false);

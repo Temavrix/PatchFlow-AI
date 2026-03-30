@@ -14,6 +14,11 @@ public class IssueProducer {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         producer = new KafkaProducer<>(props);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (producer != null) {
+                producer.close();
+            }
+        }));
     }
 
     public static void sendIssue(String issueJson) {
@@ -27,5 +32,17 @@ public class IssueProducer {
                 }
             }
         });
+    }
+
+    public static void closeProducer() {
+        Producer<String, String> p = producer;
+        if (p != null) {
+            try {
+                p.close();
+            } catch (Exception e) {
+                System.err.println("Error while closing Kafka producer: " + e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
     }
 }
