@@ -5,9 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
@@ -15,13 +13,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.shape.Rectangle;
 
-public class Analytics extends Application {
+public class Analytics{
 
     String critical_count;
     String high_count;
@@ -138,8 +134,7 @@ public class Analytics extends Application {
 }
 
 
-    @Override
-    public void start(Stage stage) {
+    public VBox getView() {
         Analytics t = new Analytics();
         t.getHighPriorityCountFromDB();
         t.getCriticalPriorityCountFromDB();
@@ -236,29 +231,12 @@ public class Analytics extends Application {
         lowBox.setAlignment(Pos.CENTER_LEFT);
 
         VBox labelsBox = new VBox(15);
-        VBox chartlabelBox = new VBox(30);
+        VBox layout  = new VBox(30);
         labelsBox.setPadding(new Insets(20));
         labelsBox.getChildren().addAll(titLabel, criticalBox, highBox, mediumBox, lowBox);
-        chartlabelBox.getChildren().addAll(labelsBox,chart);
+        layout .getChildren().addAll(labelsBox,chart);
 
-        
-
-
-        //HBOX (Full root window) definition
-        HBox root = new HBox(chartlabelBox);
-        root.setSpacing(15);
-        root.setStyle("-fx-background-color: #2e2f31;");
-
-        Scene scene = new Scene(root, 500, 400);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image("/icons/patchflowtrim.png"));
-        stage.setTitle("Analytics Dashboard");
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
+        return layout;
     }
 }
 

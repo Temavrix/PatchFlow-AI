@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.kohsuke.github.*;
 
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -29,7 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-public class Githubpanel extends Application{
+public class Githubpanel{
     private Stage addIssue;
     String titleofficial;
     String projectofficial;
@@ -74,8 +73,8 @@ public class Githubpanel extends Application{
         }
     }
 
-    private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String codsnip){
-        String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)";
+    private void saveProject(String projName,String langName, String bugtName,String despName,String sevName, String progname,String codsnip){
+        String sql = "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (
             Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
             PreparedStatement stmt = conn.prepareStatement(sql);) {
@@ -84,7 +83,8 @@ public class Githubpanel extends Application{
             stmt.setString(3, bugtName);
             stmt.setString(4, despName);
             stmt.setString(5, sevName);
-            stmt.setString(6, codsnip);
+            stmt.setString(6, progname);
+            stmt.setString(7, codsnip);
             stmt.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -95,8 +95,7 @@ public class Githubpanel extends Application{
         }
     }
 
-    @Override
-    public void start(Stage stage) {
+    public VBox getView(Stage stage) {
         String sql = "SELECT apikey FROM apikeys WHERE apiname='github'";
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
             Statement stmt = conn.createStatement();
@@ -198,10 +197,10 @@ public class Githubpanel extends Application{
             "-fx-background: #2e2f31;" +
             "-fx-background-color: #2e2f31;"
         );
-        scrollPane.setMinWidth(400);
-        scrollPane.setMaxWidth(400);
-        scrollPane.setMinHeight(300);
-        scrollPane.setMaxHeight(300);
+        scrollPane.setMinWidth(600);
+        scrollPane.setMaxWidth(600);
+        scrollPane.setMinHeight(430);
+        scrollPane.setMaxHeight(430);
 
         Button addissue = new Button("Add issue");
         addissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
@@ -231,9 +230,22 @@ public class Githubpanel extends Application{
                 Label despLabel = new Label("Issue Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
                 TextField desptextField = new TextField(descripofficial);
-                Label sevLabel = new Label("Issue's Severity: ");
+
+                Label sevLabel = new Label("Choose Your Severity: ");
                 sevLabel.setStyle("-fx-text-fill: white;");
-                
+                String bugCategories [] = { "Low", "Medium", "High", "Critical"};
+                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugCategories));
+                VBox severbox = new VBox(sevLabel,combo_box);
+
+                Label progLabel = new Label("Choose Progress: ");
+                progLabel.setStyle("-fx-text-fill: white;");
+                String progCategories [] = { "To Do", "In Progress", "Code Review"};
+                ComboBox<String> progcombo_box = new ComboBox<>(FXCollections.observableArrayList(progCategories));
+                VBox progbox = new VBox(progLabel,progcombo_box);
+
+                HBox chooseTime = new HBox(severbox,progbox);
+                chooseTime.setSpacing(10);
+
                 Label sniplabel = new Label("Enter Code Snippet (Optional): ");
                 sniplabel.setStyle("-fx-text-fill: white;");
                 TextArea sniptextArea = new TextArea();
@@ -241,12 +253,9 @@ public class Githubpanel extends Application{
                 sniptextArea.setWrapText(true); 
                 sniptextArea.setPrefRowCount(9);
             
-                String bugscategory[] = { "Low", "Medium", "High", "Critical"};
-                ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugscategory));
-            
                 Button projbtn = new Button("Add New Issue");
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
-                dialogVbox.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField,sevLabel,combo_box,sniplabel,sniptextArea,projbtn);
+                dialogVbox.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField,chooseTime,sniplabel,sniptextArea,projbtn);
             
                 projbtn.setOnAction(ev -> {
                     String projName = projtextField.getText();
@@ -254,6 +263,7 @@ public class Githubpanel extends Application{
                     String bugtName = bugtextField.getText();
                     String despName = desptextField.getText();
                     String sevName = combo_box.getValue();
+                    String progname = progcombo_box.getValue();
                     String codsnip = sniptextArea.getText();
 
                     if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null){
@@ -264,7 +274,7 @@ public class Githubpanel extends Application{
                         alert.showAndWait();
                         return;
                     }
-                    saveProject(projName,langName,bugtName,despName,sevName,codsnip);
+                    saveProject(projName,langName,bugtName,despName,sevName,progname,codsnip);
                     addIssue.close();
                 });
             
@@ -279,6 +289,7 @@ public class Githubpanel extends Application{
             }
         });
 
+        Gitmenu.setStyle("-fx-background-color: #eeeeee; -fx-text-fill: black; -fx-control-inner-background: #eeeeee;");
 
         VBox issueArea = new VBox(8,scrollPane, addissue);
         issueArea.setStyle(
@@ -286,22 +297,12 @@ public class Githubpanel extends Application{
             "-fx-control-inner-background: #2e2f31;"
         );
 
-        HBox searcharea = new HBox(Gitmenu, searchBtn);
+        HBox searcharea = new HBox(4,Gitmenu, searchBtn);
         HBox issuearae = new HBox(projectList, issueArea);
-        VBox root = new VBox(searcharea, issuearae);
-        root.setSpacing(15);
-        root.setPadding(new Insets(15));
-        root.setStyle("-fx-background-color: #2e2f31;");
-
-        Scene scene = new Scene(root, 700, 400);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image("/icons/patchflowtrim.png"));
-        stage.setTitle("Github Dashboard");
-        stage.setResizable(false);
-        stage.show();
+        VBox layout = new VBox(searcharea, issuearae);
+        layout.setPadding(new Insets(10));
+        
+        return layout;
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

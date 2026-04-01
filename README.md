@@ -9,9 +9,9 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="200" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />  <img height="150" alt="Image" src="https://github.com/user-attachments/assets/5d6e7c48-476f-4b71-966a-1f47b5e86631" />
 
-NOTE: Don't want to use Apache Kafka? Remove lines 86 to 98 and line 515 in Patchflow.java.
+NOTE: Don't want to use Apache Kafka? Remove lines 85 to 99 and line 521 to 525 in Patchflow.java.
 
 
 ## Table Of Contents
@@ -35,14 +35,10 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-Addressed many issues and vulnerabilities: 
-1. Vulnerabilities Patched: 
-  1.1 Common Weakness Enumeration: CWE-404
-  1.2 Common Weakness Enumeration: CWE-772
-  1.3 Common Weakness Enumeration: CWE-248
-  1.4 Common Weakness Enumeration: CWE-561
-
-2. Potential database resource leak patched
+New Kanban Board For Developers:-
+Users can now map workflow stages into columns to manage tasks. 
+By organising issues based on completion status they can plan 
+tasks more efficiently.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -51,7 +47,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 30-March-2026 00:45 HRS (Singapore Standard Time)
+Last Updated: 01-April-2026 22:20 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -166,4 +162,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.9.0 (Beta)
+Version 0.9.2 (Beta)
