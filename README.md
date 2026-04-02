@@ -11,7 +11,6 @@ Please consider donating some money to our organization to help fund this projec
 
 <img height="150" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />  <img height="150" alt="Image" src="https://github.com/user-attachments/assets/5d6e7c48-476f-4b71-966a-1f47b5e86631" />
 
-NOTE: Don't want to use Apache Kafka? Remove lines 85 to 99 and line 521 to 525 in Patchflow.java.
 
 
 ## Table Of Contents
@@ -35,10 +34,13 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-New Kanban Board For Developers:-
-Users can now map workflow stages into columns to manage tasks. 
-By organising issues based on completion status they can plan 
-tasks more efficiently.
+1. New Kanban Board For Developers:-
+   Users can now map workflow stages into columns to manage tasks. 
+   By organising issues based on completion status they can plan 
+   tasks more efficiently.
+
+2. Users can now disable kafka from running by disabling it in 
+   settings.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -47,7 +49,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 01-April-2026 22:20 HRS (Singapore Standard Time)
+Last Updated: 02-April-2026 22:50 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -108,6 +110,8 @@ By serching for your requested repository you can view the list of issues and se
 You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
 
 #### Apache Kafka
+NOTE: Don't want to use Apache Kafka? you can disable 'kafka' in settings.
+
 Kafka assists users in collecting details of issues that have been created and is stored in a JSON 
 (Subject to further review) file and for sending emails to user's email if it's severity is `Critical`.
 
@@ -162,4 +166,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.9.2 (Beta)
+Version 0.9.3 (Beta)

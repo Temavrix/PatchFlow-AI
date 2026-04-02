@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.net.URI;
+import javafx.util.Duration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.Desktop;
 
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
@@ -73,17 +76,29 @@ public class Patchflow extends Application {
                     apiname TEXT,
                     apikey TEXT);""";
 
+                String insertDefaults = """
+                    INSERT OR IGNORE INTO apikeys (apiname) VALUES
+                    ('gemini'),
+                    ('github'),
+                    ('openrouter'),
+                    ('kafka');""";
+
                 try {
                     stmt.execute(sql);
                     stmt.execute(sqlsec);
+                    stmt.execute(insertDefaults);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                   alert.setTitle("Error 000");
+                   alert.setContentText("Error 000: Patchflow DB init failed!");
+                   alert.show();
                 }
             } else {
                 loadProjectsFromDB();
             }
 
-            new Thread(() -> {
+            if(loadKafkaState()){
+                new Thread(() -> {
                 try {
                     new ProcessBuilder(
                         "wscript", "runKafka.vbs"
@@ -92,12 +107,13 @@ public class Patchflow extends Application {
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Error 0");
-                    alert.setContentText("Error 0: Kafka startup scripts not found!");
+                    alert.setTitle("Error 01");
+                    alert.setContentText("Error 01: Kafka startup scripts not found!");
                     alert.show();
                     });
                 }
             }).start();
+            }
 
         } catch (SQLException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -334,6 +350,42 @@ public class Patchflow extends Application {
         }
     }
 
+    private boolean loadKafkaState() {
+        String sql = "SELECT apikey FROM apikeys WHERE apiname='kafka'";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return "1".equals(rs.getString("apikey"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void updateKafkaState(boolean state) {
+        String sql = "UPDATE apikeys SET apikey=? WHERE apiname='kafka'";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (state) {
+                ps.setString(1, "1");
+            } else {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+            }
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     // Main Logic Code starts here
@@ -410,18 +462,66 @@ public class Patchflow extends Application {
                 Label githubLabel = new Label("Github Token: ");
                 githubLabel.setStyle("-fx-text-fill: white;");
                 TextField githubtextField = new TextField();
+
+                Label kafkaLabel = new Label("Activate Kafka: ");
+                kafkaLabel.setStyle("-fx-text-fill: white;");
+                kafkaLabel.setPadding(new Insets(5));
+                StackPane kToggle = new StackPane();
+                kToggle.setPrefSize(50, 25);
+
+                Rectangle background = new Rectangle(50, 25);
+                background.setArcWidth(25);
+                background.setArcHeight(25);
+                background.setStyle("-fx-fill: #555;");
+
+                Circle thumb = new Circle(10);
+                thumb.setTranslateX(-12);
+                thumb.setStyle("-fx-fill: white;");
+
+                kToggle.getChildren().addAll(background, thumb);
+
+                final boolean[] isOn = {false};
+
+                // Click handler
+                kToggle.setOnMouseClicked(event -> {
+                    isOn[0] = !isOn[0];
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(200), thumb);
+
+                    if (isOn[0]) {
+                        transition.setToX(12);
+                        background.setStyle("-fx-fill: #4caf50;");
+                    } else {
+                        transition.setToX(-12);
+                        background.setStyle("-fx-fill: #555;");
+                    }
+                    transition.play();
+                });
+
+                HBox kafkaToggleBox = new HBox();
+                kafkaToggleBox.getChildren().addAll(kafkaLabel, kToggle);
+
                 loadApiKeys(geminitextField, openrotextField, githubtextField);
 
+                boolean dbState = loadKafkaState();
+                isOn[0] = dbState;
+
+                if (dbState) {
+                    thumb.setTranslateX(12);
+                    background.setStyle("-fx-fill: #4caf50;");
+                }
+
                 Button savebtn = new Button("Save");
-                VBox settingLabel = new VBox(10);
-                settingLabel.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,savebtn);
-                settingLabel.setStyle("-fx-background-color: #454648;");
+                VBox settingWindow = new VBox(10);
+                settingWindow.setPadding(new Insets(10));
+                settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,kafkaToggleBox,savebtn);
+                settingWindow.setStyle("-fx-background-color: #454648;");
 
                 savebtn.setOnAction(ev -> {
                     String gemName = geminitextField.getText();
                     String openrouteName = openrotextField.getText();
                     String githtName = githubtextField.getText();
                     saveSettingsNow(gemName, openrouteName, githtName);
+                    updateKafkaState(isOn[0]);
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
@@ -430,7 +530,7 @@ public class Patchflow extends Application {
                     alert.showAndWait();
                 });
 
-                Scene settingScene = new Scene(settingLabel, 400, 250);
+                Scene settingScene = new Scene(settingWindow, 400, 300);
                 settingStage.setScene(settingScene);
                 settingStage.setTitle("Settings");
                 settingStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -519,11 +619,14 @@ public class Patchflow extends Application {
 
                     saveProject(projName,langName,bugtName,despName,sevName,progname,codsnip);
 
-                    String issueJson = String.format(
-                        "{\"project\":\"%s\",\"language\":\"%s\",\"issue\":\"%s\",\"severity\":\"%s\"}",
-                        projName, langName, bugtName, sevName
-                    );
-                    IssueProducer.sendIssue(issueJson);
+                    if(loadKafkaState()){
+                        String issueJson = String.format(
+                            "{\"project\":\"%s\",\"language\":\"%s\",\"issue\":\"%s\",\"severity\":\"%s\"}",
+                            projName, langName, bugtName, sevName
+                        );
+                        IssueProducer.sendIssue(issueJson);
+                    }
+                    
 
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
@@ -534,6 +637,7 @@ public class Patchflow extends Application {
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 addIssue.setScene(dialogScene);
+                addIssue.setTitle("Issue Ticket ");
                 addIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 addIssue.show();
             } else {
@@ -569,7 +673,7 @@ public class Patchflow extends Application {
         projectList.setItems(projects);
         projectList.setPrefWidth(350);
         issueListView.setPrefHeight(500);
-        projectList.setFixedCellSize(60);
+        projectList.setFixedCellSize(75);
 
         projectList.setCellFactory(listview -> new ListCell<String>() {
             @Override
@@ -590,6 +694,15 @@ public class Patchflow extends Application {
 
                 VBox text = new VBox(4, title, badge);
                 HBox row = new HBox(10, text);
+                row.setPadding(new Insets(10));
+                row.setStyle(
+                    "-fx-background-color: #3c3c3e;" +
+                    "-fx-background-radius: 8;" +
+                    "-fx-border-radius: 8;" +
+                    "-fx-border-width: 0 0 0 1;" +  
+                    "-fx-border-color: #808080;"
+                );
+                row.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(row);
                 setStyle("-fx-background-color: #2e2f31;");
             }
@@ -620,6 +733,7 @@ public class Patchflow extends Application {
             @Override
             protected void updateItem(Map<String, String> issue, boolean empty) {
                 super.updateItem(issue, empty);
+                String borderColor;
 
                 if (empty || issue == null) {
                     setGraphic(null);
@@ -640,6 +754,14 @@ public class Patchflow extends Application {
                     default -> dot.setFill(Color.GRAY);
                 }
 
+                switch (priorityText) {
+                    case "Critical" -> borderColor = "#FF0000";
+                    case "High" -> borderColor = "#FF4500";
+                    case "Medium" -> borderColor = "#FFD700";
+                    case "Low" -> borderColor = "#32CD32";
+                    default -> borderColor = "#808080";
+                }
+
                 Label title = new Label(titleText);
                 title.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15;");
 
@@ -649,6 +771,13 @@ public class Patchflow extends Application {
                 VBox text = new VBox(4, title, priority);
                 HBox row = new HBox(10, dot, text);
                 row.setPadding(new Insets(10));
+                row.setStyle(
+                    "-fx-background-color: #3c3c3e;" +
+                    "-fx-background-radius: 8;" +
+                    "-fx-border-radius: 8;" +
+                    "-fx-border-width: 0 0 0 1;" +  
+                    "-fx-border-color: " + borderColor + ";"
+                );
                 row.setAlignment(Pos.CENTER_LEFT);
 
                 setGraphic(row);
