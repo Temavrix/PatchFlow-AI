@@ -558,20 +558,25 @@ public class Patchflow extends Application {
                 addIssue = new Stage();
                 addIssue.initOwner(stage);
                 VBox dialogVbox = new VBox(10);
-                Label projLabel = new Label("Type Your Project: ");
+                Label projLabel = new Label("Enter Your Project: ");
                 projLabel.setStyle("-fx-text-fill: white;");
                 TextField projtextField = new TextField();
             
-                Label lanLabel = new Label("Type Project's Language: ");
+                Label lanLabel = new Label("Enter Project's Language: ");
                 lanLabel.setStyle("-fx-text-fill: white;");
                 TextField lantextField = new TextField();
             
-                Label bugLabel = new Label("Type Your Issue: ");
+                Label bugLabel = new Label("Enter Issue Title: ");
                 bugLabel.setStyle("-fx-text-fill: white;");
                 TextField bugtextField = new TextField();
-                Label despLabel = new Label("Type Your Description: ");
+
+                Label despLabel = new Label("Enter Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
-                TextField desptextField = new TextField();
+                TextArea desptextField = new TextArea();
+                desptextField.setPromptText("Enter your Issue Description here...");
+                desptextField.setWrapText(true); 
+                desptextField.setPrefRowCount(4);
+                desptextField.setPrefWidth(300);
 
                 Label sevLabel = new Label("Choose Your Severity: ");
                 sevLabel.setStyle("-fx-text-fill: white;");
@@ -594,10 +599,20 @@ public class Patchflow extends Application {
                 sniptextArea.setPromptText("Enter your code snippet here...");
                 sniptextArea.setWrapText(true); 
                 sniptextArea.setPrefRowCount(9);
+                sniptextArea.setPrefWidth(300);
+                VBox snipbox = new VBox(sniplabel,sniptextArea);
+                
+                VBox colone = new VBox(2,projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField);
+                VBox coltwo = new VBox(19,chooseTime,snipbox);
+                HBox colallign = new HBox(10,colone,coltwo);
             
                 Button projbtn = new Button("Add New Issue");
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
-                dialogVbox.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField,chooseTime,sniplabel,sniptextArea,projbtn);
+                Button aihelp = new Button("✦ AI Autofill");
+                aihelp.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+                HBox ctrlbutton = new HBox(10,projbtn,aihelp);
+
+                dialogVbox.getChildren().addAll(colallign,ctrlbutton);
             
                 projbtn.setOnAction(ev -> {
                     String projName = projtextField.getText();
@@ -608,11 +623,11 @@ public class Patchflow extends Application {
                     String progname = progcombo_box.getValue();
                     String codsnip = sniptextArea.getText();
 
-                    if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null){
+                    if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null || progname == null){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Missing Severity");
+                        alert.setTitle("Missing Fields");
                         alert.setHeaderText(null);
-                        alert.setContentText("Please select an issue severity.");
+                        alert.setContentText("Please fill all the fields (Code snippet is optional).");
                         alert.showAndWait();
                         return;
                     }
@@ -626,14 +641,81 @@ public class Patchflow extends Application {
                         );
                         IssueProducer.sendIssue(issueJson);
                     }
-                    
 
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
                     addIssue.close();
                 });
+
+                aihelp.setOnAction(ex -> {
+                    String langName = lantextField.getText();
+                    String bugtName = bugtextField.getText();
+                    String despName = desptextField.getText();
+                    
+                    if(langName.isEmpty() || bugtName.isEmpty()){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Missing Fields");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please fill Project's Language and Issue's Title.");
+                        alert.showAndWait();
+                        return;
+                    }
+
+                    desptextField.setText("Loading AI Response");
+                    sniptextArea.setText("Loading AI Response");
+
+                    new Thread(() -> {
+                        try {
+                            
+                            String prompt = """
+                                Just Give me a simple 10 line description of the following issue:
+
+                                Language Used: %s
+                                Issue Title: %s
+
+                                Please do not regugitate what I have told and just give me the description
+                                """.formatted(langName,bugtName);
+
+                            String response = AIService.sendPromptTwoFlash(prompt);
+                            desptextField.setText(response);
+                        
+                        } catch (Exception exx) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("AI Connection Problem");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Please ensure Gemini API is entered in settings and there is stable internet connection.");
+                            alert.showAndWait();
+                            return;
+                        }
+                    }).start();
+
+                    new Thread(() -> {
+                        try {
+                            String prompt = """
+                                Just Give me a simple code snippet for the following issue:
+
+                                Language Used: %s
+                                Issue Title: %s
+                                Issue Description: %s
+
+                                Please do not regugitate what I have told and just give me the code snippet
+                                """.formatted(langName,bugtName,despName);
+
+                            String response = AIService.sendPromptTwoFlash(prompt);
+                            sniptextArea.setText(response);
+                        
+                        } catch (Exception exx) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("AI Connection Problem");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Please ensure Gemini API is entered in settings and there is stable internet connection.");
+                            alert.showAndWait();
+                            return;
+                        }
+                    }).start();
+                });
             
-                Scene dialogScene = new Scene(dialogVbox, 300, 500);
+                Scene dialogScene = new Scene(dialogVbox, 630, 300);
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 addIssue.setScene(dialogScene);
@@ -997,7 +1079,7 @@ public class Patchflow extends Application {
                 mcpwindow = new Stage();
                 mcpwindow.initOwner(stage);
                 try {
-                    Mcpserver mcp = new Mcpserver(Projectdeslabel.getText(), descriptextArea.getText());
+                    Mcpserver mcp = new Mcpserver(Projectdeslabel.getText(), selectedIssues, descriptextArea.getText());
                     mcp.start(mcpwindow);
                     mcpwindow.setOnCloseRequest(ev -> mcpwindow = null);
                 } catch (Exception ex) {
@@ -1036,34 +1118,34 @@ public class Patchflow extends Application {
 
         // Loads issue details and displays it in UI
         issueListView.getSelectionModel().selectedItemProperty().addListener(
-                (obs, oldIssue, newIssue) -> {
-                    if (newIssue != null) {
-                        selectedIssues = newIssue.get("title");
-                        String[] bug = loadBugDesp(newIssue.get("title"));
-                        Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
-                        Projectdeslabel.setEditable(false);
-                        descriptextArea.setText("Issue Description: \n"+ bug[2]);
-                        descriptextArea.setEditable(false);
+            (obs, oldIssue, newIssue) -> {
+                if (newIssue != null) {
+                    selectedIssues = newIssue.get("title");
+                    String[] bug = loadBugDesp(newIssue.get("title"));
+                    Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
+                    Projectdeslabel.setEditable(false);
+                    descriptextArea.setText("Issue Description: \n"+ bug[2]);
+                    descriptextArea.setEditable(false);
 
-                        bugSeverity.setText("Issue Severity: " + bug[3]);
-                        String editDesvarone = bugSeverity.getText().replace("Issue Severity: ", "");
-                        switch (editDesvarone) {
-                            case "Critical" -> dottwo.setFill(Color.RED);
-                            case "High" -> dottwo.setFill(Color.ORANGERED);
-                            case "Medium" -> dottwo.setFill(Color.GOLD);
-                            case "Low" -> dottwo.setFill(Color.LIMEGREEN);
-                            default -> dottwo.setFill(Color.GRAY);
-                        }
+                    bugSeverity.setText("Issue Severity: " + bug[3]);
+                    String editDesvarone = bugSeverity.getText().replace("Issue Severity: ", "");
+                    switch (editDesvarone) {
+                        case "Critical" -> dottwo.setFill(Color.RED);
+                        case "High" -> dottwo.setFill(Color.ORANGERED);
+                        case "Medium" -> dottwo.setFill(Color.GOLD);
+                        case "Low" -> dottwo.setFill(Color.LIMEGREEN);
+                        default -> dottwo.setFill(Color.GRAY);
+                    }
 
-                        if (bug[4] == null || bug[4].trim().isEmpty()){
-                            codsnippettextArea.setText("");
-                            codsnippettextArea.setEditable(false);
-                        } else{
-                            codsnippettextArea.setText("Code Snippet: \n\n" + bug[4]);
-                            codsnippettextArea.setEditable(false);
-                        }
+                    if (bug[4] == null || bug[4].trim().isEmpty()){
+                        codsnippettextArea.setText("");
+                        codsnippettextArea.setEditable(false);
+                    } else{
+                        codsnippettextArea.setText("Code Snippet: \n\n" + bug[4]);
+                        codsnippettextArea.setEditable(false);
                     }
                 }
+            }
         );
 
 

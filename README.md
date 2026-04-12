@@ -1,6 +1,6 @@
 # PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56" />
 
-###### An Issue and Bug tracker made easy for solo developers  
+###### An AI Issue and Bug tracker made easy for solo developers  
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Temavrix/NexaView) [![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://github.com/Temavrix/NexaView) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Temavrix/NexaView/issues)
 
@@ -9,7 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/f49a9290-b664-494d-b2c5-766a92f581b0" />  <img height="150" alt="Image" src="https://github.com/user-attachments/assets/5d6e7c48-476f-4b71-966a-1f47b5e86631" />
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/ee5898e7-23d7-49dc-89f8-90a8de79c021" />  <img height="150" alt="Image" src="https://github.com/user-attachments/assets/5d6e7c48-476f-4b71-966a-1f47b5e86631" />
 
 
 
@@ -18,9 +18,9 @@ Please consider donating some money to our organization to help fund this projec
 - [Introducing PatchFlow](#introducing-patchflow)
 - [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
 - [Features Of PatchFlow](#features)
+  * [AI](#ai)
   * [Github Issues](#github-issues)
   * [Apache Kafka](#apache-kafka)
-  * [AI](#ai)
 - [Issues](#issues)
 - [License](#license)
 
@@ -34,13 +34,11 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. New Kanban Board For Developers:-
-   Users can now map workflow stages into columns to manage tasks. 
-   By organising issues based on completion status they can plan 
-   tasks more efficiently.
+1. Additional AI integrations
+   1.1 Users can now auto-fill fields when creating a new issue using AI.
+   1.2 Adjustments to parameters to ensure AI regugitate less in responses.
 
-2. Users can now disable kafka from running by disabling it in 
-   settings.
+2. Revamped 'New Issue Ticket' window.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -49,7 +47,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 02-April-2026 22:50 HRS (Singapore Standard Time)
+Last Updated: 12-April-2026 13:30 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -63,15 +61,12 @@ It's Simplicity, Speed, Clean UI and Developer-first features make this suitable
 
 ## Running PatchFlow On Your Computer
 
-#### Installing Maven and Java
-First check if Java and Maven is installed on your system.
-
-##### Install Maven using Chocolatey:  
-Open PowerShell as Administrator.
+#### Installing Maven and Java:
+Install Maven using Chocolatey using PowerShell as Administrator:
 ```
 choco install maven -y
 ```
-##### Check if Maven and Java is installed:  
+#### Check if Maven and Java is installed:  
 ```
 java --version
 
@@ -79,17 +74,15 @@ mvn -version
 ```
 If both commands work then you're ready.
 
-#### Setting-up Maven Project
-Inside project root (where pom.xml is located):
+#### Setting-up Maven Project:
+Inside project root (where pom.xml is located) and then run Patchflow:
 ```
 mvn clean install
-```
-Then run Patchflow:
-```
+
 mvn javafx:run (OR) mvn clean javafx:run
 ```
 
-#### Issues when setting up Maven
+#### Issues when setting up Maven:
 Check required version in pom.xml:
 ```
 <maven.compiler.source>23</maven.compiler.source>
@@ -100,7 +93,38 @@ must fix by installing correct JDK.
 
 ## Features
 
-#### Github Issues
+### AI
+
+#### 1. Auto-Filling Capabilities
+When creating a new issue you can now ask AI to assist you in filling issue's description and issue's code snippet.  
+User will need to fill project's language and issue's title for the AI to provide description and code snippet.
+
+Before: 
+
+<img height="100" alt="Image" src="https://github.com/user-attachments/assets/ad1c79de-bfd8-40a4-80c2-1b332ee0bffc" />  
+
+After:
+
+<img height="100" alt="Image" src="https://github.com/user-attachments/assets/f0f45030-daf7-4942-a430-5ea276c3b166" />
+
+You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and paste it in settings under `Gemini API` to ask for assistance.
+
+
+#### 2. AI Assistance
+Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
+
+You can choose the model that you want to chat with: 
+
+<img height="100" alt="Image" src="https://github.com/user-attachments/assets/bdcb6571-85db-43d3-b991-3ea6deed8bdf" />
+
+Select the model and you can get assistance to your questions: 
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/6a2ee934-4a13-4580-8d20-a022b85f09de" />
+
+You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and a OpenRouter token [here](https://openrouter.ai/workspaces/default/keys) then paste it in settings under `Gemini API` and `OpenRouter API` repectively to access the models.
+
+
+### Github Issues
 With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.
 
 <img height="150" alt="Image" src="https://github.com/user-attachments/assets/e61d41df-c4a9-48a0-94d6-e5fbeb88e11c" />
@@ -109,7 +133,7 @@ By serching for your requested repository you can view the list of issues and se
 
 You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
 
-#### Apache Kafka
+### Apache Kafka
 NOTE: Don't want to use Apache Kafka? you can disable 'kafka' in settings.
 
 Kafka assists users in collecting details of issues that have been created and is stored in a JSON 
@@ -135,19 +159,6 @@ is 'Critical' then it will send an email to your email address.
 
 NOTE: To send an email, you will need to register in your [Google Account](https://myaccount.google.com/apppasswords) and paste your app password in line 35 of IssueConsumer.java.
 
-#### AI
-Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
-
-You can choose the model that you want to chat with: 
-
-<img height="100" alt="Image" src="https://github.com/user-attachments/assets/bdcb6571-85db-43d3-b991-3ea6deed8bdf" />
-
-Select the model and you can get assistance to your questions: 
-
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/6a2ee934-4a13-4580-8d20-a022b85f09de" />
-
-You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and a OpenRouter token [here](https://openrouter.ai/workspaces/default/keys) then paste it in settings under `Gemini API` and `OpenRouter API` repectively to access the models.
-
 
 ## Issues
 As this project is still in constant development, if you run into any issues while operating or have any suggestions or features, please feel free to drop by our [issues](https://github.com/Temavrix/PatchFlow/issues) section and open a issue and we'll respond within 2-4 working days, Thank you for your understanding.
@@ -166,4 +177,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.9.3 (Beta)
+Version 0.9.8 (Beta)

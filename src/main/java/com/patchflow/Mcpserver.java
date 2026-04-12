@@ -18,10 +18,12 @@ import javafx.stage.Stage;
 
 public class Mcpserver extends Application {
 
+    public static String buglang;
     public static String bugtitle;
     public static String bugdesc;
 
-    public Mcpserver(String bugtitle, String bugdesc) {
+    public Mcpserver(String buglang, String bugtitle, String bugdesc) {
+        this.buglang = buglang;
         this.bugtitle = bugtitle;
         this.bugdesc = bugdesc;
     }
@@ -32,16 +34,18 @@ public class Mcpserver extends Application {
         As a senior software engineer,
         The user has the following issue:
 
-        ISSUE TITLE AND LANGUAGE USED:
-        %s
+        Project Title and Language used: %s
 
-        ISSUE DESCRIPTION:
-        %s
+        Issue Title: %s
 
-        Provide:
-        1. Step-by-step solution
-        2. Suggested simple code to start from
-        """.formatted(bugtitle,bugdesc);
+        Issue Description: %s
+
+        Please do not regugitate what I have told you and provide:
+        1. Simple step-by-step solution
+        2. Simple sample code example
+
+        Please Do not use tables or bullet points and do not regugitate what I have told you.
+        """.formatted(buglang, bugtitle, bugdesc);
     }
 
 
@@ -58,12 +62,9 @@ public class Mcpserver extends Application {
         AIWindow.getStyleClass().add("dark-text-area");
         AIWindow.setEditable(false);
 
-
         ComboBox<String> AImenu = new ComboBox<>();
         AImenu.getItems().addAll("GPT-OSS-120B", "GPT-OSS-20B", "Gemini-2.5-flash", "Gemini-3.5-flash", "Gemma-3n-e2b-it");
-
         AImenu.setPromptText("Choose AI Model");
-
         Map<String, Image> iconMap = new HashMap<>();
 
         iconMap.put("GPT-OSS-120B", new Image(getClass().getResource("/icons/chatgpt.png").toExternalForm()));
@@ -127,10 +128,7 @@ public class Mcpserver extends Application {
                             String response = AIService.generateResponseGPTone(prompt);
                         
                             // Update UI safely
-                            javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText(response)
-                            );
-                        
+                            javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
                                     AIWindow.setText("Error: " + ex.getMessage())
@@ -146,10 +144,7 @@ public class Mcpserver extends Application {
                             String response = AIService.generateResponseGPTtwenty(prompt);
                         
                             // Update UI safely
-                            javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText(response)
-                            );
-                        
+                            javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
                                     AIWindow.setText("Error: " + ex.getMessage())
@@ -165,10 +160,7 @@ public class Mcpserver extends Application {
                             String response = AIService.sendPromptTwoFlash(prompt);
                         
                             // Update UI safely
-                            javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText(response)
-                            );
-                        
+                            javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
                                     AIWindow.setText("Error: " + ex.getMessage())
@@ -183,11 +175,8 @@ public class Mcpserver extends Application {
                             String prompt = buildPrompt();
                             String response = AIService.sendPromptThreeFlash(prompt);
                         
-                            // Update UI safely
-                            javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText(response)
-                            );
-                        
+                           // Update UI safely
+                            javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
                                     AIWindow.setText("Error: " + ex.getMessage())
@@ -203,10 +192,7 @@ public class Mcpserver extends Application {
                             String response = AIService.sendPromptGemmaB(prompt);
                         
                             // Update UI safely
-                            javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText(response)
-                            );
-                        
+                            javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
                                     AIWindow.setText("Error: " + ex.getMessage())
@@ -237,5 +223,4 @@ public class Mcpserver extends Application {
     public static void main(String[] args){
         launch(args);
     }
-    
 }

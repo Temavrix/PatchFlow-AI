@@ -19,22 +19,19 @@ import javafx.scene.control.Alert;
 public class AIService {
 
     private static String OPEN_API_KEY;
-    private static String GEMINI_API_KEY;
-
+    private static String GEMINI_API_KEY; 
     static {
         loadApiKeys();
     }
 
-    private static void loadApiKeys() {
-
+    private static void loadApiKeys() { 
         String sql = "SELECT apiname, apikey FROM apikeys";
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()) {
-
+            while (rs.next()) { 
                 String name = rs.getString("apiname");
                 String key = rs.getString("apikey");
 
@@ -80,15 +77,10 @@ public class AIService {
         JsonObject body = new JsonObject();
         body.add("contents", contents);
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(10))
-                .build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ENDPOINTTWO))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINTTWO)).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString())).build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -97,9 +89,7 @@ public class AIService {
         if (!jsonResponse.has("candidates")) {
             return "API Error: " + jsonResponse;
         }
-
         JsonArray candidates = jsonResponse.getAsJsonArray("candidates");
-
         return candidates.get(0).getAsJsonObject()
                 .getAsJsonObject("content")
                 .getAsJsonArray("parts")
@@ -126,15 +116,10 @@ public class AIService {
         JsonObject body = new JsonObject();
         body.add("contents", contents);
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(10))
-                .build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ENDPOINTTHREE))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINTTHREE)).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString())).build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -143,9 +128,7 @@ public class AIService {
         if (!jsonResponse.has("candidates")) {
             return "API Error: " + jsonResponse;
         }
-
         JsonArray candidates = jsonResponse.getAsJsonArray("candidates");
-
         return candidates.get(0).getAsJsonObject()
                 .getAsJsonObject("content")
                 .getAsJsonArray("parts")
@@ -169,35 +152,26 @@ public class AIService {
             JsonObject body = new JsonObject();
             body.addProperty("model", "google/gemma-3n-e2b-it:free");
             body.add("messages", messages);
+            body.addProperty("max_tokens", 200);
+            body.addProperty("temperature", 0.5);
         
-            // Enable reasoning
-            JsonObject reasoning = new JsonObject();
-            reasoning.addProperty("enabled", true);
-            body.add("reasoning", reasoning);
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
         
-            HttpClient client = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(15))
-                    .build();
-        
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(ENDPOINT))
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINT))
                     .header("Authorization", "Bearer " + OPEN_API_KEY)
                     .header("Content-Type", "application/json")
-                    .header("HTTP-Referer", "http://localhost") // Optional
+                    .header("HTTP-Referer", "http://localhost")
                     .header("X-Title", "MyJavaApp") // Optional
                     .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                     .build();
         
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         
-            JsonObject jsonResponse =
-                    JsonParser.parseString(response.body()).getAsJsonObject();
+            JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         
             if (!jsonResponse.has("choices")) {
                 return "API Error:\n" + jsonResponse;
             }
-    
             return jsonResponse
                     .getAsJsonArray("choices")
                     .get(0).getAsJsonObject()
@@ -228,18 +202,12 @@ public class AIService {
         JsonObject body = new JsonObject();
         body.addProperty("model", "openai/gpt-oss-120b:free");
         body.add("messages", messages);
+        body.addProperty("max_tokens", 200);
+        body.addProperty("temperature", 0.5);
 
-        // Enable reasoning (optional — remove if not needed)
-        JsonObject reasoning = new JsonObject();
-        reasoning.addProperty("enabled", true);
-        body.add("reasoning", reasoning);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(15))
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ENDPOINT))
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINT))
                 .header("Authorization", "Bearer " + OPEN_API_KEY)
                 .header("Content-Type", "application/json")
                 .header("HTTP-Referer", "http://localhost") // Optional
@@ -247,16 +215,13 @@ public class AIService {
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        JsonObject jsonResponse =
-                JsonParser.parseString(response.body()).getAsJsonObject();
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
 
         if (!jsonResponse.has("choices")) {
             return "API Error:\n" + jsonResponse;
         }
-
         return jsonResponse
                 .getAsJsonArray("choices")
                 .get(0).getAsJsonObject()
@@ -287,18 +252,12 @@ public class AIService {
         JsonObject body = new JsonObject();
         body.addProperty("model", "openai/gpt-oss-20b:free");
         body.add("messages", messages);
+        body.addProperty("max_tokens", 200);
+        body.addProperty("temperature", 0.5);
 
-        // Enable reasoning (optional — remove if not needed)
-        JsonObject reasoning = new JsonObject();
-        reasoning.addProperty("enabled", true);
-        body.add("reasoning", reasoning);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(15))
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ENDPOINT))
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINT))
                 .header("Authorization", "Bearer " + OPEN_API_KEY)
                 .header("Content-Type", "application/json")
                 .header("HTTP-Referer", "http://localhost") // Optional
@@ -306,16 +265,13 @@ public class AIService {
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        JsonObject jsonResponse =
-                JsonParser.parseString(response.body()).getAsJsonObject();
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
 
         if (!jsonResponse.has("choices")) {
             return "API Error:\n" + jsonResponse;
         }
-
         return jsonResponse
                 .getAsJsonArray("choices")
                 .get(0).getAsJsonObject()
