@@ -39,6 +39,12 @@ public class Githubpanel{
     private final ObservableList<String> gitprojects = FXCollections.observableArrayList();
     private final Map<String, Map<String, String>> githubissues = new HashMap<>();
     ListView<String> projectList = new ListView<>(gitprojects);
+    private Patchflow patchflow;
+
+
+    public Githubpanel(Patchflow patchflow) {
+        this.patchflow = patchflow;
+    }
 
     private void loadProjectsFromGithub(String projName) {
         gitprojects.clear();
@@ -86,6 +92,7 @@ public class Githubpanel{
             stmt.setString(6, progname);
             stmt.setString(7, codsnip);
             stmt.executeUpdate();
+            patchflow.loadProjectsFromDB();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 0161");
@@ -275,6 +282,7 @@ public class Githubpanel{
                         return;
                     }
                     saveProject(projName,langName,bugtName,despName,sevName,progname,codsnip);
+                    patchflow.refreshIssues();
                     addIssue.close();
                 });
             

@@ -54,6 +54,8 @@ public class Patchflow extends Application {
     private final Map<String, Integer> projectissues = new HashMap<>();
     ListView<String> projectList = new ListView<>(projects);
     ListView<Map<String, String>> issueListView = new ListView<>();
+    String descriptext, codeSnippettext;
+    Patchflow current = this;
 
     // Routine checks when starting the application
     public void routineChecks(String tableName){
@@ -362,7 +364,11 @@ public class Patchflow extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0090");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 0090: Kafka state loading failed!!!");             
+            alert.showAndWait();
         }
         return false;
     }
@@ -382,7 +388,11 @@ public class Patchflow extends Application {
             ps.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error 0091");
+            alert.setHeaderText(null);
+            alert.setContentText("Error 0091: Kakfka state saving failed!!!");             
+            alert.showAndWait();
         }
     }
 
@@ -405,11 +415,15 @@ public class Patchflow extends Application {
         Label sidetitle = new Label("PatchFlow");
         sidetitle.setStyle("-fx-text-fill: white; -fx-font-size: 18;");
 
+        Button bugBtn = new Button("Add Issue");
+        bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        bugBtn.setPrefWidth(80);
+
         Button theBoardBtn = new Button("Board");
         theBoardBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         theBoardBtn.setPrefWidth(80);
 
-        Button viewIssuesBtn = new Button("View Issues");
+        Button viewIssuesBtn = new Button("Issues");
         viewIssuesBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         viewIssuesBtn.setPrefWidth(80);
 
@@ -542,15 +556,11 @@ public class Patchflow extends Application {
 
         // Button to open github window
         githubtton.setOnAction(e -> {
-            Githubpanel githubWindow = new Githubpanel();
+            Githubpanel githubWindow = new Githubpanel(this);
             VBox githubView = githubWindow.getView(stage);
 
             contentArea.getChildren().setAll(githubView);
         });
-
-        Button bugBtn = new Button("Add Issue");
-        bugBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
-        bugBtn.setPrefWidth(80);
 
         // Button to add new issue
         bugBtn.setOnAction(e -> {
@@ -900,14 +910,28 @@ public class Patchflow extends Application {
         Projectdeslabel.setMaxHeight(60);
         Projectdeslabel.getStyleClass().add("dark-text-area");
 
-        TextArea descriptextArea = new TextArea();
-        descriptextArea.setWrapText(true);
-        descriptextArea.getStyleClass().add("dark-text-area");
-        descriptextArea.setPrefRowCount(4);
+        Button viewDescription = new Button("Description");
+        viewDescription.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        Button viewCode = new Button("Code Snippet");
+        viewCode.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
-        TextArea codsnippettextArea = new TextArea();
-        codsnippettextArea.getStyleClass().add("dark-text-area-one");
-        codsnippettextArea.setPrefRowCount(9);
+        Label currentViewing = new Label();
+        currentViewing.setStyle("-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;");
+
+        TextArea viewingtextArea = new TextArea();
+        viewingtextArea.setWrapText(true);
+        viewingtextArea.getStyleClass().add("dark-text-area");
+        viewingtextArea.setPrefRowCount(13);
+
+        viewDescription.setOnAction(e -> {
+            currentViewing.setText("Description: ");
+            viewingtextArea.setText(descriptext);
+        });
+
+        viewCode.setOnAction(e -> {
+            currentViewing.setText("Code Snippet: ");
+            viewingtextArea.setText(codeSnippettext);
+        });
 
         Label bugSeverity = new Label();
         bugSeverity.setStyle("-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;");
@@ -915,6 +939,7 @@ public class Patchflow extends Application {
 
         Button ediissue = new Button("Edit Issue");
         ediissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+
         Button remissue = new Button("Close Issue");
         remissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         Rectangle dottwo = new Rectangle(8, 8);
@@ -929,8 +954,7 @@ public class Patchflow extends Application {
             String selectedProject = projectList.getSelectionModel().getSelectedItem();
             if (selectedProject == null) return;
 
-            String descriptionText = descriptextArea.getText();
-            descriptionText = descriptionText.replace("Issue Description: \n", "");
+            String descriptionText = descriptext;
 
             String severityText = bugSeverity.getText();
             severityText = severityText.replace("Issue Severity: ","");
@@ -944,21 +968,31 @@ public class Patchflow extends Application {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 removeBug(selectedProject, selectedIssues, descriptionText, severityText);
                 projectList.getSelectionModel().select(selectedProject);
+                Projectdeslabel.setText("Select a Project");
                 refreshIssues();
             }
             
         });
 
-        
-        // Hides description when issue not selected
-        descriptextArea.visibleProperty().bind(
+        currentViewing.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
         );
 
-        // Hides code snippet when issue not selected
-        codsnippettextArea.visibleProperty().bind(
+        viewingtextArea.visibleProperty().bind(
+        Projectdeslabel.textProperty()
+                .isEqualTo("Select a Project")
+                .not()
+        );
+
+        viewDescription.visibleProperty().bind(
+        Projectdeslabel.textProperty()
+                .isEqualTo("Select a Project")
+                .not()
+        );
+
+        viewCode.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
@@ -1011,16 +1045,14 @@ public class Patchflow extends Application {
                 Label despLabel = new Label(" Edit Your Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
                 TextArea desptextField = new TextArea();
-                String editDesvar = descriptextArea.getText().replace("Issue Description: \n", "");
-                desptextField.setText(editDesvar);
+                desptextField.setText(descriptext);
                 desptextField.setWrapText(true);
                 desptextField.setPrefRowCount(5);
 
                 Label codelabel = new Label("Edit Code Snippet: ");
                 codelabel.setStyle("-fx-text-fill: white;");
                 TextArea codetextfield = new TextArea();
-                String editcode = codsnippettextArea.getText().replace("Code Snippet: \n\n", "");
-                codetextfield.setText(editcode);
+                codetextfield.setText(codeSnippettext);
                 codetextfield.setWrapText(true);
                 codetextfield.setPrefRowCount(5);
 
@@ -1028,6 +1060,7 @@ public class Patchflow extends Application {
                 sevLabel.setStyle("-fx-text-fill: white;");
                 String bugCategories [] = { "Low", "Medium", "High", "Critical"};
                 ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(bugCategories));
+                combo_box.setValue(bugSeverity.getText().replace("Issue Severity: ", ""));
                 VBox severbox = new VBox(sevLabel,combo_box);
 
                 Label progLabel = new Label("Choose Progress: ");
@@ -1059,6 +1092,17 @@ public class Patchflow extends Application {
                     }
 
                     editProject(despName,sevName,codeName,progName,selectedBug);
+                    refreshIssues();
+
+                    Platform.runLater(() -> {
+                        for (Map<String, String> item : issueListView.getItems()) {
+                            if (item.get("title").equals(selectedBug)) {
+                                issueListView.getSelectionModel().select(item);
+                                break;
+                            }
+                        }
+                    });
+
                     updateIssue.close();
                 });
 
@@ -1079,7 +1123,7 @@ public class Patchflow extends Application {
                 mcpwindow = new Stage();
                 mcpwindow.initOwner(stage);
                 try {
-                    Mcpserver mcp = new Mcpserver(Projectdeslabel.getText(), selectedIssues, descriptextArea.getText());
+                    Mcpserver mcp = new Mcpserver(Projectdeslabel.getText(), selectedIssues, descriptext);
                     mcp.start(mcpwindow);
                     mcpwindow.setOnCloseRequest(ev -> mcpwindow = null);
                 } catch (Exception ex) {
@@ -1100,8 +1144,9 @@ public class Patchflow extends Application {
         HBox ledlight = new HBox(8,bugSeverity,dottwo);
         ledlight.setAlignment(Pos.CENTER_LEFT);
         HBox options = new HBox(8,ediissue,remissue,mcpButton);
+        HBox viewing = new HBox(8, viewDescription, viewCode);
 
-        VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,descriptextArea,codsnippettextArea,ledlight,options);
+        VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,viewing,currentViewing,viewingtextArea,ledlight,options);
         detailsColumn.setPadding(new Insets(10));
         detailsColumn.setSpacing(10);
         detailsColumn.setPrefWidth(400);
@@ -1124,8 +1169,10 @@ public class Patchflow extends Application {
                     String[] bug = loadBugDesp(newIssue.get("title"));
                     Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
                     Projectdeslabel.setEditable(false);
-                    descriptextArea.setText("Issue Description: \n"+ bug[2]);
-                    descriptextArea.setEditable(false);
+                    descriptext = bug[2];
+                    viewingtextArea.setText(bug[2]);
+                    viewingtextArea.setEditable(false);
+                    currentViewing.setText("Description: ");
 
                     bugSeverity.setText("Issue Severity: " + bug[3]);
                     String editDesvarone = bugSeverity.getText().replace("Issue Severity: ", "");
@@ -1138,11 +1185,9 @@ public class Patchflow extends Application {
                     }
 
                     if (bug[4] == null || bug[4].trim().isEmpty()){
-                        codsnippettextArea.setText("");
-                        codsnippettextArea.setEditable(false);
+                        codeSnippettext = "";
                     } else{
-                        codsnippettextArea.setText("Code Snippet: \n\n" + bug[4]);
-                        codsnippettextArea.setEditable(false);
+                        codeSnippettext = bug[4];
                     }
                 }
             }

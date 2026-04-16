@@ -34,11 +34,9 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Additional AI integrations
-   1.1 Users can now auto-fill fields when creating a new issue using AI.
-   1.2 Adjustments to parameters to ensure AI regugitate less in responses.
+1. Revamped 'Issue Details' window to view description and code snippets.
 
-2. Revamped 'New Issue Ticket' window.
+2. Bug fixes, UX fixes and improvements.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -47,7 +45,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 12-April-2026 13:30 HRS (Singapore Standard Time)
+Last Updated: 16-April-2026 16:20 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
