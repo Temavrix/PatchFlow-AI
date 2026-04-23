@@ -46,19 +46,23 @@ public class Patchflow extends Application {
     String selectedIssues;
     private Stage addIssue;
     private Stage updateIssue;
+    private Stage shareIssueStage;
     private Stage mcpwindow;
     private Stage settingStage;
+    private final Object DB_LOCK = new Object();
     StackPane contentArea = new StackPane();
     HBox homeView;
+    User user = null;
     private final ObservableList<String> projects = FXCollections.observableArrayList();
     private final Map<String, Integer> projectissues = new HashMap<>();
     ListView<String> projectList = new ListView<>(projects);
     ListView<Map<String, String>> issueListView = new ListView<>();
-    String descriptext, codeSnippettext;
+    String descriptext, codeSnippettext, projectTemp, languageTemp;
     Patchflow current = this;
 
     // Routine checks when starting the application
     public void routineChecks(String tableName){
+        FirebaseService.init();
         try(Connection conn = DriverManager.getConnection(DB_URL);
         Statement stmt = conn.createStatement();
         ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null);){
@@ -83,6 +87,8 @@ public class Patchflow extends Application {
                     ('gemini'),
                     ('github'),
                     ('openrouter'),
+                    ('fireemail'),
+                    ('firepass'),
                     ('kafka');""";
 
                 try {
@@ -124,6 +130,25 @@ public class Patchflow extends Application {
             alert.setContentText("Error 001: Routine checks failed!!!");             
             alert.showAndWait();
         }
+    }
+
+    public static Map<String, String> getFirebaseCredentials() {
+        String sql = "SELECT apiname, apikey FROM apikeys WHERE apiname IN ('fireemail', 'firepass')";
+        Map<String, String> creds = new HashMap<>();
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                creds.put(rs.getString("apiname"), rs.getString("apikey"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return creds;
     }
 
 
@@ -295,40 +320,49 @@ public class Patchflow extends Application {
     }
 
     // Save information from settings UI in database
-    public void saveSettingsNow(String gemName, String openrouteName, String githtName){
-        String sql = "UPDATE apikeys SET apikey = ? WHERE apiname = 'gemini'";
-        String sqlone = "UPDATE apikeys SET apikey = ? WHERE apiname = 'github'";
-        String sqltwo = "UPDATE apikeys SET apikey = ? WHERE apiname = 'openrouter'";
+    public synchronized void saveSettingsNow(String gemName, String openrouteName, String githtName, String emailName, String passName) {
 
-        try (
-            Connection conn = DriverManager.getConnection(DB_URL);
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            PreparedStatement stmtone = conn.prepareStatement(sqlone);
-            PreparedStatement stmttwo = conn.prepareStatement(sqltwo);) {
+    String sql = "UPDATE apikeys SET apikey = ? WHERE apiname = ?";
 
-            stmt.setString(1, gemName);
-            stmtone.setString(1, githtName);
-            stmttwo.setString(1, openrouteName);
+    try (Connection conn = DriverManager.getConnection(DB_URL);
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.executeUpdate();
-            stmtone.executeUpdate();
-            stmttwo.executeUpdate();
+        conn.createStatement().execute("PRAGMA busy_timeout = 5000");
+        conn.setAutoCommit(false);
 
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 008");
-            alert.setHeaderText(null);
-            alert.setContentText("Error 008: Saving of API failed!!!");             
-            alert.showAndWait();
-        }
+        // updates...
+        stmt.setString(1, gemName);
+        stmt.setString(2, "gemini");
+        stmt.executeUpdate();
 
+        stmt.setString(1, githtName);
+        stmt.setString(2, "github");
+        stmt.executeUpdate();
+
+        stmt.setString(1, openrouteName);
+        stmt.setString(2, "openrouter");
+        stmt.executeUpdate();
+
+        stmt.setString(1, emailName);
+        stmt.setString(2, "fireemail");
+        stmt.executeUpdate();
+
+        stmt.setString(1, passName);
+        stmt.setString(2, "firepass");
+        stmt.executeUpdate();
+
+        conn.commit();
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     //load apikeys from database to show in settings UI
-    private void loadApiKeys(TextField geminitextField, TextField openrotextField, TextField githubtextField){
+    private void loadApiKeys(TextField geminitextField, TextField openrotextField, TextField githubtextField, TextField emailtextField, TextField passtextField){
         String sql = "SELECT apiname, apikey FROM apikeys";
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Patchflow.db");
+        try (Connection conn = DriverManager.getConnection(DB_URL);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -340,8 +374,11 @@ public class Patchflow extends Application {
                     case "gemini" -> geminitextField.setText(key);
                     case "openrouter" -> openrotextField.setText(key);
                     case "github" -> githubtextField.setText(key);
+                    case "fireemail" -> emailtextField.setText(key);
+                    case "firepass" -> passtextField.setText(key);
                 }
             }
+
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -427,6 +464,10 @@ public class Patchflow extends Application {
         viewIssuesBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         viewIssuesBtn.setPrefWidth(80);
 
+        Button teamBtn = new Button("Team");
+        teamBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        teamBtn.setPrefWidth(80);
+
         Button analyticsBtn = new Button("Analytics");
         analyticsBtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         analyticsBtn.setPrefWidth(80);
@@ -450,6 +491,14 @@ public class Patchflow extends Application {
             VBox boardpanelView = Boardpanel.getView();
 
             contentArea.getChildren().setAll(boardpanelView);
+        });
+
+        // Button to open team window
+        teamBtn.setOnAction(e -> {
+            Team Team = new Team(this);
+            VBox team = Team.getView();
+
+            contentArea.getChildren().setAll(team);
         });
 
         // Button to open analytics window
@@ -476,6 +525,14 @@ public class Patchflow extends Application {
                 Label githubLabel = new Label("Github Token: ");
                 githubLabel.setStyle("-fx-text-fill: white;");
                 TextField githubtextField = new TextField();
+
+                Label emailLabel = new Label("Your Email (For Accessing Online DB):");
+                emailLabel.setStyle("-fx-text-fill: white;");
+                TextField emailtextField = new TextField();
+
+                Label passLabel = new Label("Your Password (For Accessing Online DB):");
+                passLabel.setStyle("-fx-text-fill: white;");
+                TextField passtextField = new TextField();
 
                 Label kafkaLabel = new Label("Activate Kafka: ");
                 kafkaLabel.setStyle("-fx-text-fill: white;");
@@ -514,7 +571,7 @@ public class Patchflow extends Application {
                 HBox kafkaToggleBox = new HBox();
                 kafkaToggleBox.getChildren().addAll(kafkaLabel, kToggle);
 
-                loadApiKeys(geminitextField, openrotextField, githubtextField);
+                loadApiKeys(geminitextField, openrotextField, githubtextField, emailtextField, passtextField);
 
                 boolean dbState = loadKafkaState();
                 isOn[0] = dbState;
@@ -524,27 +581,50 @@ public class Patchflow extends Application {
                     background.setStyle("-fx-fill: #4caf50;");
                 }
 
+                Button registerFirebase = new Button("Register to share issues");
+
                 Button savebtn = new Button("Save");
                 VBox settingWindow = new VBox(10);
                 settingWindow.setPadding(new Insets(10));
-                settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,kafkaToggleBox,savebtn);
+                settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,emailLabel,emailtextField,
+                    passLabel,passtextField,registerFirebase,kafkaToggleBox,savebtn);
                 settingWindow.setStyle("-fx-background-color: #454648;");
 
+                registerFirebase.setOnAction(ev ->{
+                    user = FirebaseService.signUp(emailtextField.getText(), passtextField.getText());
+                    if (user == null) {
+                        System.out.println("Auth failed. Try again.");
+                    } else {
+                        FirebaseService.saveUser(user);
+                        System.out.println("Welcome " + user.email);
+                    }
+                });
+
                 savebtn.setOnAction(ev -> {
-                    String gemName = geminitextField.getText();
-                    String openrouteName = openrotextField.getText();
-                    String githtName = githubtextField.getText();
-                    saveSettingsNow(gemName, openrouteName, githtName);
-                    updateKafkaState(isOn[0]);
+                    savebtn.setDisable(true);
+
+                    synchronized (DB_LOCK) {
+                        String gemName = geminitextField.getText();
+                        String openrouteName = openrotextField.getText();
+                        String githtName = githubtextField.getText();
+                        String emailName = emailtextField.getText();
+                        String passName = passtextField.getText();
+
+                        saveSettingsNow(gemName, openrouteName, githtName, emailName, passName);
+                        updateKafkaState(isOn[0]);
+                    }
+
+                    savebtn.setDisable(false);
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
                     alert.setHeaderText(null);
                     alert.setContentText("API keys saved successfully!");             
                     alert.showAndWait();
+                    settingStage.close();
                 });
 
-                Scene settingScene = new Scene(settingWindow, 400, 300);
+                Scene settingScene = new Scene(settingWindow, 400, 430);
                 settingStage.setScene(settingScene);
                 settingStage.setTitle("Settings");
                 settingStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -754,7 +834,7 @@ public class Patchflow extends Application {
             }
         });
 
-        sidebar.getChildren().addAll(sidetitle,bugBtn,theBoardBtn,viewIssuesBtn,analyticsBtn,githubtton,settingsButton,supportBtn);
+        sidebar.getChildren().addAll(sidetitle,bugBtn,theBoardBtn,viewIssuesBtn,teamBtn,githubtton,analyticsBtn,settingsButton,supportBtn);
 
 
 
@@ -914,6 +994,8 @@ public class Patchflow extends Application {
         viewDescription.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
         Button viewCode = new Button("Code Snippet");
         viewCode.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+        Button shareIssue = new Button("Assign Issue");
+        shareIssue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         Label currentViewing = new Label();
         currentViewing.setStyle("-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;");
@@ -922,16 +1004,6 @@ public class Patchflow extends Application {
         viewingtextArea.setWrapText(true);
         viewingtextArea.getStyleClass().add("dark-text-area");
         viewingtextArea.setPrefRowCount(13);
-
-        viewDescription.setOnAction(e -> {
-            currentViewing.setText("Description: ");
-            viewingtextArea.setText(descriptext);
-        });
-
-        viewCode.setOnAction(e -> {
-            currentViewing.setText("Code Snippet: ");
-            viewingtextArea.setText(codeSnippettext);
-        });
 
         Label bugSeverity = new Label();
         bugSeverity.setStyle("-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;");
@@ -948,6 +1020,75 @@ public class Patchflow extends Application {
 
         Button mcpButton = new Button("✦ AI (Beta)");
         mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+
+        viewDescription.setOnAction(e -> {
+            currentViewing.setText("Description: ");
+            viewingtextArea.setText(descriptext);
+        });
+
+        viewCode.setOnAction(e -> {
+            currentViewing.setText("Code Snippet: ");
+            viewingtextArea.setText(codeSnippettext);
+        });
+
+        shareIssue.setOnAction(e -> {
+            if (shareIssueStage == null || !shareIssueStage.isShowing()){
+                shareIssueStage = new Stage();
+                shareIssueStage.initOwner(stage);
+                VBox dialogVbox = new VBox(10);
+
+                Map<String, String> selectedIssue = issueListView.getSelectionModel().getSelectedItem();
+                String selectedBug = selectedIssue.get("title");
+
+                String severityText = bugSeverity.getText().replace("Issue Severity: ","");
+
+                Label despLabel = new Label("Share Your Issue");
+                despLabel.setStyle("-fx-text-fill: white;");
+
+                Label emailLabel = new Label("Enter Email to assign to:");
+                emailLabel.setStyle("-fx-text-fill: white;");
+                TextField emailfield = new TextField();
+
+                Button projbtn = new Button("Assign Issue");
+                projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
+
+                dialogVbox.getChildren().addAll(despLabel,emailLabel,emailfield,projbtn);
+                dialogVbox.setSpacing(10);
+                
+                projbtn.setOnAction(ev -> {
+                try {
+                    Map<String, String> creds = getFirebaseCredentials();
+
+                    String fireEmail = creds.get("fireemail");
+                    String firePass = creds.get("firepass");
+
+                    // Save user locally for reuse
+                    user = FirebaseService.login(fireEmail,firePass);
+                    FirebaseService.saveUser(user);
+
+                    FirebaseService.createIssue(
+                        user, emailfield.getText(),
+                        projectTemp, languageTemp,
+                        selectedBug, descriptext,
+                        codeSnippettext, severityText
+                    );
+
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            });
+
+                Scene dialogScene = new Scene(dialogVbox, 300, 150);
+                dialogVbox.setPadding(new Insets(10));
+                dialogVbox.setStyle("-fx-background-color: #454648;");
+                shareIssueStage.setScene(dialogScene);
+                shareIssueStage.setTitle("Assign Issue");
+                shareIssueStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
+                shareIssueStage.show();
+            } else {
+                shareIssueStage.toFront();
+            }
+        });
 
         // Remove Button to remove an issue
         remissue.setOnAction(e -> {
@@ -993,6 +1134,12 @@ public class Patchflow extends Application {
         );
 
         viewCode.visibleProperty().bind(
+        Projectdeslabel.textProperty()
+                .isEqualTo("Select a Project")
+                .not()
+        );
+
+        shareIssue.visibleProperty().bind(
         Projectdeslabel.textProperty()
                 .isEqualTo("Select a Project")
                 .not()
@@ -1110,6 +1257,7 @@ public class Patchflow extends Application {
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 updateIssue.setScene(dialogScene);
+                updateIssue.setTitle("Update Issue");
                 updateIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 updateIssue.show();
             } else {
@@ -1144,7 +1292,7 @@ public class Patchflow extends Application {
         HBox ledlight = new HBox(8,bugSeverity,dottwo);
         ledlight.setAlignment(Pos.CENTER_LEFT);
         HBox options = new HBox(8,ediissue,remissue,mcpButton);
-        HBox viewing = new HBox(8, viewDescription, viewCode);
+        HBox viewing = new HBox(8, viewDescription, viewCode, shareIssue);
 
         VBox detailsColumn = new VBox(issudetlabel,Projectdeslabel,viewing,currentViewing,viewingtextArea,ledlight,options);
         detailsColumn.setPadding(new Insets(10));
@@ -1167,7 +1315,9 @@ public class Patchflow extends Application {
                 if (newIssue != null) {
                     selectedIssues = newIssue.get("title");
                     String[] bug = loadBugDesp(newIssue.get("title"));
-                    Projectdeslabel.setText("Project: "+ bug[0] + "\nLanguage: "+ bug[1]);
+                    projectTemp = bug[0];
+                    languageTemp = bug[1];
+                    Projectdeslabel.setText("Project: "+ projectTemp + "\nLanguage: "+ languageTemp);
                     Projectdeslabel.setEditable(false);
                     descriptext = bug[2];
                     viewingtextArea.setText(bug[2]);

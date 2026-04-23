@@ -194,6 +194,8 @@ public class Githubpanel{
             }
         });
 
+        projectList.getStyleClass().add("column");
+
         issulabel.setWrapText(true);
         VBox issueContent = new VBox(issulabel);
         issueContent.setSpacing(10);

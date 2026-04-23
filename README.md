@@ -1,6 +1,6 @@
 # PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56" />
 
-###### An AI Issue and Bug tracker made easy for solo developers  
+###### An AI Bug tracker for an easier workflow for developers  
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Temavrix/NexaView) [![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://github.com/Temavrix/NexaView) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Temavrix/NexaView/issues)
 
@@ -18,6 +18,7 @@ Please consider donating some money to our organization to help fund this projec
 - [Introducing PatchFlow](#introducing-patchflow)
 - [Running PatchFlow On Your Computer](#running-patchflow-on-your-computer)
 - [Features Of PatchFlow](#features)
+  * [Teams](#teams)
   * [AI](#ai)
   * [Github Issues](#github-issues)
   * [Apache Kafka](#apache-kafka)
@@ -34,7 +35,8 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Revamped 'Issue Details' window to view description and code snippets.
+1. Added 'Multi-developer' feature: Share your issues [UNSTABLE].
+  NOTE: STILL IN BETA 
 
 2. Bug fixes, UX fixes and improvements.
 
@@ -45,7 +47,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 16-April-2026 16:20 HRS (Singapore Standard Time)
+Last Updated: 23-April-2026 22:10 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -90,6 +92,9 @@ must fix by installing correct JDK.
 
 
 ## Features
+
+### Teams
+A new way to delegate and assign tasks currently in beta...
 
 ### AI
 
@@ -175,4 +180,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 0.9.8 (Beta)
+Version 0.9.9 (Beta)

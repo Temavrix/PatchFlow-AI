@@ -298,9 +298,9 @@ public class Boardpanel {
         Label codeRevLabel = new Label("Code Review");
         codeRevLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");        
         
-        todoList.setMinWidth(250);
-        progressList.setMinWidth(300);
-        codeRevList.setMaxWidth(300);
+        todoList.setMinWidth(260);
+        progressList.setMinWidth(270);
+        codeRevList.setMinWidth(270);
 
         todoList.setMinHeight(450);
         progressList.setMinHeight(450);
