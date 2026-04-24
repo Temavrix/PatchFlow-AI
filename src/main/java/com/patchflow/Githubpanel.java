@@ -152,18 +152,21 @@ public class Githubpanel{
                 badge.setStyle("-fx-text-fill: #cfcfcf; -fx-font-size: 13px;");
                 VBox text = new VBox(4, title, badge);
                 HBox row = new HBox(10, text);
+                text.setPadding(new Insets(1, 1, 1, 1));
+                row.setStyle("-fx-background-color: #2e2f31;");
+                row.setMaxWidth(250);
                 setGraphic(row);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
 
         projectList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;"
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;"
         );
 
         Label issulabel = new Label("");
-        issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 15; -fx-background-color: #2e2f31; -fx-control-inner-background: #2e2f31;");
+        issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 15; -fx-background-color: #222222; -fx-control-inner-background: #2e2f31;");
 
         projectList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -190,12 +193,12 @@ public class Githubpanel{
         issulabel.setWrapText(true);
         VBox issueContent = new VBox(issulabel);
         issueContent.setSpacing(10);
-        issueContent.setStyle("-fx-background-color: #2e2f31;");
+        issueContent.setStyle("-fx-background-color: #222222;");
         ScrollPane scrollPane = new ScrollPane(issueContent);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle(
-            "-fx-background: #2e2f31;" +
-            "-fx-background-color: #2e2f31;"
+            "-fx-background: #222222;" +
+            "-fx-background-color: #222222;"
         );
         scrollPane.setMinWidth(600);
         scrollPane.setMaxWidth(600);
@@ -290,7 +293,7 @@ public class Githubpanel{
             
                 Scene dialogScene = new Scene(dialogVbox, 700, 400);
                 dialogVbox.setPadding(new Insets(10));
-                dialogVbox.setStyle("-fx-background-color: #454648;");
+                dialogVbox.setStyle("-fx-background-color: #222222;");
                 addIssue.setScene(dialogScene);
                 addIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
                 addIssue.show();
@@ -303,15 +306,15 @@ public class Githubpanel{
         Label gititleLabel = new Label("Github Issues");
         gititleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");  
 
-        VBox issueArea = new VBox(8,scrollPane, addissue);
+        VBox issueArea = new VBox(3,scrollPane, addissue);
         issueArea.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;"
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;"
         );
 
         HBox searcharea = new HBox(4,Gitmenu, searchBtn);
         HBox issuearae = new HBox(4,projectList, issueArea);
-        VBox layout = new VBox(gititleLabel,searcharea, issuearae);
+        VBox layout = new VBox(2,gititleLabel,searcharea, issuearae);
         layout.setPadding(new Insets(10));
         
         return layout;

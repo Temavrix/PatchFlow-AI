@@ -25,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -137,7 +138,7 @@ public class Team {
         ListView<String> issueList = new ListView<>(issueTitles);
         Label issueDetails = new Label("");
         issueDetails.setWrapText(true);
-        issueDetails.setStyle("-fx-background-color: #2e2f31; -fx-text-fill: white; -fx-control-inner-background: #2e2f31;");
+        issueDetails.setStyle("-fx-background-color: #222222; -fx-text-fill: white; -fx-control-inner-background: #2e2f31;");
 
         // Load from Firebase
         try {
@@ -157,6 +158,33 @@ public class Team {
         }
 
         // LEFT SIDE LIST
+        issueList.setCellFactory(listView -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+
+                Label titleLabel = new Label(item);
+                titleLabel.setWrapText(true);
+                titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14; ");
+                titleLabel.setPadding(new Insets(10, 10, 10, 10));
+                titleLabel.setMaxWidth(200);
+
+                VBox wrapper = new VBox(titleLabel);
+                wrapper.setStyle("-fx-background-color: #2e2f31;");
+
+                setGraphic(wrapper);
+                setText(null);
+                setStyle(
+                    "-fx-background-color: #222222;"
+                );
+            }
+        });
         issueList.setMaxWidth(290);
         issueList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -176,17 +204,17 @@ public class Team {
         });
 
         issueList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;"
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;"
         );
         issueList.getStyleClass().add("column");
-        issueList.setMinHeight(450);
+        issueList.setPrefHeight(450);
         
 
         // RIGHT SIDE SCROLL
         ScrollPane scrollPane = new ScrollPane(issueDetails);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background-color: #2e2f31; -fx-text-fill: white; -fx-control-inner-background: #2e2f31;");
+        scrollPane.setStyle("-fx-background-color: #222222; -fx-text-fill: white; -fx-control-inner-background: #2e2f31;");
         scrollPane.visibleProperty().bind(
         issueDetails.textProperty()
                 .isEqualTo("")
@@ -319,8 +347,8 @@ public class Team {
                 dialogVboxThree.getChildren().addAll(dialogVboxTwo,projbtn);
 
                 Scene dialogScene = new Scene(dialogVboxThree, 700, 400);
-                dialogVboxTwo.setStyle("-fx-background-color: #454648;");
-                dialogVboxThree.setStyle("-fx-background-color: #454648;");
+                dialogVboxTwo.setStyle("-fx-background-color: #222222;");
+                dialogVboxThree.setStyle("-fx-background-color: #222222;");
                 dialogVboxThree.setPadding(new Insets(10));
                 addIssue.setScene(dialogScene);
                 addIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -336,12 +364,10 @@ public class Team {
         HBox controls = new HBox(10,saveLocal,closeIssue);
         VBox rightPanel = new VBox(10, scrollPane, controls);
         HBox mainLayout = new HBox(10, issueList, rightPanel);
-        mainLayout.setPadding(new Insets(10));
-        mainLayout.setSpacing(10);
 
         VBox layout = new VBox(gititleLabel,mainLayout);
         layout.setPadding(new Insets(10));
-        layout.setStyle("-fx-background-color: #2e2f31;");
+        layout.setStyle("-fx-background-color: #222222;");
         return layout;
     }
     

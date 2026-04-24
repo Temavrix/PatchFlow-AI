@@ -9,7 +9,8 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/ee5898e7-23d7-49dc-89f8-90a8de79c021" />  <img height="150" alt="Image" src="https://github.com/user-attachments/assets/5d6e7c48-476f-4b71-966a-1f47b5e86631" />
+
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/51062f14-87ad-429e-ac76-85370d0a8af7" /> <img height="150" alt="Image" src="https://github.com/user-attachments/assets/a0a54ed3-33c7-471b-86f6-574da2314a32" />
 
 
 
@@ -47,7 +48,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 24-April-2026 16:30 HRS (Singapore Standard Time)
+Last Updated: 24-April-2026 23:20 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -96,6 +97,8 @@ must fix by installing correct JDK.
 ### Teams
 A new way to delegate and assign tasks currently in beta...
 
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/701e5dab-ce33-4ced-ba20-1949a56f6cdd" />
+
 ### AI
 
 #### 1. Auto-Filling Capabilities
@@ -130,7 +133,7 @@ You will need to create a Gemini token [here](https://aistudio.google.com/app/ap
 ### Github Issues
 With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/e61d41df-c4a9-48a0-94d6-e5fbeb88e11c" />
+<img height="150" alt="Image" src="https://github.com/user-attachments/assets/d51bc9f9-c583-4d44-b3f4-f44fd562cb63" />
 
 By serching for your requested repository you can view the list of issues and select them to add in your local database.
 

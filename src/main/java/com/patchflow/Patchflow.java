@@ -451,10 +451,7 @@ public class Patchflow extends Application {
     // Main Logic Code starts here
     @Override
     public void start(Stage stage) {
-
         routineChecks("projects");
-
-        // Call to load projects from database
 
         // Sidebar code
         VBox sidebar = new VBox(10);
@@ -814,7 +811,7 @@ public class Patchflow extends Application {
             
                 Scene dialogScene = new Scene(dialogVbox, 630, 300);
                 dialogVbox.setPadding(new Insets(10));
-                dialogVbox.setStyle("-fx-background-color: #454648;");
+                dialogVbox.setStyle("-fx-background-color: #222222;");
                 addIssue.setScene(dialogScene);
                 addIssue.setTitle("Issue Ticket ");
                 addIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -848,7 +845,6 @@ public class Patchflow extends Application {
 
         // COLUMN 1: Project Explorer Column
         // Consists of map that contains all projects currently opened
-
         projectList.setItems(projects);
         projectList.setPrefWidth(350);
         issueListView.setPrefHeight(500);
@@ -883,15 +879,15 @@ public class Patchflow extends Application {
                 );
                 row.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(row);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
 
         Label projlabel = new Label("Projects");
         projlabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
         projectList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;" +
             "-fx-background-insets: 0;" +
             "-fx-padding: 0;"
         );
@@ -904,7 +900,6 @@ public class Patchflow extends Application {
 
         // COLUMN 2: Bug Explorer Column
         // Consists of Map that contains all the issues and it's priority
-
         issueListView.setPrefWidth(300);
         issueListView.setPrefHeight(500);
         issueListView.setFixedCellSize(75);
@@ -942,6 +937,8 @@ public class Patchflow extends Application {
                 }
 
                 Label title = new Label(titleText);
+                title.setWrapText(true);
+                title.prefWidthProperty().bind(issueListView.widthProperty().subtract(55));
                 title.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15;");
 
                 Label priority = new Label(priorityText);
@@ -960,7 +957,7 @@ public class Patchflow extends Application {
                 row.setAlignment(Pos.CENTER_LEFT);
 
                 setGraphic(row);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
 
@@ -975,8 +972,8 @@ public class Patchflow extends Application {
         Label issulabel = new Label("Issues");
         issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");
         issueListView.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;" +
             "-fx-background-insets: 0;" +
             "-fx-padding: 0;"
         );
@@ -991,7 +988,6 @@ public class Patchflow extends Application {
         // COLUMN 3: Bug Details Column
         // Contains Labels, Textareas, buttons and functions
         // Functions to hide texts and load data
-
         TextArea Projectdeslabel = new TextArea("Select a Project");
         Projectdeslabel.setWrapText(true);
         Projectdeslabel.setMaxHeight(60);
@@ -1079,15 +1075,20 @@ public class Patchflow extends Application {
                         selectedBug, descriptext,
                         codeSnippettext, severityText
                     );
+                    shareIssueStage.close();
 
                 } catch (Exception exc) {
-                    exc.printStackTrace();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error creating Issue");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please check fireemail and firepass in settings");             
+                    alert.showAndWait();
                 }
             });
 
                 Scene dialogScene = new Scene(dialogVbox, 300, 150);
                 dialogVbox.setPadding(new Insets(10));
-                dialogVbox.setStyle("-fx-background-color: #454648;");
+                dialogVbox.setStyle("-fx-background-color: #222222;");
                 shareIssueStage.setScene(dialogScene);
                 shareIssueStage.setTitle("Assign Issue");
                 shareIssueStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -1262,7 +1263,7 @@ public class Patchflow extends Application {
 
                 Scene dialogScene = new Scene(dialogVbox, 300, 350);
                 dialogVbox.setPadding(new Insets(10));
-                dialogVbox.setStyle("-fx-background-color: #454648;");
+                dialogVbox.setStyle("-fx-background-color: #222222;");
                 updateIssue.setScene(dialogScene);
                 updateIssue.setTitle("Update Issue");
                 updateIssue.getIcons().add(new Image("/icons/patchflowtrim.png"));
@@ -1363,7 +1364,7 @@ public class Patchflow extends Application {
         HBox rootmo = new HBox(sidebar, contentArea);
         VBox root = new VBox(rootmo);
         root.setSpacing(15);
-        root.setStyle("-fx-background-color: #2e2f31;");
+        root.setStyle("-fx-background-color: #222222;");
 
         Scene scene = new Scene(root, 1010, 505);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());

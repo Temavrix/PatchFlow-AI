@@ -161,13 +161,13 @@ public class Boardpanel {
                     "-fx-border-color: " + borderColor + ";"
                 );
                 setGraphic(layoutone);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
 
         todoList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;" +
             "-fx-background-insets: 0;" +
             "-fx-padding: 0;"
         );
@@ -220,13 +220,13 @@ public class Boardpanel {
                     "-fx-border-color: " + borderColor + ";"
                 );
                 setGraphic(layoutone);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
 
         progressList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;" +
             "-fx-background-insets: 0;" +
             "-fx-padding: 0;"
         );
@@ -278,13 +278,13 @@ public class Boardpanel {
                     "-fx-border-color: " + borderColor + ";"
                 );
                 setGraphic(layoutone);
-                setStyle("-fx-background-color: #2e2f31;");
+                setStyle("-fx-background-color: #222222;");
             }
         });
         
         codeRevList.setStyle(
-            "-fx-background-color: #2e2f31;" +
-            "-fx-control-inner-background: #2e2f31;" +
+            "-fx-background-color: #222222;" +
+            "-fx-control-inner-background: #222222;" +
             "-fx-background-insets: 0;" +
             "-fx-padding: 0;"
         );
@@ -297,8 +297,8 @@ public class Boardpanel {
         codeRevLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");        
         
         todoList.setMinWidth(260);
-        progressList.setMinWidth(270);
-        codeRevList.setMinWidth(270);
+        progressList.setMinWidth(280);
+        codeRevList.setMinWidth(280);
 
         todoList.setMinHeight(450);
         progressList.setMinHeight(450);

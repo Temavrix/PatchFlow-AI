@@ -230,11 +230,11 @@ public class Analytics{
         HBox lowBox = new HBox(10,createBarIcon("#32CD32"),Lowlabel);
         lowBox.setAlignment(Pos.CENTER_LEFT);
 
-        VBox labelsBox = new VBox(15);
-        VBox layout  = new VBox(30);
+        VBox labelsBox = new VBox(35);
+        VBox layout  = new VBox(90);
         labelsBox.setPadding(new Insets(20));
         labelsBox.getChildren().addAll(titLabel, criticalBox, highBox, mediumBox, lowBox);
-        layout .getChildren().addAll(labelsBox,chart);
+        layout.getChildren().addAll(labelsBox,chart);
 
         return layout;
     }
