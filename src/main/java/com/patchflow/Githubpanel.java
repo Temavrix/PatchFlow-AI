@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.kohsuke.github.*;
 
 import javafx.collections.FXCollections;
@@ -41,7 +40,6 @@ public class Githubpanel{
     ListView<String> projectList = new ListView<>(gitprojects);
     private Patchflow patchflow;
 
-
     public Githubpanel(Patchflow patchflow) {
         this.patchflow = patchflow;
     }
@@ -67,7 +65,6 @@ public class Githubpanel{
                 titleofficial = title;
                 issueData.put("body", body);
                 descripofficial = body;
-
                 githubissues.put(title, issueData);
             }
         } catch(Exception e){
@@ -109,7 +106,6 @@ public class Githubpanel{
             ResultSet rs = stmt.executeQuery(sql)) {
             
             key = rs.getString("apikey");
-
             GitHub github = new GitHubBuilder().withOAuthToken(key).build();
             Map<String, GHRepository> repos = github.getMyself().getAllRepositories();
             
@@ -166,11 +162,8 @@ public class Githubpanel{
             "-fx-control-inner-background: #2e2f31;"
         );
 
-        
-
         Label issulabel = new Label("");
         issulabel.setStyle("-fx-text-fill: white; -fx-font-size: 15; -fx-background-color: #2e2f31; -fx-control-inner-background: #2e2f31;");
-
 
         projectList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -184,7 +177,6 @@ public class Githubpanel{
                 titleofficial = title;
                 String body = issue.get("body");
                 descripofficial = body;
-            
                 issulabel.setText(
                     "Issue #" + number +
                     "\n\nTitle: " + title +
@@ -193,7 +185,6 @@ public class Githubpanel{
 
             }
         });
-
         projectList.getStyleClass().add("column");
 
         issulabel.setWrapText(true);
@@ -208,8 +199,8 @@ public class Githubpanel{
         );
         scrollPane.setMinWidth(600);
         scrollPane.setMaxWidth(600);
-        scrollPane.setMinHeight(430);
-        scrollPane.setMaxHeight(430);
+        scrollPane.setMinHeight(400);
+        scrollPane.setMaxHeight(400);
 
         Button addissue = new Button("Add issue");
         addissue.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
@@ -224,6 +215,9 @@ public class Githubpanel{
             if (addIssue == null || !addIssue.isShowing()){
                 addIssue = new Stage();
                 addIssue.initOwner(stage);
+                VBox dialogVboxZero = new VBox(10);
+                VBox dialogVboxOne = new VBox(10);
+                HBox dialogVboxTwo = new HBox(10);
                 VBox dialogVbox = new VBox(10);
                 Label projLabel = new Label("Project Name: ");
                 projLabel.setStyle("-fx-text-fill: white;");
@@ -236,9 +230,12 @@ public class Githubpanel{
                 Label bugLabel = new Label("Issue Title: ");
                 bugLabel.setStyle("-fx-text-fill: white;");
                 TextField bugtextField = new TextField(titleofficial);
+
                 Label despLabel = new Label("Issue Description: ");
                 despLabel.setStyle("-fx-text-fill: white;");
-                TextField desptextField = new TextField(descripofficial);
+                TextArea desptextField = new TextArea(descripofficial);
+                desptextField.setWrapText(true); 
+                desptextField.setPrefRowCount(9);
 
                 Label sevLabel = new Label("Choose Your Severity: ");
                 sevLabel.setStyle("-fx-text-fill: white;");
@@ -264,7 +261,10 @@ public class Githubpanel{
             
                 Button projbtn = new Button("Add New Issue");
                 projbtn.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
-                dialogVbox.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField,chooseTime,sniplabel,sniptextArea,projbtn);
+                dialogVboxZero.getChildren().addAll(projLabel,projtextField,lanLabel,lantextField,bugLabel,bugtextField,despLabel,desptextField);
+                dialogVboxOne.getChildren().addAll(chooseTime,sniplabel,sniptextArea);
+                dialogVboxTwo.getChildren().addAll(dialogVboxZero,dialogVboxOne);
+                dialogVbox.getChildren().addAll(dialogVboxTwo,projbtn);
             
                 projbtn.setOnAction(ev -> {
                     String projName = projtextField.getText();
@@ -275,7 +275,7 @@ public class Githubpanel{
                     String progname = progcombo_box.getValue();
                     String codsnip = sniptextArea.getText();
 
-                    if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null){
+                    if(projName.isEmpty() || langName.isEmpty() || bugtName.isEmpty() || despName.isEmpty() || sevName == null || progname==null){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Missing Severity");
                         alert.setHeaderText(null);
@@ -288,7 +288,7 @@ public class Githubpanel{
                     addIssue.close();
                 });
             
-                Scene dialogScene = new Scene(dialogVbox, 300, 500);
+                Scene dialogScene = new Scene(dialogVbox, 700, 400);
                 dialogVbox.setPadding(new Insets(10));
                 dialogVbox.setStyle("-fx-background-color: #454648;");
                 addIssue.setScene(dialogScene);
@@ -300,6 +300,8 @@ public class Githubpanel{
         });
 
         Gitmenu.setStyle("-fx-background-color: #eeeeee; -fx-text-fill: black; -fx-control-inner-background: #eeeeee;");
+        Label gititleLabel = new Label("Github Issues");
+        gititleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20;");  
 
         VBox issueArea = new VBox(8,scrollPane, addissue);
         issueArea.setStyle(
@@ -308,8 +310,8 @@ public class Githubpanel{
         );
 
         HBox searcharea = new HBox(4,Gitmenu, searchBtn);
-        HBox issuearae = new HBox(projectList, issueArea);
-        VBox layout = new VBox(searcharea, issuearae);
+        HBox issuearae = new HBox(4,projectList, issueArea);
+        VBox layout = new VBox(gititleLabel,searcharea, issuearae);
         layout.setPadding(new Insets(10));
         
         return layout;

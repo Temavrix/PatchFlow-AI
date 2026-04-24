@@ -145,7 +145,11 @@ public class Patchflow extends Application {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Firebase cred Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error getting firebase creds");             
+            alert.showAndWait();
         }
 
         return creds;
@@ -352,9 +356,18 @@ public class Patchflow extends Application {
         stmt.executeUpdate();
 
         conn.commit();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("API keys saved successfully!");             
+        alert.showAndWait();
 
     } catch (Exception e) {
-        e.printStackTrace();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Error saving settings");
+        alert.setHeaderText(null);
+        alert.setContentText("Error saving settings");             
+        alert.showAndWait();
     }
 }
 
@@ -489,7 +502,6 @@ public class Patchflow extends Application {
         theBoardBtn.setOnAction(e -> {
             Boardpanel Boardpanel = new Boardpanel();
             VBox boardpanelView = Boardpanel.getView();
-
             contentArea.getChildren().setAll(boardpanelView);
         });
 
@@ -497,7 +509,6 @@ public class Patchflow extends Application {
         teamBtn.setOnAction(e -> {
             Team Team = new Team(this);
             VBox team = Team.getView();
-
             contentArea.getChildren().setAll(team);
         });
 
@@ -505,7 +516,6 @@ public class Patchflow extends Application {
         analyticsBtn.setOnAction(e -> {
             Analytics analytics = new Analytics();
             VBox analyticsView = analytics.getView();
-
             contentArea.getChildren().setAll(analyticsView);
         });
 
@@ -550,7 +560,6 @@ public class Patchflow extends Application {
                 thumb.setStyle("-fx-fill: white;");
 
                 kToggle.getChildren().addAll(background, thumb);
-
                 final boolean[] isOn = {false};
 
                 // Click handler
@@ -575,13 +584,29 @@ public class Patchflow extends Application {
 
                 boolean dbState = loadKafkaState();
                 isOn[0] = dbState;
-
                 if (dbState) {
                     thumb.setTranslateX(12);
                     background.setStyle("-fx-fill: #4caf50;");
                 }
 
                 Button registerFirebase = new Button("Register to share issues");
+                registerFirebase.setOnAction(ev ->{
+                    user = FirebaseService.signUp(emailtextField.getText(), passtextField.getText());
+                    if (user == null) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Auth failed: Email already exists");             
+                        alert.showAndWait();
+                    } else {
+                        FirebaseService.saveUser(user);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Register success");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Account registered successfully");             
+                        alert.showAndWait();
+                    }
+                });
 
                 Button savebtn = new Button("Save");
                 VBox settingWindow = new VBox(10);
@@ -589,16 +614,6 @@ public class Patchflow extends Application {
                 settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,emailLabel,emailtextField,
                     passLabel,passtextField,registerFirebase,kafkaToggleBox,savebtn);
                 settingWindow.setStyle("-fx-background-color: #454648;");
-
-                registerFirebase.setOnAction(ev ->{
-                    user = FirebaseService.signUp(emailtextField.getText(), passtextField.getText());
-                    if (user == null) {
-                        System.out.println("Auth failed. Try again.");
-                    } else {
-                        FirebaseService.saveUser(user);
-                        System.out.println("Welcome " + user.email);
-                    }
-                });
 
                 savebtn.setOnAction(ev -> {
                     savebtn.setDisable(true);
@@ -613,14 +628,7 @@ public class Patchflow extends Application {
                         saveSettingsNow(gemName, openrouteName, githtName, emailName, passName);
                         updateKafkaState(isOn[0]);
                     }
-
                     savebtn.setDisable(false);
-
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Success");
-                    alert.setHeaderText(null);
-                    alert.setContentText("API keys saved successfully!");             
-                    alert.showAndWait();
                     settingStage.close();
                 });
 
@@ -638,7 +646,6 @@ public class Patchflow extends Application {
         githubtton.setOnAction(e -> {
             Githubpanel githubWindow = new Githubpanel(this);
             VBox githubView = githubWindow.getView(stage);
-
             contentArea.getChildren().setAll(githubView);
         });
 

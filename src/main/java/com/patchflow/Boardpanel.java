@@ -110,8 +110,6 @@ public class Boardpanel {
 
     
     public VBox getView(){
-
-        
         loadToDo("To Do");
         loadInProg("In Progress");
         loadCodeRev("Code Review");

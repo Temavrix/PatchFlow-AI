@@ -4,20 +4,18 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-
 import com.google.cloud.firestore.*;
 import com.google.api.core.ApiFuture;
 import com.google.gson.*;
 
 import javafx.scene.control.Alert;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
 public class FirebaseService {
-    private static final String API_KEY = "AIzaSyCMwKo2_1m6ZFnt12tu75WPqNWlh8n2gSU";
+    private static final String API_KEY = "FIREBASE_API";
 
     // 🔹 INIT
     public static void init() {
@@ -129,7 +127,11 @@ public class FirebaseService {
 
             String response = responseBuilder.toString();
             if (response == null || response.isEmpty()) {
-                System.out.println("Empty response from Firebase");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Empty response");
+                alert.setHeaderText(null);
+                alert.setContentText("Empty response from Firebase");             
+                alert.showAndWait();
                 return null;
             }
 
@@ -197,7 +199,11 @@ public class FirebaseService {
         String assignedUid = getUidByEmail(assignedEmail);
 
         if (assignedUid == null) {
-            System.out.println("User not found!");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("User not found please register in settings first");             
+            alert.showAndWait();
             return;
         }
 
@@ -236,19 +242,32 @@ public class FirebaseService {
 
         List<QueryDocumentSnapshot> docs = future.get().getDocuments();
         for (QueryDocumentSnapshot doc : docs) {
-            System.out.println("ID: " + doc.getId());
-            System.out.println(doc.getData());
-            System.out.println("-------------------");
+            continue;
         }
     }
 
-    // 🔹 MARK DONE
-    public static void markDone(String issueId) {
-        Objects.requireNonNull(issueId, "issueId must not be null");
+    public static void deleteIssue(String issueId) {
+    try {
         Firestore db = FirestoreClient.getFirestore();
 
-        db.collection("issues")
+        ApiFuture<WriteResult> future = db.collection("issues")
                 .document(issueId)
-                .update("status", "DONE");
+                .delete();
+
+        future.get(); // wait for completion
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Deleted");
+        alert.setHeaderText(null);
+        alert.setContentText("Issue deleted successfully");
+        alert.showAndWait();
+
+    } catch (Exception e) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Deletion Unsucessfull");
+        alert.setHeaderText(null);
+        alert.setContentText("Issue deletion unsuccessfull");
+        alert.showAndWait();
     }
+}
 }
