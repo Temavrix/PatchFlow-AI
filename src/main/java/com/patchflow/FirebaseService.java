@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.*;
 
 public class FirebaseService {
-    private static final String API_KEY = "FIREBASE_API";
+    private static final String API_KEY = "AIzaSyCMwKo2_1m6ZFnt12tu75WPqNWlh8n2gSU";
 
     // 🔹 INIT
     public static void init() {
@@ -140,7 +140,7 @@ public class FirebaseService {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error 1002");
                 alert.setHeaderText(null);
-                alert.setContentText("Error 1002: Login failed!!!");             
+                alert.setContentText("Error 1002: Login failed!!! Please ensure email and password is registered in settings.");             
                 alert.showAndWait();
                 return null;
             }
@@ -173,7 +173,7 @@ public class FirebaseService {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 1004");
             alert.setHeaderText(null);
-            alert.setContentText("Error 1004");             
+            alert.setContentText("Error 1004: Please ensure valid Email and Password are provided in settings.");             
             alert.showAndWait();
         }
     }

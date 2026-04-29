@@ -79,7 +79,6 @@ public class Team {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Reload Error");
             alert.setHeaderText(null);

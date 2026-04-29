@@ -533,15 +533,17 @@ public class Patchflow extends Application {
                 githubLabel.setStyle("-fx-text-fill: white;");
                 TextField githubtextField = new TextField();
 
-                Label emailLabel = new Label("Your Email (For Accessing Online DB):");
+                Label fireinfo = new Label("Enter Email and Password to share and recieve issues:");
+                fireinfo.setStyle("-fx-text-fill: white;");
+                Label emailLabel = new Label("Your Email (For Sharing Issues):");
                 emailLabel.setStyle("-fx-text-fill: white;");
                 TextField emailtextField = new TextField();
 
-                Label passLabel = new Label("Your Password (For Accessing Online DB):");
+                Label passLabel = new Label("Your Password (For Sharing Issues):");
                 passLabel.setStyle("-fx-text-fill: white;");
                 TextField passtextField = new TextField();
 
-                Label kafkaLabel = new Label("Activate Kafka: ");
+                Label kafkaLabel = new Label("Activate Kafka (Unstable): ");
                 kafkaLabel.setStyle("-fx-text-fill: white;");
                 kafkaLabel.setPadding(new Insets(5));
                 StackPane kToggle = new StackPane();
@@ -588,12 +590,20 @@ public class Patchflow extends Application {
 
                 Button registerFirebase = new Button("Register to share issues");
                 registerFirebase.setOnAction(ev ->{
+                    if(emailtextField.getText().isEmpty() || passtextField.getText().isEmpty()){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Missing Credentials");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please fill up both Email and Password to register.");
+                        alert.showAndWait();
+                        return;
+                    }
                     user = FirebaseService.signUp(emailtextField.getText(), passtextField.getText());
                     if (user == null) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Error");
                         alert.setHeaderText(null);
-                        alert.setContentText("Auth failed: Email already exists");             
+                        alert.setContentText("Registration failed: Email already exists");             
                         alert.showAndWait();
                     } else {
                         FirebaseService.saveUser(user);
@@ -608,7 +618,7 @@ public class Patchflow extends Application {
                 Button savebtn = new Button("Save");
                 VBox settingWindow = new VBox(10);
                 settingWindow.setPadding(new Insets(10));
-                settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,emailLabel,emailtextField,
+                settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,fireinfo,emailLabel,emailtextField,
                     passLabel,passtextField,registerFirebase,kafkaToggleBox,savebtn);
                 settingWindow.setStyle("-fx-background-color: #454648;");
 
@@ -629,7 +639,7 @@ public class Patchflow extends Application {
                     settingStage.close();
                 });
 
-                Scene settingScene = new Scene(settingWindow, 400, 430);
+                Scene settingScene = new Scene(settingWindow, 400, 460);
                 settingStage.setScene(settingScene);
                 settingStage.setTitle("Settings");
                 settingStage.getIcons().add(new Image("/icons/patchflowtrim.png"));
