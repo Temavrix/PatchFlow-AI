@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.*;
 
 public class FirebaseService {
-    private static final String API_KEY = "AIzaSyCMwKo2_1m6ZFnt12tu75WPqNWlh8n2gSU";
+    private static final String API_KEY = "YOUR_FIREBASE_API_KEY";
 
     // 🔹 INIT
     public static void init() {
