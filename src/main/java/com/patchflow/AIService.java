@@ -45,9 +45,9 @@ public class AIService {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 014");
+            alert.setTitle("Error 200");
             alert.setHeaderText(null);
-            alert.setContentText("Error 014: Please ensure API Keys is entered in settings!");             
+            alert.setContentText("Error 200: Please ensure API Keys is entered in settings!");             
             alert.showAndWait();
         }
     }

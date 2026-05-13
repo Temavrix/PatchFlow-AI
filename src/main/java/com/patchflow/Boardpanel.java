@@ -48,9 +48,9 @@ public class Boardpanel {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 501");
+            alert.setTitle("Error 400");
             alert.setHeaderText(null);
-            alert.setContentText("Error 501: Issues details loading failed!!!");             
+            alert.setContentText("Error 400: Issues details loading failed!!!");             
             alert.showAndWait();
         }
     }
@@ -74,9 +74,9 @@ public class Boardpanel {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 502");
+            alert.setTitle("Error 401");
             alert.setHeaderText(null);
-            alert.setContentText("Error 502: Issues details loading failed!!!");             
+            alert.setContentText("Error 401: Issues details loading failed!!!");             
             alert.showAndWait();
         }
     }
@@ -100,9 +100,9 @@ public class Boardpanel {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 503");
+            alert.setTitle("Error 402");
             alert.setHeaderText(null);
-            alert.setContentText("Error 503: Issues details loading failed!!!");             
+            alert.setContentText("Error 402: Issues details loading failed!!!");             
             alert.showAndWait();
         }
     }

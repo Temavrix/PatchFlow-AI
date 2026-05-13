@@ -97,8 +97,8 @@ public class Patchflow extends Application {
                     stmt.execute(insertDefaults);
                 } catch (Exception e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
-                   alert.setTitle("Error 000");
-                   alert.setContentText("Error 000: Patchflow DB init failed!");
+                   alert.setTitle("Error 100");
+                   alert.setContentText("Error 100: Patchflow DB init failed!");
                    alert.show();
                 }
             } else {
@@ -115,8 +115,8 @@ public class Patchflow extends Application {
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Error 01");
-                    alert.setContentText("Error 01: Kafka startup scripts not found!");
+                    alert.setTitle("Error 101");
+                    alert.setContentText("Error 101: Kafka startup scripts not found!");
                     alert.show();
                     });
                 }
@@ -125,9 +125,9 @@ public class Patchflow extends Application {
 
         } catch (SQLException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 001");
+            alert.setTitle("Error 102");
             alert.setHeaderText(null);
-            alert.setContentText("Error 001: Routine checks failed!!!");             
+            alert.setContentText("Error 102: Routine checks failed!!!");             
             alert.showAndWait();
         }
     }
@@ -146,9 +146,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Firebase cred Error");
+            alert.setTitle("Error 103");
             alert.setHeaderText(null);
-            alert.setContentText("Error getting firebase creds");             
+            alert.setContentText("Error 103: Error getting firebase creds error");             
             alert.showAndWait();
         }
 
@@ -177,9 +177,9 @@ public class Patchflow extends Application {
 
        } catch (SQLException e) {
            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-           alert.setTitle("Error 002");
+           alert.setTitle("Error 104");
            alert.setHeaderText(null);
-           alert.setContentText("Error 002: Issues loading failed!!!");             
+           alert.setContentText("Error 104: Issues loading failed!!!");             
            alert.showAndWait();
        }
        return issues;
@@ -204,9 +204,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 003");
+            alert.setTitle("Error 105");
             alert.setHeaderText(null);
-            alert.setContentText("Error 003: Projects loading failed!!!");             
+            alert.setContentText("Error 105: Projects loading failed!!!");             
             alert.showAndWait();
         }
     }
@@ -232,9 +232,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 004");
+            alert.setTitle("Error 106");
             alert.setHeaderText(null);
-            alert.setContentText("Error 004: Issues details loading failed!!!");             
+            alert.setContentText("Error 106: Issues details loading failed!!!");             
             alert.showAndWait();
         }
         return issues;
@@ -257,9 +257,9 @@ public class Patchflow extends Application {
             loadProjectsFromDB();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 005");
+            alert.setTitle("Error 107");
             alert.setHeaderText(null);
-            alert.setContentText("Error 005: Saving of Issue failed!!!");             
+            alert.setContentText("Error 107: Saving of Issue failed!!!");             
             alert.showAndWait();
         }
     }
@@ -281,9 +281,9 @@ public class Patchflow extends Application {
             refreshIssues();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 006");
+            alert.setTitle("Error 108");
             alert.setHeaderText(null);
-            alert.setContentText("Error 006: Removal of Issue failed!!!");             
+            alert.setContentText("Error 108: Removal of Issue failed!!!");             
             alert.showAndWait();
         }
     }
@@ -305,9 +305,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 007");
+            alert.setTitle("Error 109");
             alert.setHeaderText(null);
-            alert.setContentText("Error 007: Updation of Issue failed!!!");             
+            alert.setContentText("Error 109: Updation of Issue failed!!!");             
             alert.showAndWait();
         }
     }
@@ -364,9 +364,9 @@ public class Patchflow extends Application {
 
     } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Error saving settings");
+        alert.setTitle("Error 110");
         alert.setHeaderText(null);
-        alert.setContentText("Error saving settings");             
+        alert.setContentText("Error 110: Error saving settings");             
         alert.showAndWait();
     }
 }
@@ -395,9 +395,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 009");
+            alert.setTitle("Error 111");
             alert.setHeaderText(null);
-            alert.setContentText("Error 009: API loading failed!!!");             
+            alert.setContentText("Error 111: API loading failed!!!");             
             alert.showAndWait();
         }
     }
@@ -415,9 +415,9 @@ public class Patchflow extends Application {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0090");
+            alert.setTitle("Error 112");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0090: Kafka state loading failed!!!");             
+            alert.setContentText("Error 112: Kafka state loading failed!!!");             
             alert.showAndWait();
         }
         return false;
@@ -434,14 +434,13 @@ public class Patchflow extends Application {
             } else {
                 ps.setNull(1, java.sql.Types.VARCHAR);
             }
-
             ps.executeUpdate();
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0091");
+            alert.setTitle("Error 113");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0091: Kakfka state saving failed!!!");             
+            alert.setContentText("Error 113: Kakfka state saving failed!!!");             
             alert.showAndWait();
         }
     }
@@ -601,9 +600,9 @@ public class Patchflow extends Application {
                     user = FirebaseService.signUp(emailtextField.getText(), passtextField.getText());
                     if (user == null) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Error");
+                        alert.setTitle("Error 114");
                         alert.setHeaderText(null);
-                        alert.setContentText("Registration failed: Email already exists");             
+                        alert.setContentText("Error 114: Registration failed: Email already exists");             
                         alert.showAndWait();
                     } else {
                         FirebaseService.saveUser(user);
@@ -770,7 +769,6 @@ public class Patchflow extends Application {
 
                     new Thread(() -> {
                         try {
-                            
                             String prompt = """
                                 Just Give me a simple 10 line description of the following issue:
 
@@ -785,9 +783,9 @@ public class Patchflow extends Application {
                         
                         } catch (Exception exx) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("AI Connection Problem");
+                            alert.setTitle("Error 115: AI Connection Problem");
                             alert.setHeaderText(null);
-                            alert.setContentText("Please ensure Gemini API is entered in settings and there is stable internet connection.");
+                            alert.setContentText("Error 115: Please ensure Gemini API is entered in settings and there is stable internet connection.");
                             alert.showAndWait();
                             return;
                         }
@@ -810,9 +808,9 @@ public class Patchflow extends Application {
                         
                         } catch (Exception exx) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("AI Connection Problem");
+                            alert.setTitle("Error 116: AI Connection Problem");
                             alert.setHeaderText(null);
-                            alert.setContentText("Please ensure Gemini API is entered in settings and there is stable internet connection.");
+                            alert.setContentText("Error 116: Please ensure Gemini API is entered in settings and there is stable internet connection.");
                             alert.showAndWait();
                             return;
                         }
@@ -841,9 +839,9 @@ public class Patchflow extends Application {
                 Desktop.getDesktop().browse(new URI("https://buymeacoffee.com/mahadhevha"));
             } catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error 400");
+                alert.setTitle("Error 117");
                 alert.setHeaderText(null);
-                alert.setContentText("Error 400: Error opening Support page!!!");             
+                alert.setContentText("Error 117: Error opening Support page!!!");             
                 alert.showAndWait();
             }
         });
@@ -1089,9 +1087,9 @@ public class Patchflow extends Application {
 
                 } catch (Exception exc) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Error creating Issue");
+                    alert.setTitle("Error 118: Error creating Issue");
                     alert.setHeaderText(null);
-                    alert.setContentText("Please check fireemail and firepass in settings");             
+                    alert.setContentText("Error 118: Please check fireemail and firepass in settings");             
                     alert.showAndWait();
                 }
             });
@@ -1294,9 +1292,9 @@ public class Patchflow extends Application {
                     mcpwindow.setOnCloseRequest(ev -> mcpwindow = null);
                 } catch (Exception ex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Error 013");
+                    alert.setTitle("Error 119");
                     alert.setHeaderText(null);
-                    alert.setContentText("Error 013: Error opening MCP window!!!");             
+                    alert.setContentText("Error 119: Error opening MCP window!!!");             
                     alert.showAndWait();
                 }
             } else {

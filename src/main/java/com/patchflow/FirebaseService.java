@@ -29,9 +29,9 @@ public class FirebaseService {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 1000");
+            alert.setTitle("Error 500");
             alert.setHeaderText(null);
-            alert.setContentText("Error 1000");             
+            alert.setContentText("Error 500");             
             alert.showAndWait();
         }
     }
@@ -82,9 +82,9 @@ public class FirebaseService {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 1001");
+            alert.setTitle("Error 501");
             alert.setHeaderText(null);
-            alert.setContentText("Error 1001: Email already in use!!!");             
+            alert.setContentText("Error 501: Email already in use!!!");             
             alert.showAndWait();
             return null;
         }
@@ -138,9 +138,9 @@ public class FirebaseService {
             JsonObject obj = JsonParser.parseString(response).getAsJsonObject();
             if (obj.has("error")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error 1002");
+                alert.setTitle("Error 502");
                 alert.setHeaderText(null);
-                alert.setContentText("Error 1002: Login failed!!! Please ensure email and password is registered in settings.");             
+                alert.setContentText("Error 502: Login failed!!! Please ensure email and password is registered in settings.");             
                 alert.showAndWait();
                 return null;
             }
@@ -153,9 +153,9 @@ public class FirebaseService {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 1003");
+            alert.setTitle("Error 503");
             alert.setHeaderText(null);
-            alert.setContentText("Error 1003");             
+            alert.setContentText("Error 503");             
             alert.showAndWait();
             return null;
         }
@@ -171,9 +171,9 @@ public class FirebaseService {
             db.collection("users").document(user.uid).set(data);
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 1004");
+            alert.setTitle("Error 504");
             alert.setHeaderText(null);
-            alert.setContentText("Error 1004: Please ensure valid Email and Password are provided in settings.");             
+            alert.setContentText("Error 504: Please ensure valid Email and Password are provided in settings.");             
             alert.showAndWait();
         }
     }
@@ -200,9 +200,9 @@ public class FirebaseService {
 
         if (assignedUid == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
+            alert.setTitle("Error 505");
             alert.setHeaderText(null);
-            alert.setContentText("User not found please register in settings first");             
+            alert.setContentText("Error 505: User not found please register in settings first");             
             alert.showAndWait();
             return;
         }
@@ -264,9 +264,9 @@ public class FirebaseService {
 
     } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Deletion Unsucessfull");
+        alert.setTitle("Error 506");
         alert.setHeaderText(null);
-        alert.setContentText("Issue deletion unsuccessfull");
+        alert.setContentText("Error 506: Issue deletion unsuccessfull");
         alert.showAndWait();
     }
 }

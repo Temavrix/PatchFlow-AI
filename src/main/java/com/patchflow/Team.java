@@ -80,9 +80,9 @@ public class Team {
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Reload Error");
+            alert.setTitle("Error 700");
             alert.setHeaderText(null);
-            alert.setContentText("Failed to reload issues.");
+            alert.setContentText("Error 700: Failed to reload issues.");
             alert.showAndWait();
         }
     }
@@ -102,9 +102,9 @@ public class Team {
             patchflow.loadProjectsFromDB();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0162");
+            alert.setTitle("Error 701");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0162: Adding of Issue failed!");             
+            alert.setContentText("Error 701: Adding of Issue failed!");             
             alert.showAndWait();
         }
     }
@@ -120,9 +120,9 @@ public class Team {
             }
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0163");
+            alert.setTitle("Error 702");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0163: Api Keys failed!");             
+            alert.setContentText("Error 702: Api Keys failed!");             
             alert.showAndWait();
         }
         return creds;
@@ -150,9 +150,9 @@ public class Team {
             }
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0164");
+            alert.setTitle("Error 703");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0164: Loading Issue failed!");             
+            alert.setContentText("Error 703: Loading Issue failed!");             
             alert.showAndWait();
         }
 
@@ -248,9 +248,9 @@ public class Team {
                 issueDetails.setText("");
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error 0165");
+                alert.setTitle("Error 704");
                 alert.setHeaderText(null);
-                alert.setContentText("Error 0165: Could not delete issue!");             
+                alert.setContentText("Error 704: Could not delete issue!");             
                 alert.showAndWait();
             }
         });

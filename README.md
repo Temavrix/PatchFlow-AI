@@ -9,6 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
+Head to [Releases](https://github.com/Temavrix/PatchFlow/releases/tag/v1.0.0) to download the exe, which is pre-bundled and ready to use.
 
 <img height="150" alt="Image" src="https://github.com/user-attachments/assets/51062f14-87ad-429e-ac76-85370d0a8af7" /> <img height="150" alt="Image" src="https://github.com/user-attachments/assets/a0a54ed3-33c7-471b-86f6-574da2314a32" />
 
@@ -22,7 +23,7 @@ Please consider donating some money to our organization to help fund this projec
   * [Teams](#teams)
   * [AI](#ai)
   * [Github Issues](#github-issues)
-  * [Apache Kafka](#apache-kafka)
+  * [Apache Kafka](#apache-kafka-beta)
 - [Issues](#issues)
 - [License](#license)
 
@@ -36,10 +37,12 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Added 'Multi-developer' feature: Share your issues [UNSTABLE].
+1. Added cloud-based 'Multi-developer' feature: Share your issues.
   NOTE: STILL IN BETA 
 
-2. Bug fixes, UX fixes and improvements.
+2. Error Nomenclature revamped for better error pin-pointing.
+
+3. Bug fixes, UX fixes and improvements.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -48,16 +51,16 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 29-April-2026 16:00 HRS (Singapore Standard Time)
+Last Updated: 13-May-2026 13:00 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
 
 
 ## Introducing PatchFlow
-PatchFlow is a desktop-based issue tracking and developer productivity tool built using JavaFX and SQLite, designed to help developers manage bugs, track issues, and improve workflow efficiency.
+PatchFlow is a desktop-based issue tracking and developer productivity tool built using JavaFX and SQLite (for local storage) and Firebase (for cloud based storage) designed to help developers manage bugs, track issues, and improve workflow efficiency.
 
-It's Simplicity, Speed, Clean UI and Developer-first features make this suitable and lightweight for solo-developers.
+It's Simplicity, Speed, Clean UI and Developer-first features make this suitable and lightweight for developers.
 
 
 ## Running PatchFlow On Your Computer
@@ -67,13 +70,6 @@ Install Maven using Chocolatey using PowerShell as Administrator:
 ```
 choco install maven -y
 ```
-#### Check if Maven and Java is installed:  
-```
-java --version
-
-mvn -version
-```
-If both commands work then you're ready.
 
 #### Setting-up Maven Project:
 Inside project root (where pom.xml is located) and then run Patchflow:
@@ -95,12 +91,23 @@ must fix by installing correct JDK.
 ## Features
 
 ### Teams
-A new way to delegate and assign tasks currently in beta...
+A new way introduced to delegate and assign tasks currently in beta. 
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/701e5dab-ce33-4ced-ba20-1949a56f6cdd" />
+To use this feature you will need to go settings and enter your 'email' and 'password' to register for accessing the database.
+
+Patchflow will store your issues on our cloud-based storage and allow you to share the issue with others. Head to any of your local stored issues and select the 'assign task' button to be prompted with which email you want to assign it to.
+
+<img height="50" alt="Image" src="https://github.com/user-attachments/assets/c947aca3-fd18-4827-860d-1b19fb5529db" />
+
+By assigning a task to a team member, they will be able to view the issue in their 'team issue' page and then add to their workflow. The team member would also need to register with their unique Email for accessing Firebase from their side.
+
+<img height="130" alt="Image" src="https://github.com/user-attachments/assets/701e5dab-ce33-4ced-ba20-1949a56f6cdd" />
+
+NOTE: For developers who want to use their custom firebase instance, you can head too line 18 of FirebaseService.java and add your Firebase API Key.
+
+
 
 ### AI
-
 #### 1. Auto-Filling Capabilities
 When creating a new issue you can now ask AI to assist you in filling issue's description and issue's code snippet.  
 User will need to fill project's language and issue's title for the AI to provide description and code snippet.
@@ -109,12 +116,11 @@ Before:
 
 <img height="100" alt="Image" src="https://github.com/user-attachments/assets/ad1c79de-bfd8-40a4-80c2-1b332ee0bffc" />  
 
-After:
+After with AI assistance:
 
 <img height="100" alt="Image" src="https://github.com/user-attachments/assets/f0f45030-daf7-4942-a430-5ea276c3b166" />
 
 You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and paste it in settings under `Gemini API` to ask for assistance.
-
 
 #### 2. AI Assistance
 Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
@@ -130,16 +136,19 @@ Select the model and you can get assistance to your questions:
 You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and a OpenRouter token [here](https://openrouter.ai/workspaces/default/keys) then paste it in settings under `Gemini API` and `OpenRouter API` repectively to access the models.
 
 
+
 ### Github Issues
 With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/d51bc9f9-c583-4d44-b3f4-f44fd562cb63" />
+<img height="130" alt="Image" src="https://github.com/user-attachments/assets/d51bc9f9-c583-4d44-b3f4-f44fd562cb63" />
 
 By serching for your requested repository you can view the list of issues and select them to add in your local database.
 
 You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
 
-### Apache Kafka
+
+
+### Apache Kafka (Beta)
 NOTE: Don't want to use Apache Kafka? you can disable 'kafka' in settings.
 
 Kafka assists users in collecting details of issues that have been created and is stored in a JSON 
@@ -148,20 +157,20 @@ Kafka assists users in collecting details of issues that have been created and i
 First Users will have to open current `patchflow` and `patcher` folder in a another window which will 
 act as the backend (consumer). 
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/fa8a439a-a051-4859-a783-c8aca8bbb020" />
+<img height="130" alt="Image" src="https://github.com/user-attachments/assets/fa8a439a-a051-4859-a783-c8aca8bbb020" />
 
 Upon running `patchflow`, 2 terminal screens will pop-up and start running. You can minimize it and 
 continue working.  
 These terminals screens are for the `zookeeper` and `kafka server` to run in the background.
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/9173cf37-7e9a-42f4-ab69-98d5b0fd9247" />
+<img height="130" alt="Image" src="https://github.com/user-attachments/assets/9173cf37-7e9a-42f4-ab69-98d5b0fd9247" />
 
 Once `patchflow` and the 2 terminal screens are running, you can start the consumer in the `patcher` 
 folder.  
 Upon creating a new issue it will display here and store the issue in a JSON file and if any issue 
 is 'Critical' then it will send an email to your email address.
 
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/fa6287d6-0050-46aa-904e-349bf803177c" />
+<img height="130" alt="Image" src="https://github.com/user-attachments/assets/fa6287d6-0050-46aa-904e-349bf803177c" />
 
 NOTE: To send an email, you will need to register in your [Google Account](https://myaccount.google.com/apppasswords) and paste your app password in line 35 of IssueConsumer.java.
 

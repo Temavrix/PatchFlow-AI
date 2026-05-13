@@ -131,7 +131,7 @@ public class Mcpserver extends Application {
                             javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText("Error: " + ex.getMessage())
+                                    AIWindow.setText("Error 1000: " + ex.getMessage())
                             );
                         }
                     }).start();
@@ -147,7 +147,7 @@ public class Mcpserver extends Application {
                             javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText("Error: " + ex.getMessage())
+                                    AIWindow.setText("Error 1001: " + ex.getMessage())
                             );
                         }
                     }).start();
@@ -163,7 +163,7 @@ public class Mcpserver extends Application {
                             javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText("Error: " + ex.getMessage())
+                                    AIWindow.setText("Error 1002: " + ex.getMessage())
                             );
                         }
                     }).start();
@@ -179,7 +179,7 @@ public class Mcpserver extends Application {
                             javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText("Error: " + ex.getMessage())
+                                    AIWindow.setText("Error 1003: " + ex.getMessage())
                             );
                         }
                     }).start();
@@ -195,7 +195,7 @@ public class Mcpserver extends Application {
                             javafx.application.Platform.runLater(() -> AIWindow.setText(response));
                         } catch (Exception ex) {
                             javafx.application.Platform.runLater(() ->
-                                    AIWindow.setText("Error: " + ex.getMessage())
+                                    AIWindow.setText("Error 1004: " + ex.getMessage())
                             );
                         }
                     }).start();

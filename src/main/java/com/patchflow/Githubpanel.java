@@ -69,9 +69,9 @@ public class Githubpanel{
             }
         } catch(Exception e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 016");
+            alert.setTitle("Error 600");
             alert.setHeaderText(null);
-            alert.setContentText("Error 016: Please ensure validity of API Keys in settings!");             
+            alert.setContentText("Error 600: Please ensure validity of API Keys in settings!");             
             alert.showAndWait();
         }
     }
@@ -92,9 +92,9 @@ public class Githubpanel{
             patchflow.loadProjectsFromDB();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0161");
+            alert.setTitle("Error 601");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0161: Adding of Issue failed!");             
+            alert.setContentText("Error 601: Adding of Issue failed!");             
             alert.showAndWait();
         }
     }
@@ -114,9 +114,9 @@ public class Githubpanel{
             }
         } catch (Exception e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0160");
+            alert.setTitle("Error 602");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0160: Please ensure API Keys is entered in settings!");             
+            alert.setContentText("Error 602: Please ensure API Keys is entered in settings!");             
             alert.showAndWait();
         }
 

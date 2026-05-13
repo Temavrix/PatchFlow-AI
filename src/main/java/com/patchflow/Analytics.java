@@ -55,9 +55,9 @@ public class Analytics{
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 015");
+            alert.setTitle("Error 300");
             alert.setHeaderText(null);
-            alert.setContentText("Error 015: Critical priority error!");             
+            alert.setContentText("Error 300: Critical priority error!");             
             alert.showAndWait();
         }
     }
@@ -76,9 +76,9 @@ public class Analytics{
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0151");
+            alert.setTitle("Error 301");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0151: High priority error!");             
+            alert.setContentText("Error 301: High priority error!");             
             alert.showAndWait();
         }
     }
@@ -97,9 +97,9 @@ public class Analytics{
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0152");
+            alert.setTitle("Error 302");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0152: Medium priority error!");             
+            alert.setContentText("Error 302: Medium priority error!");             
             alert.showAndWait();
         }
     }
@@ -118,9 +118,9 @@ public class Analytics{
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 0153");
+            alert.setTitle("Error 303");
             alert.setHeaderText(null);
-            alert.setContentText("Error 0153: Low priority error!");             
+            alert.setContentText("Error 303: Low priority error!");             
             alert.showAndWait();
         }
     }
