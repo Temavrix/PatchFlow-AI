@@ -37,12 +37,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Added cloud-based 'Multi-developer' feature: Share your issues.
-  NOTE: STILL IN BETA 
-
-2. Error Nomenclature revamped for better error pin-pointing.
-
-3. Bug fixes, UX fixes and improvements.
+1. Added License
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -51,7 +46,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 13-May-2026 13:00 HRS (Singapore Standard Time)
+Last Updated: 26-May-2026 23:30 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
