@@ -7,7 +7,7 @@
 
     <groupId>com.patchflow</groupId>
     <artifactId>PatchFlow</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -65,13 +65,6 @@
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
             <version>1.318</version>
-        </dependency>
-
-        <!-- Kafka -->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>3.9.1</version>
         </dependency>
 
     </dependencies>

@@ -52,7 +52,7 @@ public class Mcpserver extends Application {
     @Override
     public void start(Stage stage) {
     
-        Label rootlabel = new Label("✦ AI (Beta)");
+        Label rootlabel = new Label("✦ AI Assist");
         rootlabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;");
     
         TextArea AIWindow = new TextArea();
@@ -213,7 +213,7 @@ public class Mcpserver extends Application {
     
         Scene scene = new Scene(root, 500, 550);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-        stage.setTitle("✦ AI (Beta)");
+        stage.setTitle("✦ AI Assist");
         stage.getIcons().add(new Image("/icons/patchflowtrim.png"));
         stage.setScene(scene);
         stage.show();

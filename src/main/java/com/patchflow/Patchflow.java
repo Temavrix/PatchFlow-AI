@@ -104,25 +104,6 @@ public class Patchflow extends Application {
             } else {
                 loadProjectsFromDB();
             }
-
-            if(loadKafkaState()){
-                new Thread(() -> {
-                try {
-                    new ProcessBuilder(
-                        "wscript", "runKafka.vbs"
-                ).start();
-
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Error 101");
-                    alert.setContentText("Error 101: Kafka startup scripts not found!");
-                    alert.show();
-                    });
-                }
-            }).start();
-            }
-
         } catch (SQLException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error 102");
@@ -402,50 +383,6 @@ public class Patchflow extends Application {
         }
     }
 
-    private boolean loadKafkaState() {
-        String sql = "SELECT apikey FROM apikeys WHERE apiname='kafka'";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                return "1".equals(rs.getString("apikey"));
-            }
-
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 112");
-            alert.setHeaderText(null);
-            alert.setContentText("Error 112: Kafka state loading failed!!!");             
-            alert.showAndWait();
-        }
-        return false;
-    }
-
-    private void updateKafkaState(boolean state) {
-        String sql = "UPDATE apikeys SET apikey=? WHERE apiname='kafka'";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-            PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            if (state) {
-                ps.setString(1, "1");
-            } else {
-                ps.setNull(1, java.sql.Types.VARCHAR);
-            }
-            ps.executeUpdate();
-
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error 113");
-            alert.setHeaderText(null);
-            alert.setContentText("Error 113: Kakfka state saving failed!!!");             
-            alert.showAndWait();
-        }
-    }
-
-
 
     // Main Logic Code starts here
     @Override
@@ -542,50 +479,7 @@ public class Patchflow extends Application {
                 passLabel.setStyle("-fx-text-fill: white;");
                 TextField passtextField = new TextField();
 
-                Label kafkaLabel = new Label("Activate Kafka (Unstable): ");
-                kafkaLabel.setStyle("-fx-text-fill: white;");
-                kafkaLabel.setPadding(new Insets(5));
-                StackPane kToggle = new StackPane();
-                kToggle.setPrefSize(50, 25);
-
-                Rectangle background = new Rectangle(50, 25);
-                background.setArcWidth(25);
-                background.setArcHeight(25);
-                background.setStyle("-fx-fill: #555;");
-
-                Circle thumb = new Circle(10);
-                thumb.setTranslateX(-12);
-                thumb.setStyle("-fx-fill: white;");
-
-                kToggle.getChildren().addAll(background, thumb);
-                final boolean[] isOn = {false};
-
-                // Click handler
-                kToggle.setOnMouseClicked(event -> {
-                    isOn[0] = !isOn[0];
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(200), thumb);
-
-                    if (isOn[0]) {
-                        transition.setToX(12);
-                        background.setStyle("-fx-fill: #4caf50;");
-                    } else {
-                        transition.setToX(-12);
-                        background.setStyle("-fx-fill: #555;");
-                    }
-                    transition.play();
-                });
-
-                HBox kafkaToggleBox = new HBox();
-                kafkaToggleBox.getChildren().addAll(kafkaLabel, kToggle);
-
                 loadApiKeys(geminitextField, openrotextField, githubtextField, emailtextField, passtextField);
-
-                boolean dbState = loadKafkaState();
-                isOn[0] = dbState;
-                if (dbState) {
-                    thumb.setTranslateX(12);
-                    background.setStyle("-fx-fill: #4caf50;");
-                }
 
                 Button registerFirebase = new Button("Register to share issues");
                 registerFirebase.setOnAction(ev ->{
@@ -618,7 +512,7 @@ public class Patchflow extends Application {
                 VBox settingWindow = new VBox(10);
                 settingWindow.setPadding(new Insets(10));
                 settingWindow.getChildren().addAll(geminiLabel,geminitextField,openrouterLabel,openrotextField,githubLabel,githubtextField,fireinfo,emailLabel,emailtextField,
-                    passLabel,passtextField,registerFirebase,kafkaToggleBox,savebtn);
+                    passLabel,passtextField,registerFirebase,savebtn);
                 settingWindow.setStyle("-fx-background-color: #454648;");
 
                 savebtn.setOnAction(ev -> {
@@ -632,7 +526,6 @@ public class Patchflow extends Application {
                         String passName = passtextField.getText();
 
                         saveSettingsNow(gemName, openrouteName, githtName, emailName, passName);
-                        updateKafkaState(isOn[0]);
                     }
                     savebtn.setDisable(false);
                     settingStage.close();
@@ -736,14 +629,6 @@ public class Patchflow extends Application {
                     }
 
                     saveProject(projName,langName,bugtName,despName,sevName,progname,codsnip);
-
-                    if(loadKafkaState()){
-                        String issueJson = String.format(
-                            "{\"project\":\"%s\",\"language\":\"%s\",\"issue\":\"%s\",\"severity\":\"%s\"}",
-                            projName, langName, bugtName, sevName
-                        );
-                        IssueProducer.sendIssue(issueJson);
-                    }
 
                     projectList.getSelectionModel().select(projName);
                     refreshIssues();
@@ -1029,7 +914,7 @@ public class Patchflow extends Application {
         dottwo.setArcWidth(8);
         dottwo.setArcHeight(8);
 
-        Button mcpButton = new Button("✦ AI (Beta)");
+        Button mcpButton = new Button("✦ AI Assist");
         mcpButton.setStyle("-fx-background-color: #3c3c3e; -fx-text-fill: white; -fx-control-inner-background: #3c3c3e;");
 
         viewDescription.setOnAction(e -> {

@@ -2,7 +2,7 @@
 
 ###### An AI Bug tracker for an easier workflow for developers  
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Temavrix/NexaView) [![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://github.com/Temavrix/NexaView) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Temavrix/NexaView/issues)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Temavrix/PatchFlow) [![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://github.com/Temavrix/PatchFlow) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Temavrix/PatchFlow/issues)
 
 Please consider donating some money to our organization to help fund this project:  
 <a href="https://buymeacoffee.com/mahadhevha" target="_blank">
@@ -23,7 +23,6 @@ Head to [Releases](https://github.com/Temavrix/PatchFlow/releases/tag/v1.0.0) to
   * [Teams](#teams)
   * [AI](#ai)
   * [Github Issues](#github-issues)
-  * [Apache Kafka](#apache-kafka-beta)
 - [Issues](#issues)
 - [License](#license)
 
@@ -36,8 +35,17 @@ Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-spee
 PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
+For the project's future: Our resources at Temavrix are 
+currently being diverted to other new projects and endeavours 
+hence PatchFlow will be currently recieving important 
+Security patches and urgent patches if needed.
 
-1. Added License
+1. Due to unfeasibility concerns we have removed email 
+   notifications for critical emails done by apache kafka.
+   Hence there will be no future plans of using kafka in 
+   this project.
+
+2. AI assistant and teams is now out of beta testing.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -46,7 +54,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 26-May-2026 23:30 HRS (Singapore Standard Time)
+Last Updated: 27-May-2026 19:00 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -86,7 +94,7 @@ must fix by installing correct JDK.
 ## Features
 
 ### Teams
-A new way introduced to delegate and assign tasks currently in beta. 
+A new way introduced to delegate and assign tasks. 
 
 To use this feature you will need to go settings and enter your 'email' and 'password' to register for accessing the database.
 
@@ -143,39 +151,12 @@ You will need to create a Github token [here](https://github.com/settings/tokens
 
 
 
-### Apache Kafka (Beta)
-NOTE: Don't want to use Apache Kafka? you can disable 'kafka' in settings.
-
-Kafka assists users in collecting details of issues that have been created and is stored in a JSON 
-(Subject to further review) file and for sending emails to user's email if it's severity is `Critical`.
-
-First Users will have to open current `patchflow` and `patcher` folder in a another window which will 
-act as the backend (consumer). 
-
-<img height="130" alt="Image" src="https://github.com/user-attachments/assets/fa8a439a-a051-4859-a783-c8aca8bbb020" />
-
-Upon running `patchflow`, 2 terminal screens will pop-up and start running. You can minimize it and 
-continue working.  
-These terminals screens are for the `zookeeper` and `kafka server` to run in the background.
-
-<img height="130" alt="Image" src="https://github.com/user-attachments/assets/9173cf37-7e9a-42f4-ab69-98d5b0fd9247" />
-
-Once `patchflow` and the 2 terminal screens are running, you can start the consumer in the `patcher` 
-folder.  
-Upon creating a new issue it will display here and store the issue in a JSON file and if any issue 
-is 'Critical' then it will send an email to your email address.
-
-<img height="130" alt="Image" src="https://github.com/user-attachments/assets/fa6287d6-0050-46aa-904e-349bf803177c" />
-
-NOTE: To send an email, you will need to register in your [Google Account](https://myaccount.google.com/apppasswords) and paste your app password in line 35 of IssueConsumer.java.
-
-
 ## Issues
 As this project is still in constant development, if you run into any issues while operating or have any suggestions or features, please feel free to drop by our [issues](https://github.com/Temavrix/PatchFlow/issues) section and open a issue and we'll respond within 2-4 working days, Thank you for your understanding.
 
 
 ## License
-IMPORTANT NOTE: Any User who are willing to Share or Re-Distribute NexaView are kindly advised to:
+IMPORTANT NOTE: Any User who are willing to Share or Re-Distribute PatchFlow are kindly advised to:
 
 1. A link to this repository from the user's 'Modified program' README file. 
 
@@ -187,4 +168,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 1.0.0
+Version 1.1.0
