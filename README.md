@@ -9,9 +9,7 @@ Please consider donating some money to our organization to help fund this projec
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
 
-Head to [Releases](https://github.com/Temavrix/PatchFlow/releases/tag/v1.0.0) to download the exe, which is pre-bundled and ready to use.
-
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/51062f14-87ad-429e-ac76-85370d0a8af7" /> <img height="150" alt="Image" src="https://github.com/user-attachments/assets/a0a54ed3-33c7-471b-86f6-574da2314a32" />
+ATTENTION : This codebase has been updated in-line with Project-WrapSpeed (Upgrading of Infrasturcture and Services) for users wishing to go back to the JavaFX version head to: [Commit 6f4c691](https://github.com/Temavrix/PatchFlow-AI/tree/6f4c6913d6e3c39ff5d9b6172d09f1390ab6734a)
 
 
 
@@ -35,17 +33,12 @@ Here at Temavrix we are committed in keeping PatchFlow up-to-date and up-to-spee
 PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
-For the project's future: Our resources at Temavrix are 
-currently being diverted to other new projects and endeavours 
-hence PatchFlow will be currently recieving important 
-Security patches and urgent patches if needed.
 
-1. Due to unfeasibility concerns we have removed email 
-   notifications for critical emails done by apache kafka.
-   Hence there will be no future plans of using kafka in 
-   this project.
+1. Switched application into a web-app
+2. Added typescript files
+3. Added Spring boot for AI autofill feature
 
-2. AI assistant and teams is now out of beta testing.
+This project will be unstable as of now. Please wait for the next stable release to view updated changes
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -54,100 +47,46 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 27-May-2026 19:00 HRS (Singapore Standard Time)
+Last Updated: 7-Jun-2026 19:40 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
 
 
 ## Introducing PatchFlow
-PatchFlow is a desktop-based issue tracking and developer productivity tool built using JavaFX and SQLite (for local storage) and Firebase (for cloud based storage) designed to help developers manage bugs, track issues, and improve workflow efficiency.
+PatchFlow is a desktop-based issue tracking and developer productivity tool built and designed to help developers manage bugs, track issues, and improve workflow efficiency.
 
 It's Simplicity, Speed, Clean UI and Developer-first features make this suitable and lightweight for developers.
 
 
 ## Running PatchFlow On Your Computer
 
-#### Installing Maven and Java:
-Install Maven using Chocolatey using PowerShell as Administrator:
-```
-choco install maven -y
-```
-
-#### Setting-up Maven Project:
-Inside project root (where pom.xml is located) and then run Patchflow:
-```
-mvn clean install
-
-mvn javafx:run (OR) mvn clean javafx:run
-```
-
-#### Issues when setting up Maven:
-Check required version in pom.xml:
-```
-<maven.compiler.source>21</maven.compiler.source>
-```
-If it says 21 and you’re on 17 then it won’t work and you
-must fix by installing correct JDK.
+Instructions coming soon...
 
 
 ## Features
 
 ### Teams
-A new way introduced to delegate and assign tasks. 
-
-To use this feature you will need to go settings and enter your 'email' and 'password' to register for accessing the database.
-
-Patchflow will store your issues on our cloud-based storage and allow you to share the issue with others. Head to any of your local stored issues and select the 'assign task' button to be prompted with which email you want to assign it to.
-
-<img height="50" alt="Image" src="https://github.com/user-attachments/assets/c947aca3-fd18-4827-860d-1b19fb5529db" />
-
-By assigning a task to a team member, they will be able to view the issue in their 'team issue' page and then add to their workflow. The team member would also need to register with their unique Email for accessing Firebase from their side.
-
-<img height="130" alt="Image" src="https://github.com/user-attachments/assets/701e5dab-ce33-4ced-ba20-1949a56f6cdd" />
-
-NOTE: For developers who want to use their custom firebase instance, you can head too line 18 of FirebaseService.java and add your Firebase API Key.
+A new way introduced to delegate and assign tasks.  
+Coming soon...
 
 
 
 ### AI
 #### 1. Auto-Filling Capabilities
-When creating a new issue you can now ask AI to assist you in filling issue's description and issue's code snippet.  
-User will need to fill project's language and issue's title for the AI to provide description and code snippet.
+When creating a new issue you can now ask AI to assist you in filling issue's description.  
+Users will need to fill Issue's title for the AI to provide description and code snippet.
 
-Before: 
-
-<img height="100" alt="Image" src="https://github.com/user-attachments/assets/ad1c79de-bfd8-40a4-80c2-1b332ee0bffc" />  
-
-After with AI assistance:
-
-<img height="100" alt="Image" src="https://github.com/user-attachments/assets/f0f45030-daf7-4942-a430-5ea276c3b166" />
-
-You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and paste it in settings under `Gemini API` to ask for assistance.
 
 #### 2. AI Assistance
-Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.
-
-You can choose the model that you want to chat with: 
-
-<img height="100" alt="Image" src="https://github.com/user-attachments/assets/bdcb6571-85db-43d3-b991-3ea6deed8bdf" />
-
-Select the model and you can get assistance to your questions: 
-
-<img height="150" alt="Image" src="https://github.com/user-attachments/assets/6a2ee934-4a13-4580-8d20-a022b85f09de" />
-
-You will need to create a Gemini token [here](https://aistudio.google.com/app/api-keys?project=gen-lang-client-0531172755) and a OpenRouter token [here](https://openrouter.ai/workspaces/default/keys) then paste it in settings under `Gemini API` and `OpenRouter API` repectively to access the models.
+Patchflow allows you to ask assistance on an issue if you have any problems solving it by using our in-built AI window.  
+Coming soon...
 
 
 
 ### Github Issues
-With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.
-
-<img height="130" alt="Image" src="https://github.com/user-attachments/assets/d51bc9f9-c583-4d44-b3f4-f44fd562cb63" />
-
-By serching for your requested repository you can view the list of issues and select them to add in your local database.
-
-You will need to create a Github token [here](https://github.com/settings/tokens) and paste it in settings under `Github Token`.
+With Patchflow not only are you able to keep track of unfinished tasks and feature requests on your local system but you can also import issues from Github.  
+Coming soon...
 
 
 

@@ -1,0 +1,4 @@
+app:
+  frontend:
+    url: ${FRONTEND_URL}
+    gemini: ${GEMINI_API_KEY}
