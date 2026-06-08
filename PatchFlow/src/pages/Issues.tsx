@@ -231,21 +231,30 @@ function Issues() {
   
 
   const aiauto = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/message",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: title,
-        }),
-      }
-    );
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_FRONTEND_BASE_URL}/api/message`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: title,
+          }),
+        }
+      );
 
-    const result = await response.text();
-    setDescription(result);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.text();
+      setDescription(result);
+    } catch (error) {
+      console.error(error);
+      setDescription("Failed to generate description");
+    }
   };
 
 

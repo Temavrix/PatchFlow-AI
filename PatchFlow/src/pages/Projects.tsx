@@ -24,9 +24,7 @@ function Projects() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [showProjectSidebar, setShowProjectSidebar] = useState(false);
   const [issueCount, setIssueCount] = useState(0);
-  const [updateText, setUpdateText] = useState("");
   const [showHealthDropdown, setShowHealthDropdown] = useState(false);
-  const [editSummary, setEditSummary] = useState("");
 
   const [projectStats, setProjectStats] = useState<
     Record<
@@ -119,15 +117,6 @@ function Projects() {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    if (selectedProject) {
-      setUpdateText(
-        selectedProject.latestUpdate || ""
-      );
-    }
-  }, [selectedProject]);
-
 
   const updateProjectHealth = async (projectId: string, newStatus: string) => {
     try {
@@ -275,12 +264,6 @@ function Projects() {
     });
 
     return unsubscribe;
-  }, [selectedProject]);
-
-  useEffect(() => {
-    if (selectedProject) {
-      setEditSummary(selectedProject.summary || "");
-    }
   }, [selectedProject]);
 
 

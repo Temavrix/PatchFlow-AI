@@ -14,13 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 @RestController
-@CrossOrigin(origins = "${app.frontend.url}")
 public class AIController {
 
     private static final String MODEL = "gemini-2.5-flash";
     private static final String MODELNEW = "gemini-3.5-flash";
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-    private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + "${app.frontend.gemini}";
+    //private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + "${app.frontend.gemini}";
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     @Value("${app.frontend.gemini}")
     private String geminiApiKey;

@@ -10,7 +10,7 @@ function Login() {
 
   const googleSignIn = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, provider);
       navigate("/issues");
     } catch (error) {
       console.error(error);
