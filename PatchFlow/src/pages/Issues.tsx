@@ -7,12 +7,12 @@ import TodoIcon from "./assets/Todo.png";
 import InProgressIcon from "./assets/InProgress.png";
 import CodeReviewIcon from "./assets/CodeReview.png";
 import BacklogIcon from "./assets/Backlog.png";
-import OnTrackIcon from "./assets/OnTrack.png";
+import OnTrackIcon from "./assets/Ontrack.png";
 import AtRiskIcon from "./assets/Atrisk.png";
-import OffTrackIcon from "./assets/OffTrack.png";
+import OffTrackIcon from "./assets/Offtrack.png";
 
 import issueone from "./assets/Issues.png";
-import user from "./assets/user.png";
+import user from "./assets/User.png";
 
 import pTodoIcon from "./assets/pTodo.png";
 import pInProgressIcon from "./assets/pInProgress.png";
@@ -233,7 +233,7 @@ function Issues() {
   const aiauto = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_FRONTEND_BASE_URL}/api/message`,
+        `${import.meta.env.VITE_BACKEND_BASE_URL}/api/message`,
         {
           method: "POST",
           headers: {
