@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 @RestController
+@CrossOrigin(origins = "${FRONTEND_URL}")
 public class AIController {
 
     private static final String MODEL = "gemini-2.5-flash";
@@ -21,10 +22,10 @@ public class AIController {
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     //private static final String ENDPOINTTHREE = "https://generativelanguage.googleapis.com/v1beta/models/"+ MODELNEW + ":generateContent?key=" + "${app.frontend.gemini}";
 
-    @Value("${app.frontend.url}")
+    @Value("${FRONTEND_URL}")
     private String frontendUrl;
 
-    @Value("${app.frontend.gemini}")
+    @Value("${GEMINI_API_KEY}")
     private String geminiApiKey;
 
     public String sendPromptTwoFlash(String prompt) throws Exception {
