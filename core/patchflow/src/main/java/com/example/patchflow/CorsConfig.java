@@ -11,11 +11,6 @@ public class CorsConfig implements WebMvcConfigurer {
     @Value("${FRONTEND_URL}")
     private String frontendUrl;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("Frontend URL: " + frontendUrl);
-    }
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
